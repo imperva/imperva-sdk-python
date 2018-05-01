@@ -1,4 +1,4 @@
-# Imperva-SDK Community License Agreement
+# imperva-sdk-python Community License Agreement
 
 IMPORTANT – PLEASE READ THIS LICENSE AGREEMENT (“Agreement”) CAREFULLY BEFORE ATTEMPTING TO DOWNLOAD OR USE ANY SOFTWARE OR OTHER MATERIALS MADE AVAILABLE THROUGH THIS WEBSITE.  This Agreement, effective on the date of its download or other form of delivery (the "Effective Date"), is entered into between Imperva, Inc., a corporation organized under the laws of Delaware, or its affiliate(s) and You or the company which You represent and are authorized to bind ("Licensee" or “You”). To the extent you are entering into this Agreement on behalf of a company, You have the power and authority to bind that company.
 
@@ -11,7 +11,7 @@ As used in this Agreement, the following terms shall have the meaning below:
 
  1.3.“End User” means a third party who uses the Licensed Software for its own internal production use and not for resale or further distribution.
 
- 1.4. “Licensed Software” means the source and object code of the Imperva-SDK downloaded or installed by or for You, and is subject to this Agreement, along with its associated files, documentation, including, if any, error corrections, modifications and updates.
+ 1.4. “Licensed Software” means the source and object code of the imperva-sdk-python downloaded or installed by or for You, and is subject to this Agreement, along with its associated files, documentation, including, if any, error corrections, modifications and updates.
 
  1.5. “Sample Code” means templates and source code snippets for demonstration and instructional purposes to be used with Imperva’s hardware and software product.
 
