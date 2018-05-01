@@ -1,8 +1,9 @@
-**Imperva-SDK Community License Agreement**
+# Imperva-SDK Community License Agreement
 
 IMPORTANT – PLEASE READ THIS LICENSE AGREEMENT (“Agreement”) CAREFULLY BEFORE ATTEMPTING TO DOWNLOAD OR USE ANY SOFTWARE OR OTHER MATERIALS MADE AVAILABLE THROUGH THIS WEBSITE.  This Agreement, effective on the date of its download or other form of delivery (the "Effective Date"), is entered into between Imperva, Inc., a corporation organized under the laws of Delaware, or its affiliate(s) and You or the company which You represent and are authorized to bind ("Licensee" or “You”). To the extent you are entering into this Agreement on behalf of a company, You have the power and authority to bind that company.
 
-1\. **Definitions**.  As used in this Agreement, the following terms shall have the meaning below:
+### 1\. Definitions  
+As used in this Agreement, the following terms shall have the meaning below:
 
  1.1. “Derivative Works” shall mean any improvement, modification, alteration, enhancement, and adaptation that are derived in any manner, directly or indirectly, from Licensed Software.
 
@@ -10,13 +11,13 @@ IMPORTANT – PLEASE READ THIS LICENSE AGREEMENT (“Agreement”) CAREFULLY BEF
 
  1.3.“End User” means a third party who uses the Licensed Software for its own internal production use and not for resale or further distribution.
 
- 1.4. “_Licensed Software_” means the source and object code of the Imperva-SDK downloaded or installed by or for You, and is subject to this Agreement, along with its associated files, documentation, including, if any, error corrections, modifications and updates.
+ 1.4. “Licensed Software” means the source and object code of the Imperva-SDK downloaded or installed by or for You, and is subject to this Agreement, along with its associated files, documentation, including, if any, error corrections, modifications and updates.
 
  1.5. “Sample Code” means templates and source code snippets for demonstration and instructional purposes to be used with Imperva’s hardware and software product.
 
  1.6.“Solution” means any End User software that uses the Licensed Software’s Application Programming Interfaces (API’s) to install, configure, and deploy Imperva’s hardware and/or software product(s).  Solution shall not include any software development kit, any other developer offering, and any type of plug-ins or add-on’s not interfacing with Imperva’s hardware of software product through the APIs of Licensed Software.
 
-2\. License Scope
+### 2\. License Scope
 
 2.1. License Grant.  Subject to this Agreement and any restriction set forth in a license.txt and/or readme file, Imperva grants You a limited, non-exclusive, nontransferable, revocable, and non-sublicensable license to use Licensed Software solely: (i) to develop Solutions for End Users, which shall include Imperva’s hardware or software product(s), (ii) to install, configure, and deploy Imperva’s hardware or software product(s) internally in your development or production environment, and (iii) to modify and create Derivative Works of Licensed Software solely to install, configure, and deploy Imperva’s hardware or software products.
 
@@ -28,25 +29,25 @@ IMPORTANT – PLEASE READ THIS LICENSE AGREEMENT (“Agreement”) CAREFULLY BEF
 
 2.5. No Support.  Imperva shall have no support or maintenance obligations with respect to the Licensed Software.  In addition, Imperva has no obligation to provide upgrades, updates, and/or bug fixes.
 
-3\. Ownership
+### 3\. Ownership
 
 3.1. Licensed Software.  Licensed Software is licensed, not sold. Imperva retains ownership of Licensed Software, including all intellectual property rights in Licensed Software. Imperva and each of its third party licensors own and retain for itself all right, title and interest in and to all designs, engineering details, data, materials, discoveries, inventions, patents and other proprietary rights pertaining to or reflected by Licensed Software.
 
 3.2. Feedback and Improvements.  All intellectual property rights evidenced by or embodied in Licensed Software is owned exclusively by Imperva or its licensors.  You are not obligated to provide any feedback to Imperva.  However, if You provide any feedback, You grant to Imperva a perpetual, irrevocable, royalty-free, paid-up, worldwide, non-exclusive, transferable, with the rights to sublicense (including through multiple tiers of sublicensees), and the right and license to commercially exploit any ideas, suggestions, improvements, modifications and the like made by You.
 
-4\. Confidentiality
+### 4\. Confidentiality
 
 4.1. Subject to the license grants and restrictions contained herein, You must treat the Licensed Software and its API’s as proprietary and/or confidential information, and You agree this confidentiality provision shall survive the termination of this Agreement. You may disclose Licensed Software to the extent required by a court or under operation of law or order, provided that You notify Imperva of such requirement prior to disclosure, which You only disclose information required, and that You allow Imperva the opportunity to object to such court or other legal body requiring such disclosure.
 
-5\. Use of Imperva Trademarks and Logos
+### 5\. Use of Imperva Trademarks and Logos
 
 5.1. You may not use any Imperva trademarks or logos without express prior written consent of Imperva.
 
-6\. Solution Distribution.
+### 6\. Solution Distribution.
 
 6.1. As a condition to Your rights to distribute Licensed Software as part of a Solution to End Users, You shall ensure that each of its End User agrees to the terms of this Agreement.
 
-7\. Term and Termination
+### 7\. Term and Termination
 
 7.1. Term. Either party may terminate this Agreement for convenience at any time. Upon termination, You must promptly, at Imperva’s option, either destroy or return to Imperva all copies of Licensed Software in your control.
 
@@ -54,27 +55,26 @@ IMPORTANT – PLEASE READ THIS LICENSE AGREEMENT (“Agreement”) CAREFULLY BEF
 
 7.3. Open-Source Software. Licensed Software may include third-party software and such third-party software may be licensed under terms different from those in this Agreement. Portions of Licensed Software are only available to You under open source licenses, and other third party licenses. You either must agree to the terms of each applicable public license or not exercise such licensed rights. This Agreement is not intended to change or restrict the terms of any open source license.  Imperva disclaims all liability and warranties with respect to open source software.
 
-8\. Disclaimer of Warranties
+### 8\. Disclaimer of Warranties
 
 8.1. LICENSED SOFTWARE, SAMPLE CODE, AND THIRD-PARTY PRODUCTS (IF ANY) ARE DELIVERED "AS IS" AND NEITHER IMPERVA NOR ITS THIRD-PARTY SUPPLIERS TO THE EXTENT ALLOWED BY APPLICABLE LAW MAKES ANY OTHER WARRANTIES, EXPRESS, IMPLIED, STATUTORY OR OTHERWISE, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
 
-9\. Indemnification
+### 9\. Indemnification
 
 9.1. You agree to indemnify, defend and hold harmless Imperva, its officers, directors, employees, stockholders, affiliates, agents and suppliers, from and against any and all third party claims and the related damages, losses or expenses, including but not limited to attorneys' fees and costs, arising out of or in any way connected with Your Solution or any combination of products.
 
 9.2. This section states your sole and exclusive remedy with respect to claims of infringement of third party proprietary rights of any kind.
 
-10\. Export Controls
+### 10\. Export Controls
 
 10.1. You agree to comply with all applicable export laws and restrictions and regulations.  The transfer of certain technical data may require a license from the United States government or other government agency or may prohibit granting access to products and services to a national or resident of (i) Crimea, Cuba, Iran, North Korea, Sudan, or Syria (to the extent the U.S. government restricts export to such countries or regions); (ii) to anyone on the U.S. Commerce Department’s Table of Denial Orders or U.S. Treasury Department’s list of Specially Designated Nationals; (iii) to any location to which such export or re-export is restricted or prohibited without an export license or approval.  You agree to comply with all such laws and regulations and warrants that it is not located in, under the control of, or a national or resident of any such prohibited country or region or on any such prohibited party list.
 
 
-11\. Limitation of Liability
+### 11\. Limitation of Liability
 
 11.1. IN NO EVENT SHALL IMPERVA AND ITS LICENSORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE LICENSED SOFTWARE OR THE USE OR OTHER DEALINGS IN THE LICENSED SOFTWARE. IN ADDITION, IN NO EVENT WILL IMPERVA AND ITS LICENSORS BE LIABLE FOR LOSS OF PROFITS OR REVENUE, LOST BUSINESS, AND LOST OR CORRUPT DATA OR GOODWILL ARISING OUT OF OR RELATED TO THIS AGREEMENT HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY.  Some states and jurisdictions do not allow the exclusion of limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
 
-
-12\. Miscellaneous
+### 12\. Miscellaneous
 
 12.1. Governing Law; Venue. All disputes arising out of this Agreement for transactions in the US shall be subject to the exclusive jurisdiction of the state and Federal courts located in Santa Clara County, California, and the parties agree and submit to the personal and non-exclusive jurisdiction and venue of these courts, and agree that service on You at Your address of public record constitutes valid service for any proceeding in the courts of that jurisdiction and this Agreement shall be governed by the laws of California without reference to conflict of laws principles.
 
