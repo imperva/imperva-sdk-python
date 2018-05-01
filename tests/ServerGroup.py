@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import unittest
-import imperva-sdk
+import imperva_sdk
 import json
 
 class TestServerGroup(unittest.TestCase):
@@ -22,7 +22,7 @@ class TestServerGroup(unittest.TestCase):
     if not self.host:
       raise Exception("No MX specified (MX_HOST environment variable)")
 
-    self.mx = imperva-sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password, Port=self.port)
+    self.mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password, Port=self.port)
     self.site = self.mx.create_site(self.SiteName, update=True)
 
   def tearDown(self):
@@ -42,7 +42,7 @@ class TestServerGroup(unittest.TestCase):
     self.assertEqual(sg, None)
     self.site.create_server_group(self.ServerGroupName)
     self.mx.logout()
-    self.mx = imperva-sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password)
+    self.mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password)
     sg = self.mx.get_server_group(Name=self.ServerGroupName, Site=self.SiteName)
     self.assertTrue(self.ServerGroupName == sg.Name)
 
@@ -58,7 +58,7 @@ class TestServerGroup(unittest.TestCase):
       pass
     self.site.create_server_group(self.ServerGroupName)
     self.mx.logout()
-    self.mx = imperva-sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password)
+    self.mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password)
     ret = self.mx.delete_server_group(Name=self.ServerGroupName, Site=self.SiteName)
     self.assertTrue(ret)
 
@@ -68,7 +68,7 @@ class TestServerGroup(unittest.TestCase):
     sg.OperationMode = 'active'
     sg.Name = '%s - 2' % self.ServerGroupName
     self.mx.logout()
-    self.mx = imperva-sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password)
+    self.mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password)
     sg = self.mx.get_server_group(Name='%s - 2' % self.ServerGroupName, Site=self.SiteName)
     self.assertTrue(sg.OperationMode == 'active')
 
@@ -85,7 +85,7 @@ class TestServerGroup(unittest.TestCase):
     export_dict['sites'][0]['server_groups'][0]['OperationMode'] = 'disabled'
     self.site.delete_server_group(self.ServerGroupName)
     self.mx.logout()
-    self.mx = imperva-sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password)
+    self.mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password)
     log = self.mx.import_from_json(json.dumps(export_dict))
     sg = self.mx.get_server_group(Name=self.ServerGroupName, Site=self.SiteName)
     self.assertTrue(sg.OperationMode == 'disabled')

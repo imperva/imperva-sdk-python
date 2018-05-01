@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
     
 class TrpRule(MxObject):
   ''' 
@@ -45,7 +45,7 @@ class TrpRule(MxObject):
   # 
   @property
   def Name(self):
-    ''' TRP Rule internal imperva-sdk name (you can disregard)  '''
+    ''' TRP Rule internal imperva_sdk name (you can disregard)  '''
     return self._Name
   @property
   def ListenerPorts(self):

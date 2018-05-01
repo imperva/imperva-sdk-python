@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
 
 class WebService(MxObject):
   ''' 
@@ -107,7 +107,7 @@ class WebService(MxObject):
     []
 
     * sslKeyName (string) - The name of the SSL Key in SecureSphere.
-    * format (constant) - imperva-sdk only supports 'pem' format.
+    * format (constant) - imperva_sdk only supports 'pem' format.
     * hsm (boolean) - Is certificate used by HSM (default=False).
     * certificate (string) - Base64 encoded PEM certificate.
     * private (string) - Base64 encoded PEM certificate.
@@ -248,40 +248,40 @@ class WebService(MxObject):
   # Web Service child functions
   #
   def get_krp_rule(self, GatewayGroup=None, Alias=None, GatewayPorts=[]):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_krp_rule`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_krp_rule`. '''
     return self._connection.get_krp_rule(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts)
   def get_all_krp_rules(self):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_all_krp_rules`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_all_krp_rules`. '''
     return self._connection.get_all_krp_rules(Site=self._Site, ServerGroup=self._ServerGroup, WebService=self.Name)
   def create_krp_rule(self, GatewayGroup=None, Alias=None, GatewayPorts=[], ServerCertificate=None, OutboundRules=[], ClientAuthenticationAuthorities=None, Name=None, update=False):
-    ''' See :py:meth:`imperva-sdk.MxConnection.create_krp_rule`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.create_krp_rule`. '''
     return self._connection.create_krp_rule(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts, ServerCertificate=ServerCertificate, OutboundRules=OutboundRules, ClientAuthenticationAuthorities=ClientAuthenticationAuthorities, Name=None, update=update)
   def delete_krp_rule(self, GatewayGroup=None, Alias=None, GatewayPorts=[]):
-    ''' See :py:meth:`imperva-sdk.MxConnection.delete_krp_rule`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.delete_krp_rule`. '''
     return self._connection.delete_krp_rule(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts)
   def get_trp_rule(self, ServerIp=None, ListenerPorts=[]):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_trp_rule`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_trp_rule`. '''
     return self._connection.get_trp_rule(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, ServerIp=ServerIp, ListenerPorts=ListenerPorts)
   def get_all_trp_rules(self):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_all_trp_rules`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_all_trp_rules`. '''
     return self._connection.get_all_trp_rules(Site=self._Site, ServerGroup=self._ServerGroup, WebService=self.Name)
   def create_trp_rule(self, ServerIp=None, ListenerPorts=[], ServerSidePort=None, EncryptServerConnection=None, Certificate=None, Name=None, update=False):
-    ''' See :py:meth:`imperva-sdk.MxConnection.create_trp_rule`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.create_trp_rule`. '''
     return self._connection.create_trp_rule(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, ServerIp=ServerIp, ListenerPorts=ListenerPorts, ServerSidePort=ServerSidePort, EncryptServerConnection=EncryptServerConnection, Certificate=Certificate, Name=None, update=update)
   def delete_trp_rule(self, ServerIp=None, ListenerPorts=[]):
-    ''' See :py:meth:`imperva-sdk.MxConnection.delete_trp_rule`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.delete_trp_rule`. '''
     return self._connection.delete_trp_rule(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, ServerIp=ServerIp, ListenerPorts=ListenerPorts)
   def get_web_application(self, Name=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_web_application`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_web_application`. '''
     return self._connection.get_web_application(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, Name=Name)
   def get_all_web_applications(self):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_all_web_applications`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_all_web_applications`. '''
     return self._connection.get_all_web_applications(Site=self._Site, ServerGroup=self._ServerGroup, WebService=self.Name)
   def create_web_application(self, Name=None, LearnSettings=None, ParseOcspRequests=None, RestrictMonitoringToUrls=None, IgnoreUrlsDirectories=None, Profile=None, Mappings=None, update=False):
-    ''' See :py:meth:`imperva-sdk.MxConnection.create_web_application`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.create_web_application`. '''
     return self._connection.create_web_application(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, Name=Name, LearnSettings=LearnSettings, ParseOcspRequests=ParseOcspRequests, RestrictMonitoringToUrls=RestrictMonitoringToUrls, IgnoreUrlsDirectories=IgnoreUrlsDirectories, Profile=Profile, Mappings=Mappings, update=update)
   def delete_web_application(self, Name=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.delete_web_application`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.delete_web_application`. '''
     return self._connection.delete_web_application(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, Name=Name)
 
   #
@@ -324,7 +324,7 @@ class WebService(MxObject):
     self._ForwardedClientIp = {}
     return True
   def upload_ssl_certificate(self, SslKeyName=None, Hsm=False, Private=None, Certificate=None):
-    ''' Uploads SSL Certificate to Web Service. See :py:attr:`imperva-sdk.WebService.SslKeys`. '''
+    ''' Uploads SSL Certificate to Web Service. See :py:attr:`imperva_sdk.WebService.SslKeys`. '''
     ssl_key = {
       'format': 'pem',
       'hsm': Hsm,
@@ -335,7 +335,7 @@ class WebService(MxObject):
     self._SslKeys = WebService._get_ssl_keys(self._connection, Name=self.Name, ServerGroup=self._ServerGroup, Site=self._Site)
     return True
   def delete_ssl_certificate(self, SslKeyName=None):
-    ''' Deletes SSL Certificate from Web Service. See :py:attr:`imperva-sdk.WebService.SslKeys`. '''
+    ''' Deletes SSL Certificate from Web Service. See :py:attr:`imperva_sdk.WebService.SslKeys`. '''
     self._connection._mx_api('DELETE', '/conf/webServices/%s/%s/%s/sslCertificates/%s' % (self._Site, self._ServerGroup, self.Name, SslKeyName))
     self._SslKeys = WebService._get_ssl_keys(self._connection, Name=self.Name, ServerGroup=self._ServerGroup, Site=self._Site)
     return True

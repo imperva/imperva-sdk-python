@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
     
 class KrpRule(MxObject):
   ''' 
@@ -54,7 +54,7 @@ class KrpRule(MxObject):
   # 
   @property
   def Name(self):
-    ''' KRP Rule internal imperva-sdk name (you can disregard)  '''
+    ''' KRP Rule internal imperva_sdk name (you can disregard)  '''
     return self._Name
   @property
   def GatewayGroup(self):
@@ -75,7 +75,7 @@ class KrpRule(MxObject):
     return self._GatewayPorts
   @property
   def ServerCertificate(self):
-    ''' The SSL Key name of the certificate which will be presented to the client (string). See :py:attr:`imperva-sdk.WebService.SslKeys`. '''
+    ''' The SSL Key name of the certificate which will be presented to the client (string). See :py:attr:`imperva_sdk.WebService.SslKeys`. '''
     return self._ServerCertificate
   @property
   def OutboundRules(self):

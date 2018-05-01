@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
 
 class WebApplication(MxObject):
   ''' 
@@ -261,19 +261,19 @@ class WebApplication(MxObject):
   # Web Application extra functions
   #
   def get_profile(self):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_profile`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_profile`. '''
     return self._connection.get_profile(Site=self._Site, ServerGroup=self._ServerGroup, WebService=self._WebService, Application=self.Name)
   def update_profile(self, Profile=None, SwaggerJson=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.update_profile`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.update_profile`. '''
     return self._connection.update_profile(Site=self._Site, ServerGroup=self._ServerGroup, WebService=self._WebService, Application=self.Name, Profile=Profile, SwaggerJson=SwaggerJson)
   def get_profile_url(self, UrlName=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_profile_url`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_profile_url`. '''
     return self._connection.get_profile_url(Site=self._Site, ServerGroup=self._ServerGroup, WebService=self._WebService, Application=self.Name, UrlName=UrlName)
   def delete_profile_url(self, UrlName=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.delete_profile_url`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.delete_profile_url`. '''
     return self._connection.delete_profile_url(Site=self._Site, ServerGroup=self._ServerGroup, WebService=self._WebService, Application=self.Name, UrlName=UrlName)
   def update_profile_url(self, UrlProfile=None, UrlName=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.update_profile_url`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.update_profile_url`. '''
     return self._connection.update_profile_url(Site=self._Site, ServerGroup=self._ServerGroup, WebService=self._WebService, Application=self.Name, UrlProfile=UrlProfile, UrlName=UrlName)
 
 # Function for converting Swagger JSON to Profile format

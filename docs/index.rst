@@ -4,8 +4,8 @@ imperva-sdk is an Imperva SecureSphere Open API SDK for Python, which allows Pyt
 
 ::
 
-  import imperva-sdk
-  mx = imperva-sdk.MxConnection(Host="192.168.1.1", Username="admin", Password="admin12")
+  import imperva_sdk
+  mx = imperva_sdk.MxConnection(Host="192.168.1.1", Username="admin", Password="admin12")
   site = mx.get_site("Default Site")
   server_group = site.create_server_group("New SG")
   server_group.OperationMode = 'active'

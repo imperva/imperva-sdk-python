@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
 
 class HttpProtocolSignaturesPolicy(MxObject):
   ''' 
@@ -89,11 +89,11 @@ class HttpProtocolSignaturesPolicy(MxObject):
   @property
   def ApplyTo(self):
     '''
-    Web Services that policy is applied to (list of :py:class:`imperva-sdk.WebService` objects). Can be in API JSON format or WebService objects
+    Web Services that policy is applied to (list of :py:class:`imperva_sdk.WebService` objects). Can be in API JSON format or WebService objects
 
     >>> pol.ApplyTo = [{'siteName': 'site name', 'serverGroupName': 'server group name', 'webServiceName': 'web service name'}]
     >>> pol.ApplyTo
-    [<imperva-sdk 'WebService' Object - 'web service name'>]
+    [<imperva_sdk 'WebService' Object - 'web service name'>]
 
     * siteName - Name of the site (string)
     * serverGroupName - Name of the server group (string)

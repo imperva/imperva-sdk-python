@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
 
 class ServerGroup(MxObject):
   ''' 
@@ -147,15 +147,15 @@ class ServerGroup(MxObject):
   # Server Group child (web service) functions
   #
   def create_web_service(self, Name=None, ServerGroup=None, Site=None, Ports=[], SslPorts=[], ForwardedConnections={}, ForwardedClientIp={}, SslKeys=[], TrpMode=None, update=False):
-    ''' See :py:meth:`imperva-sdk.MxConnection.create_web_service`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.create_web_service`. '''
     return self._connection.create_web_service(Name=Name, ServerGroup=self.Name, Site=self._Site, Ports=Ports, SslPorts=SslPorts, ForwardedConnections=ForwardedConnections, ForwardedClientIp=ForwardedClientIp, SslKeys=SslKeys, TrpMode=TrpMode, update=update)
   def delete_web_service(self, Name=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.delete_web_service`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.delete_web_service`. '''
     return self._connection.delete_web_service(Name=Name, Site=self._Site, ServerGroup=self.Name)
   def get_web_service(self, Name=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_web_service`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_web_service`. '''
     return self._connection.get_web_service(Name=Name, Site=self._Site, ServerGroup=self.Name)
   def get_all_web_services(self):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_all_web_services`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_all_web_services`. '''
     return self._connection.get_all_web_services(Site=self._Site, ServerGroup=self.Name)
 
