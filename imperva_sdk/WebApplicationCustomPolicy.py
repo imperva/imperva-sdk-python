@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
 
 class WebApplicationCustomPolicy(MxObject):
   ''' 
@@ -93,11 +93,11 @@ class WebApplicationCustomPolicy(MxObject):
   @property
   def ApplyTo(self):
     '''
-    Web Applications that policy is applied to (list of :py:class:`imperva-sdk.WebApplication` objects). Can be in API JSON format or WebApplication objects
+    Web Applications that policy is applied to (list of :py:class:`imperva_sdk.WebApplication` objects). Can be in API JSON format or WebApplication objects
 
     >>> pol.ApplyTo = [{'siteName': 'site name', 'serverGroupName': 'server group name', 'webServiceName': 'web service name', 'webApplicationName': 'web application name'}]
     >>> pol.ApplyTo
-    [<imperva-sdk 'WebApplication' Object - 'web application name'>]
+    [<imperva_sdk 'WebApplication' Object - 'web application name'>]
 
     * siteName - Name of the site (string)
     * serverGroupName - Name of the server group (string)

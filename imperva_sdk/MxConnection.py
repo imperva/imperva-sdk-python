@@ -5,20 +5,20 @@ import base64
 import requests
 import time
 
-from imperva-sdk.core                           import *
-from imperva-sdk.Site                           import *
-from imperva-sdk.ServerGroup                    import *
-from imperva-sdk.WebService                     import *
-from imperva-sdk.WebApplication                 import *
-from imperva-sdk.KrpRule                        import *
-from imperva-sdk.TrpRule                        import *
-from imperva-sdk.ActionSet                      import *
-from imperva-sdk.Action                         import *
-from imperva-sdk.WebServiceCustomPolicy         import *
-from imperva-sdk.WebApplicationCustomPolicy     import *
-from imperva-sdk.HttpProtocolSignaturesPolicy   import *
-from imperva-sdk.ParameterTypeGlobalObject      import *
-from imperva-sdk.ADCUploader                    import *
+from imperva_sdk.core                           import *
+from imperva_sdk.Site                           import *
+from imperva_sdk.ServerGroup                    import *
+from imperva_sdk.WebService                     import *
+from imperva_sdk.WebApplication                 import *
+from imperva_sdk.KrpRule                        import *
+from imperva_sdk.TrpRule                        import *
+from imperva_sdk.ActionSet                      import *
+from imperva_sdk.Action                         import *
+from imperva_sdk.WebServiceCustomPolicy         import *
+from imperva_sdk.WebApplicationCustomPolicy     import *
+from imperva_sdk.HttpProtocolSignaturesPolicy   import *
+from imperva_sdk.ParameterTypeGlobalObject      import *
+from imperva_sdk.ADCUploader                    import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -54,10 +54,10 @@ except:
 class MxConnection(object):
   ''' 
   Opens a connection (session) handler to the SecureSphere MX.
-  This is your starting point for using imperva-sdk.
+  This is your starting point for using imperva_sdk.
 
-    >>> import imperva-sdk
-    >>> mx = imperva-sdk.MxConnection(Host="192.168.0.1", Username="admin", Password="admin12")
+    >>> import imperva_sdk
+    >>> mx = imperva_sdk.MxConnection(Host="192.168.0.1", Username="admin", Password="admin12")
 
   :type Host: string
   :param Host: MX server IP Address or Host name
@@ -71,7 +71,7 @@ class MxConnection(object):
   :param FirstTime: Set to True if 'admin' password is not set (First Time Password). Not available on physical appliances. (default=False)
   :type Debug: boolean
   :param Debug: Print API HTTP debug information (default=False)
-  :rtype: imperva-sdk.MxConnection
+  :rtype: imperva_sdk.MxConnection
   :return: MX connection instance
 
   .. note:: All of the MX objects that are retrieved using the API are stored in the context of the MxConnection instance to prevent redundant API calls.
@@ -226,7 +226,7 @@ class MxConnection(object):
 	
   def get_all_sites(self):
     '''
-    :rtype: `list` of :obj:`imperva-sdk.Site.Site`
+    :rtype: `list` of :obj:`imperva_sdk.Site.Site`
     :return: List of all sites in MX
     '''
     return Site._get_all_sites(connection=self)
@@ -235,7 +235,7 @@ class MxConnection(object):
     '''
     :type Name: string
     :param Name: Site name
-    :rtype: imperva-sdk.Site.Site
+    :rtype: imperva_sdk.Site.Site
     :return: Site instance of site with specified name. (:obj:`None` if site does not exist)
     '''
     return Site._get_site(connection=self, Name=Name)
@@ -246,7 +246,7 @@ class MxConnection(object):
     :param Name: Site name
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
-    :rtype: imperva-sdk.Site.Site
+    :rtype: imperva_sdk.Site.Site
     :return: Site instance of site with specified name.
     '''
     return Site._create_site(connection=self, Name=Name, update=update)
@@ -266,7 +266,7 @@ class MxConnection(object):
     '''
     :type Site: string
     :param Site: Site name
-    :rtype: `list` of :obj:`imperva-sdk.Servergroup.ServerGroup`
+    :rtype: `list` of :obj:`imperva_sdk.Servergroup.ServerGroup`
     :return: List of all server groups in MX under a given site
     '''
     return ServerGroup._get_all_server_groups(connection=self, Site=Site)
@@ -277,7 +277,7 @@ class MxConnection(object):
     :param Name: Server Group name
     :type Site: string
     :param Site: Site name
-    :rtype: imperva-sdk.Servergroup.ServerGroup
+    :rtype: imperva_sdk.Servergroup.ServerGroup
     :return: ServerGroup instance of server group with specified name and site. (:obj:`None` if server group does not exist)
     '''
     return ServerGroup._get_server_group(connection=self, Name=Name, Site=Site)
@@ -289,11 +289,11 @@ class MxConnection(object):
     :type Site: string
     :param Site: Site name
     :type OperationMode: 'active', 'simulation' or 'disabled'
-    :param OperationMode: See :py:attr:`imperva-sdk.Servergroup.ServerGroup.OperationMode`
-    :param ProtectedIps: See :py:attr:`imperva-sdk.Servergroup.ServerGroup.ProtectedIps`
+    :param OperationMode: See :py:attr:`imperva_sdk.Servergroup.ServerGroup.OperationMode`
+    :param ProtectedIps: See :py:attr:`imperva_sdk.Servergroup.ServerGroup.ProtectedIps`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
-    :rtype: imperva-sdk.Servergroup.ServerGroup
+    :rtype: imperva_sdk.Servergroup.ServerGroup
     :return: Created ServerGroup instance.
     '''
     return ServerGroup._create_server_group(connection=self, Name=Name, Site=Site, OperationMode=OperationMode, ProtectedIps=ProtectedIps, update=update)
@@ -317,7 +317,7 @@ class MxConnection(object):
     :param ServerGroup: Server group name
     :type Site: string
     :param Site: Site name
-    :rtype: `list` of :obj:`imperva-sdk.WebService.WebService`
+    :rtype: `list` of :obj:`imperva_sdk.WebService.WebService`
     :return: List of all web services in MX under a given site and server group
     '''
     return WebService._get_all_web_services(connection=self, ServerGroup=ServerGroup, Site=Site)
@@ -330,7 +330,7 @@ class MxConnection(object):
     :param ServerGroup: Server Group name
     :type Site: string
     :param Site: Site name
-    :rtype: imperva-sdk.WebService.WebService
+    :rtype: imperva_sdk.WebService.WebService
     :return: WebService instance of web service with specified name, server group and site. (:obj:`None` if web service does not exist)
     '''
     return WebService._get_web_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
@@ -355,15 +355,15 @@ class MxConnection(object):
     :param ServerGroup: Server Group name
     :type Site: string
     :param Site: Site name
-    :param Ports: See :py:attr:`imperva-sdk.WebService.WebService.Ports`
-    :param SslPorts: See :py:attr:`imperva-sdk.WebService.WebService.SslPorts`
-    :param ForwardedConnections: See :py:attr:`imperva-sdk.WebService.WebService.ForwardedConnections`
-    :param ForwardedClientIp: See :py:attr:`imperva-sdk.WebService.WebService.ForwardedClientIp`
-    :param SslKeys: See :py:attr:`imperva-sdk.WebService.WebService.SslKeys`
-    :param TrpMode: See :py:attr:`imperva-sdk.WebService.WebService.TrpMode`
+    :param Ports: See :py:attr:`imperva_sdk.WebService.WebService.Ports`
+    :param SslPorts: See :py:attr:`imperva_sdk.WebService.WebService.SslPorts`
+    :param ForwardedConnections: See :py:attr:`imperva_sdk.WebService.WebService.ForwardedConnections`
+    :param ForwardedClientIp: See :py:attr:`imperva_sdk.WebService.WebService.ForwardedClientIp`
+    :param SslKeys: See :py:attr:`imperva_sdk.WebService.WebService.SslKeys`
+    :param TrpMode: See :py:attr:`imperva_sdk.WebService.WebService.TrpMode`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
-    :rtype: imperva-sdk.WebService.WebService
+    :rtype: imperva_sdk.WebService.WebService
     :return: Created WebService instance.
 
     '''
@@ -392,7 +392,7 @@ class MxConnection(object):
     :param ServerGroup: Server group name
     :type Site: string
     :param Site: Site name
-    :rtype: `list` of :obj:`imperva-sdk.WebApplication.WebApplication`
+    :rtype: `list` of :obj:`imperva_sdk.WebApplication.WebApplication`
     :return: List of all web applications in MX under a given site, server group and web service
     '''
     return WebApplication._get_all_web_applications(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService)
@@ -407,7 +407,7 @@ class MxConnection(object):
     :param ServerGroup: Server Group name
     :type Site: string
     :param Site: Site name
-    :rtype: imperva-sdk.WebApplication.WebApplication
+    :rtype: imperva_sdk.WebApplication.WebApplication
     :return: WebApplication instance of web application with specified name, web service, server group and site. (:obj:`None` if web service does not exist)
     '''
     return WebApplication._get_web_application(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, Name=Name)
@@ -422,15 +422,15 @@ class MxConnection(object):
     :param ServerGroup: Server group name
     :type Site: string
     :param Site: Site name
-    :param LearnSettings: See :py:attr:`imperva-sdk.WebApplication.WebApplication.LearnSettings`
-    :param ParseOcspRequests: See :py:attr:`imperva-sdk.WebApplication.WebApplication.ParseOcspRequests`
-    :param RestrictMonitoringToUrls: See :py:attr:`imperva-sdk.WebApplication.WebApplication.RestrictMonitoringToUrls`
-    :param IgnoreUrlsDirectories: See :py:attr:`imperva-sdk.WebApplication.WebApplication.IgnoreUrlsDirectories`
-    :param Mappings: See :py:attr:`imperva-sdk.WebApplication.WebApplication.Mappings`
-    :param Profile: See :py:meth:`imperva-sdk.MxConnection.get_profile`
+    :param LearnSettings: See :py:attr:`imperva_sdk.WebApplication.WebApplication.LearnSettings`
+    :param ParseOcspRequests: See :py:attr:`imperva_sdk.WebApplication.WebApplication.ParseOcspRequests`
+    :param RestrictMonitoringToUrls: See :py:attr:`imperva_sdk.WebApplication.WebApplication.RestrictMonitoringToUrls`
+    :param IgnoreUrlsDirectories: See :py:attr:`imperva_sdk.WebApplication.WebApplication.IgnoreUrlsDirectories`
+    :param Mappings: See :py:attr:`imperva_sdk.WebApplication.WebApplication.Mappings`
+    :param Profile: See :py:meth:`imperva_sdk.MxConnection.get_profile`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
-    :rtype: imperva-sdk.WebApplication.WebApplication
+    :rtype: imperva_sdk.WebApplication.WebApplication
     :return: Created WebApplication instance.
     '''
     return WebApplication._create_web_application(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, Name=Name, LearnSettings=LearnSettings, ParseOcspRequests=ParseOcspRequests, RestrictMonitoringToUrls=RestrictMonitoringToUrls, IgnoreUrlsDirectories=IgnoreUrlsDirectories, Profile=Profile, Mappings=Mappings, update=update)
@@ -496,7 +496,7 @@ class MxConnection(object):
 
     .. note:: Uses APIs that were introduced in v12.3.
 
-    :param UrlProfile: imperva-sdk URL profile JSON object (dictionary)
+    :param UrlProfile: imperva_sdk URL profile JSON object (dictionary)
     :type Application: string
     :param Application: Web application name
     :type WebService: string
@@ -533,7 +533,7 @@ class MxConnection(object):
 
     .. note:: Uses APIs that were introduced in v12.3.
 
-    :param Profile: imperva-sdk profile JSON object (dictionary)
+    :param Profile: imperva_sdk profile JSON object (dictionary)
     :param SwaggerJSON: Swagger JSON (dictionary) to be converted to profile JSON and used for profile update
     :type Application: string
     :param Application: Web application name
@@ -557,7 +557,7 @@ class MxConnection(object):
     :param ServerGroup: Server group name
     :type Site: string
     :param Site: Site name
-    :rtype: `list` of :obj:`imperva-sdk.KrpRule.KrpRule`
+    :rtype: `list` of :obj:`imperva_sdk.KrpRule.KrpRule`
     :return: List of all KRP rules (inbound and outbound) under specified web service.
     '''
     return KrpRule._get_all_krp_rules(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService)
@@ -570,10 +570,10 @@ class MxConnection(object):
     :param ServerGroup: Server Group name
     :type Site: string
     :param Site: Site name
-    :param GatewayGroup: See :py:attr:`imperva-sdk.KrpRule.KrpRule.GatewayGroup`
-    :param Alias: See :py:attr:`imperva-sdk.KrpRule.KrpRule.Alias`
-    :param GatewayPorts: See :py:attr:`imperva-sdk.KrpRule.KrpRule.GatewayPorts`. Can be only one of the inbound ports but needs to be a list type `[]`.
-    :rtype: imperva-sdk.KrpRule.KrpRule
+    :param GatewayGroup: See :py:attr:`imperva_sdk.KrpRule.KrpRule.GatewayGroup`
+    :param Alias: See :py:attr:`imperva_sdk.KrpRule.KrpRule.Alias`
+    :param GatewayPorts: See :py:attr:`imperva_sdk.KrpRule.KrpRule.GatewayPorts`. Can be only one of the inbound ports but needs to be a list type `[]`.
+    :rtype: imperva_sdk.KrpRule.KrpRule
     :return: KrpRule instance of a krp (reverse proxy) rule under web service with specified gateway group, alias and gateway port.
     '''
     return KrpRule._get_krp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts)
@@ -592,15 +592,15 @@ class MxConnection(object):
     :param ServerGroup: Server Group name
     :type Site: string
     :param Site: Site name
-    :param GatewayGroup: See :py:attr:`imperva-sdk.KrpRule.KrpRule.GatewayGroup`
-    :param Alias: See :py:attr:`imperva-sdk.KrpRule.KrpRule.Alias`
-    :param GatewayPorts: See :py:attr:`imperva-sdk.KrpRule.KrpRule.GatewayPorts`. 
-    :param ServerCertificate: See :py:attr:`imperva-sdk.KrpRule.KrpRule.ServerCertificate`. 
-    :param ClientAuthenticationAuthorities: See :py:attr:`imperva-sdk.KrpRule.KrpRule.ClientAuthenticationAuthorities`. 
-    :param OutboundRules: See :py:attr:`imperva-sdk.KrpRule.KrpRule.OutboundRules`. 
+    :param GatewayGroup: See :py:attr:`imperva_sdk.KrpRule.KrpRule.GatewayGroup`
+    :param Alias: See :py:attr:`imperva_sdk.KrpRule.KrpRule.Alias`
+    :param GatewayPorts: See :py:attr:`imperva_sdk.KrpRule.KrpRule.GatewayPorts`. 
+    :param ServerCertificate: See :py:attr:`imperva_sdk.KrpRule.KrpRule.ServerCertificate`. 
+    :param ClientAuthenticationAuthorities: See :py:attr:`imperva_sdk.KrpRule.KrpRule.ClientAuthenticationAuthorities`. 
+    :param OutboundRules: See :py:attr:`imperva_sdk.KrpRule.KrpRule.OutboundRules`. 
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
-    :rtype: imperva-sdk.KrpRule.KrpRule
+    :rtype: imperva_sdk.KrpRule.KrpRule
     :return: Created KrpRule instance.
     '''
     return KrpRule._create_krp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts, ServerCertificate=ServerCertificate, ClientAuthenticationAuthorities=ClientAuthenticationAuthorities, OutboundRules=OutboundRules, Name=None, update=update)
@@ -617,9 +617,9 @@ class MxConnection(object):
     :param ServerGroup: Server Group name
     :type Site: string
     :param Site: Site name
-    :param GatewayGroup: See :py:attr:`imperva-sdk.KrpRule.KrpRule.GatewayGroup`
-    :param Alias: See :py:attr:`imperva-sdk.KrpRule.KrpRule.Alias`
-    :param GatewayPorts: See :py:attr:`imperva-sdk.KrpRule.KrpRule.GatewayPorts`. Can be only one of the inbound ports but needs to be a list type `[]`.
+    :param GatewayGroup: See :py:attr:`imperva_sdk.KrpRule.KrpRule.GatewayGroup`
+    :param Alias: See :py:attr:`imperva_sdk.KrpRule.KrpRule.Alias`
+    :param GatewayPorts: See :py:attr:`imperva_sdk.KrpRule.KrpRule.GatewayPorts`. Can be only one of the inbound ports but needs to be a list type `[]`.
     '''
     return KrpRule._delete_krp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts)
     
@@ -631,7 +631,7 @@ class MxConnection(object):
     :param ServerGroup: Server group name
     :type Site: string
     :param Site: Site name
-    :rtype: `list` of :obj:`imperva-sdk.TrpRule.TrpRule`
+    :rtype: `list` of :obj:`imperva_sdk.TrpRule.TrpRule`
     :return: List of all TRP rules under specified web service.
     '''
     return TrpRule._get_all_trp_rules(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService)
@@ -644,9 +644,9 @@ class MxConnection(object):
     :param ServerGroup: Server Group name
     :type Site: string
     :param Site: Site name
-    :param ServerIp: See :py:attr:`imperva-sdk.TrpRule.TrpRule.ServerIp`
-    :param ListenerPorts: See :py:attr:`imperva-sdk.TrpRule.TrpRule.ListenerPorts`. Can be only one of the ports but needs to be a list type `[]`.
-    :rtype: imperva-sdk.TrpRule.TrpRule
+    :param ServerIp: See :py:attr:`imperva_sdk.TrpRule.TrpRule.ServerIp`
+    :param ListenerPorts: See :py:attr:`imperva_sdk.TrpRule.TrpRule.ListenerPorts`. Can be only one of the ports but needs to be a list type `[]`.
+    :rtype: imperva_sdk.TrpRule.TrpRule
     :return: TrpRule instance of a trp rule under web service with specified server IP and listener port.
     '''
     return TrpRule._get_trp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, ServerIp=ServerIp, ListenerPorts=ListenerPorts)
@@ -663,14 +663,14 @@ class MxConnection(object):
     :param ServerGroup: Server Group name
     :type Site: string
     :param Site: Site name
-    :param ListenerPorts: See :py:attr:`imperva-sdk.TrpRule.TrpRule.ListenerPorts`
-    :param ServerIp: See :py:attr:`imperva-sdk.TrpRule.TrpRule.ServerIp`
-    :param ServerSidePort: See :py:attr:`imperva-sdk.TrpRule.TrpRule.ServerSidePort`. 
-    :param Certificate: See :py:attr:`imperva-sdk.TrpRule.TrpRule.Certificate`. 
-    :param EncryptServerConnection: See :py:attr:`imperva-sdk.TrpRule.TrpRule.EncryptServerConnection`. 
+    :param ListenerPorts: See :py:attr:`imperva_sdk.TrpRule.TrpRule.ListenerPorts`
+    :param ServerIp: See :py:attr:`imperva_sdk.TrpRule.TrpRule.ServerIp`
+    :param ServerSidePort: See :py:attr:`imperva_sdk.TrpRule.TrpRule.ServerSidePort`. 
+    :param Certificate: See :py:attr:`imperva_sdk.TrpRule.TrpRule.Certificate`. 
+    :param EncryptServerConnection: See :py:attr:`imperva_sdk.TrpRule.TrpRule.EncryptServerConnection`. 
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
-    :rtype: imperva-sdk.TrpRule.TrpRule
+    :rtype: imperva_sdk.TrpRule.TrpRule
     :return: Created TrpRule instance.
     '''
     return TrpRule._create_trp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, ServerIp=ServerIp, ListenerPorts=ListenerPorts, ServerSidePort=ServerSidePort, EncryptServerConnection=EncryptServerConnection, Certificate=Certificate, Name=None, update=update)
@@ -687,14 +687,14 @@ class MxConnection(object):
     :param ServerGroup: Server Group name
     :type Site: string
     :param Site: Site name
-    :param ServerIp: See :py:attr:`imperva-sdk.TrpRule.TrpRule.ServerIp`
-    :param ListenerPorts: See :py:attr:`imperva-sdk.TrpRule.TrpRule.ListenerPorts`. Can be only one of the ports but needs to be a list type `[]`.
+    :param ServerIp: See :py:attr:`imperva_sdk.TrpRule.TrpRule.ServerIp`
+    :param ListenerPorts: See :py:attr:`imperva_sdk.TrpRule.TrpRule.ListenerPorts`. Can be only one of the ports but needs to be a list type `[]`.
     '''
     return TrpRule._delete_trp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, ServerIp=ServerIp, ListenerPorts=ListenerPorts)
     
   def get_all_action_sets(self):
     '''
-    :rtype: `list` of :obj:`imperva-sdk.ActionSet.ActionSet`
+    :rtype: `list` of :obj:`imperva_sdk.ActionSet.ActionSet`
     :return: List of all "action sets".
     '''
     return ActionSet._get_all_action_sets(connection=self)
@@ -704,7 +704,7 @@ class MxConnection(object):
     '''
     :type Name: string
     :param Name: Action Set Name
-    :rtype: imperva-sdk.ActionSet.ActionSet
+    :rtype: imperva_sdk.ActionSet.ActionSet
     :return: ActionSet instance of specified action set.
     '''
     return ActionSet._get_action_set(connection=self, Name=Name)
@@ -726,14 +726,14 @@ class MxConnection(object):
     :param Name: Action Set Name
     :type AsType: string
     :param AsType: Action Set Type (security / any)
-    :rtype: imperva-sdk.ActionSet.ActionSet
+    :rtype: imperva_sdk.ActionSet.ActionSet
     :return: ActionSet instance of created action set.
     '''
     return ActionSet._create_action_set(connection=self, Name=Name, AsType=AsType, update=update)
 
   def get_all_actions(self, ActionSet=None):
     '''
-    :rtype: `list` of :obj:`imperva-sdk.Action.Action`
+    :rtype: `list` of :obj:`imperva_sdk.Action.Action`
     :return: List of all actions in an action set.
     '''
     return Action._get_all_actions(connection=self, ActionSet=ActionSet)
@@ -742,7 +742,7 @@ class MxConnection(object):
     '''
     :type Name: string
     :param Name: Action Name
-    :rtype: imperva-sdk.Action.Action
+    :rtype: imperva_sdk.Action.Action
     :return: Action instance of specified action in Action Set.
     '''
     return Action._get_action(connection=self, Name=Name, ActionSet=ActionSet)
@@ -757,20 +757,20 @@ class MxConnection(object):
     :param Name: Action Name
     :type ActionSet: string
     :param ActionSet: Action Set Name
-    :param ActionType: See :py:attr:`imperva-sdk.Action.Action.ActionType`
-    :param Protocol: See :py:attr:`imperva-sdk.Action.Action.Protocol`
-    :param SyslogFacility: See :py:attr:`imperva-sdk.Action.Action.SyslogFacility`
-    :param Host: See :py:attr:`imperva-sdk.Action.Action.Host`
-    :param SyslogLogLevel: See :py:attr:`imperva-sdk.Action.Action.SyslogLogLevel`
-    :param SecondaryPort: See :py:attr:`imperva-sdk.Action.Action.SecondaryPort`
-    :param ActionInterface: See :py:attr:`imperva-sdk.Action.Action.ActionInterface`
-    :param SecondaryHost: See :py:attr:`imperva-sdk.Action.Action.SecondaryHost`
-    :param Message: See :py:attr:`imperva-sdk.Action.Action.Message`
-    :param Port: See :py:attr:`imperva-sdk.Action.Action.Port`
+    :param ActionType: See :py:attr:`imperva_sdk.Action.Action.ActionType`
+    :param Protocol: See :py:attr:`imperva_sdk.Action.Action.Protocol`
+    :param SyslogFacility: See :py:attr:`imperva_sdk.Action.Action.SyslogFacility`
+    :param Host: See :py:attr:`imperva_sdk.Action.Action.Host`
+    :param SyslogLogLevel: See :py:attr:`imperva_sdk.Action.Action.SyslogLogLevel`
+    :param SecondaryPort: See :py:attr:`imperva_sdk.Action.Action.SecondaryPort`
+    :param ActionInterface: See :py:attr:`imperva_sdk.Action.Action.ActionInterface`
+    :param SecondaryHost: See :py:attr:`imperva_sdk.Action.Action.SecondaryHost`
+    :param Message: See :py:attr:`imperva_sdk.Action.Action.Message`
+    :param Port: See :py:attr:`imperva_sdk.Action.Action.Port`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
   
-    :rtype: imperva-sdk.Action.Action
+    :rtype: imperva_sdk.Action.Action
     :return: Created Action instance.
     '''
   
@@ -778,7 +778,7 @@ class MxConnection(object):
     
   def get_all_web_service_custom_policies(self):
     '''
-    :rtype: `list` of :obj:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy`
+    :rtype: `list` of :obj:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy`
     :return: List of all "web service custom" policies.
     '''
     return WebServiceCustomPolicy._get_all_web_service_custom_policies(connection=self)
@@ -789,7 +789,7 @@ class MxConnection(object):
 
     :type Name: string
     :param Name: Policy Name
-    :rtype: imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy
+    :rtype: imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy
     :return: WebServiceCustomPolicy instance of specified policy.
     '''
     return WebServiceCustomPolicy._get_web_service_custom_policy(connection=self, Name=Name)
@@ -802,19 +802,19 @@ class MxConnection(object):
 
     :type Name: string
     :param Name: Policy Name
-    :param Enabled: See :py:attr:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.Enabled`
-    :param Severity: See :py:attr:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.Severity`
-    :param Action: See :py:attr:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.Action`
-    :param FollowedAction: See :py:attr:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.FollowedAction`
-    :param SendToCd: See :py:attr:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.SendToCd`
-    :param DisplayResponsePage: See :py:attr:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.DisplayResponsePage`
-    :param ApplyTo: See :py:attr:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.ApplyTo`
-    :param MatchCriteria: See :py:attr:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.MatchCriteria`
-    :param OneAlertPerSession: See :py:attr:`imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.OneAlertPerSession`
+    :param Enabled: See :py:attr:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.Enabled`
+    :param Severity: See :py:attr:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.Severity`
+    :param Action: See :py:attr:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.Action`
+    :param FollowedAction: See :py:attr:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.FollowedAction`
+    :param SendToCd: See :py:attr:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.SendToCd`
+    :param DisplayResponsePage: See :py:attr:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.DisplayResponsePage`
+    :param ApplyTo: See :py:attr:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.ApplyTo`
+    :param MatchCriteria: See :py:attr:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.MatchCriteria`
+    :param OneAlertPerSession: See :py:attr:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy.OneAlertPerSession`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
   
-    :rtype: imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy
+    :rtype: imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy
     :return: Created WebServiceCustomPolicy instance.
     '''
     return WebServiceCustomPolicy._create_web_service_custom_policy(connection=self, Name=Name, Enabled=Enabled, Severity=Severity, Action=Action, FollowedAction=FollowedAction, SendToCd=SendToCd, DisplayResponsePage=DisplayResponsePage, ApplyTo=ApplyTo, MatchCriteria=MatchCriteria, OneAlertPerSession=OneAlertPerSession, update=update)
@@ -835,7 +835,7 @@ class MxConnection(object):
     
   def get_all_web_application_custom_policies(self):
     '''
-    :rtype: `list` of :obj:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy`
+    :rtype: `list` of :obj:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy`
     :return: List of all "web application custom" policies.
     '''
     return WebApplicationCustomPolicy._get_all_web_application_custom_policies(connection=self)
@@ -846,7 +846,7 @@ class MxConnection(object):
 
     :type Name: string
     :param Name: Policy Name
-    :rtype: imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy
+    :rtype: imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy
     :return: WebApplicationCustomPolicy instance of specified policy.
     '''
     return WebApplicationCustomPolicy._get_web_application_custom_policy(connection=self, Name=Name)
@@ -859,19 +859,19 @@ class MxConnection(object):
 
     :type Name: string
     :param Name: Policy Name
-    :param Enabled: See :py:attr:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.Enabled`
-    :param Severity: See :py:attr:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.Severity`
-    :param Action: See :py:attr:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.Action`
-    :param FollowedAction: See :py:attr:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.FollowedAction`
-    :param SendToCd: See :py:attr:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.SendToCd`
-    :param DisplayResponsePage: See :py:attr:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.DisplayResponsePage`
-    :param ApplyTo: See :py:attr:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.ApplyTo`
-    :param MatchCriteria: See :py:attr:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.MatchCriteria`
-    :param OneAlertPerSession: See :py:attr:`imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.OneAlertPerSession`
+    :param Enabled: See :py:attr:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.Enabled`
+    :param Severity: See :py:attr:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.Severity`
+    :param Action: See :py:attr:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.Action`
+    :param FollowedAction: See :py:attr:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.FollowedAction`
+    :param SendToCd: See :py:attr:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.SendToCd`
+    :param DisplayResponsePage: See :py:attr:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.DisplayResponsePage`
+    :param ApplyTo: See :py:attr:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.ApplyTo`
+    :param MatchCriteria: See :py:attr:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.MatchCriteria`
+    :param OneAlertPerSession: See :py:attr:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy.OneAlertPerSession`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
   
-    :rtype: imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy
+    :rtype: imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy
     :return: Created WebApplicationCustomPolicy instance.
     '''
     return WebApplicationCustomPolicy._create_web_application_custom_policy(connection=self, Name=Name, Enabled=Enabled, Severity=Severity, Action=Action, FollowedAction=FollowedAction, SendToCd=SendToCd, DisplayResponsePage=DisplayResponsePage, ApplyTo=ApplyTo, MatchCriteria=MatchCriteria, OneAlertPerSession=OneAlertPerSession, update=update)
@@ -892,7 +892,7 @@ class MxConnection(object):
 
   def get_all_parameter_type_global_objects(self):
     '''
-    :rtype: `list` of :obj:`imperva-sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject`
+    :rtype: `list` of :obj:`imperva_sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject`
     :return: List of all "parameter type configuration" global objects.
     '''
     return ParameterTypeGlobalObject._get_all_parameter_type_global_objects(connection=self)
@@ -901,7 +901,7 @@ class MxConnection(object):
     '''
     :type Name: string
     :param Name: Parameter Type Configuration Name
-    :rtype: imperva-sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject
+    :rtype: imperva_sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject
     :return: ParameterTypeGlobalObject instance of specified global object.
     '''
     return ParameterTypeGlobalObject._get_parameter_type_global_object(connection=self, Name=Name)
@@ -913,11 +913,11 @@ class MxConnection(object):
 
     :type Name: string
     :param Name: Global Object Name
-    :param Regex: See :py:attr:`imperva-sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject.Regex`
+    :param Regex: See :py:attr:`imperva_sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject.Regex`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
   
-    :rtype: imperva-sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject
+    :rtype: imperva_sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject
     :return: Created ParameterTypeGlobalObject instance.
     '''
     return ParameterTypeGlobalObject._create_parameter_type_global_object(connection=self, Name=Name, Regex=Regex, update=update)
@@ -936,7 +936,7 @@ class MxConnection(object):
     
   def get_all_http_protocol_signatures_policies(self):
     '''
-    :rtype: `list` of :obj:`imperva-sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy`
+    :rtype: `list` of :obj:`imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy`
     :return: List of all "http protocol signatures" policies.
     '''
     return HttpProtocolSignaturesPolicy._get_all_http_protocol_signatures_policies(connection=self)
@@ -947,7 +947,7 @@ class MxConnection(object):
 
     :type Name: string
     :param Name: Policy Name
-    :rtype: imperva-sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy
+    :rtype: imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy
     :return: HttpProtocolSignaturesPolicy instance of specified policy.
     '''
     return HttpProtocolSignaturesPolicy._get_http_protocol_signatures_policy(connection=self, Name=Name)
@@ -960,15 +960,15 @@ class MxConnection(object):
 
     :type Name: string
     :param Name: Policy Name
-    :param SendToCd: See :py:attr:`imperva-sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.SendToCd`
-    :param DisplayResponsePage: See :py:attr:`imperva-sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.DisplayResponsePage`
-    :param ApplyTo: See :py:attr:`imperva-sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.ApplyTo`
-    :param Rules: See :py:attr:`imperva-sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.Rules`
-    :param Exceptions: See :py:attr:`imperva-sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.Exceptions`
+    :param SendToCd: See :py:attr:`imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.SendToCd`
+    :param DisplayResponsePage: See :py:attr:`imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.DisplayResponsePage`
+    :param ApplyTo: See :py:attr:`imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.ApplyTo`
+    :param Rules: See :py:attr:`imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.Rules`
+    :param Exceptions: See :py:attr:`imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.Exceptions`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
   
-    :rtype: imperva-sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy
+    :rtype: imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy
     :return: Created HttpProtocolSignaturesPolicy instance.
     '''
     return HttpProtocolSignaturesPolicy._create_http_protocol_signatures_policy(connection=self, Name=Name, SendToCd=SendToCd, DisplayResponsePage=DisplayResponsePage, ApplyTo=ApplyTo, Rules=Rules, Exceptions=Exceptions, update=update)
@@ -1042,7 +1042,7 @@ class MxConnection(object):
 
     >>> mx.upload_license(LicenseFile='/etc/passwd')
     ...
-    imperva-sdk.MxException: MX returned errors - [{u'error-code': u'IMP-12101', u'description': u'Invalid license file'}]
+    imperva_sdk.MxException: MX returned errors - [{u'error-code': u'IMP-12101', u'description': u'Invalid license file'}]
 
     :type LicenseContent: string
     :param LicenseContent: License file encoded in Base64
@@ -1079,7 +1079,7 @@ class MxConnection(object):
     '''
     Export MX configuration to a JSON string.
 
-    .. note:: The function only exports objects that are implemented in imperva-sdk. It is not the entire MX configuration.
+    .. note:: The function only exports objects that are implemented in imperva_sdk. It is not the entire MX configuration.
 
     >>> import pprint
     >>> import json
@@ -1145,7 +1145,7 @@ class MxConnection(object):
     :type Discard: list of string
     :param Discard: Objects or attributes to discard from export. For example, you can choose not to export all policy information by passing `['policies']` or only discard certain attributes of policy objects by passing `['MatchCriteria', 'ApplyTo']`
     :rtype: JSON string
-    :return: string in JSON format representing MX configuration export (and can be used by :py:meth:`imperva-sdk.MxConnection.import_from_json` function)
+    :return: string in JSON format representing MX configuration export (and can be used by :py:meth:`imperva_sdk.MxConnection.import_from_json` function)
     
     '''
     def dict_discard(d, Discard=[]):
@@ -1165,7 +1165,7 @@ class MxConnection(object):
         'Host': self.Host,
         'Version': self.Version,
         'Challenge': self.Challenge,
-        'SdkVersion': imperva-sdk_version(),
+        'SdkVersion': imperva_sdk_version(),
         'ExportTime': time.strftime("%Y-%m-%d %H:%M:%S")
       }
     }
@@ -1223,21 +1223,21 @@ class MxConnection(object):
 
   def import_from_json(self, Json=None, update=True):
     '''
-    Import MX configuration from valid JSON string. It is a good idea to use :py:meth:`imperva-sdk.MxConnection.export_to_json` as the basis for creating the JSON structure.
+    Import MX configuration from valid JSON string. It is a good idea to use :py:meth:`imperva_sdk.MxConnection.export_to_json` as the basis for creating the JSON structure.
 
-    .. note:: The function only imports objects that are implemented in imperva-sdk. It is not the entire MX configuration.
+    .. note:: The function only imports objects that are implemented in imperva_sdk. It is not the entire MX configuration.
 
     >>> # Copy site tree (without policies) from one MX to another
-    >>> mx1 = imperva-sdk.MxConnection("10.1.11.57")
-    >>> mx2 = imperva-sdk.MxConnection("10.100.46.138")
+    >>> mx1 = imperva_sdk.MxConnection("10.1.11.57")
+    >>> mx2 = imperva_sdk.MxConnection("10.100.46.138")
     >>> export = mx1.export_to_json(Discard=['policies'])
     >>> log = mx2.import_from_json(export)
     >>> log[0]
-    {'Function': 'create_site', 'Parent': '<imperva-sdk.MxConnection object at 0x27ff510>', 'Parameters': u'Name=Default Site', 'Result': 'SUCCESS'}
+    {'Function': 'create_site', 'Parent': '<imperva_sdk.MxConnection object at 0x27ff510>', 'Parameters': u'Name=Default Site', 'Result': 'SUCCESS'}
 
 
     :type Json: string 
-    :param Json: valid imperva-sdk JSON export
+    :param Json: valid imperva_sdk JSON export
     :type update: boolean
     :param update: Set to `True` to update existing resources (default in import function). If set to `False`, existing resources will cause import operations to fail.
     :rtype: list of dict
@@ -1245,7 +1245,7 @@ class MxConnection(object):
     '''
     try:
       json_config = json.loads(Json)
-      imperva-sdk_version = json_config['metadata']['SdkVersion']
+      imperva_sdk_version = json_config['metadata']['SdkVersion']
     except:
       raise MxException("Invalid JSON configuration")
 

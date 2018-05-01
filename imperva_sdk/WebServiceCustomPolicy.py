@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
 
 class WebServiceCustomPolicy(MxObject):
   ''' 
@@ -14,15 +14,15 @@ class WebServiceCustomPolicy(MxObject):
   >>> pol.ApplyTo
   []
   >>> ws
-  <imperva-sdk 'WebService' Object - 'web service name'>
+  <imperva_sdk 'WebService' Object - 'web service name'>
   >>> pol.ApplyTo = [ws]
   >>> pol.ApplyTo
-  [<imperva-sdk 'WebService' Object - 'web service name'>]
+  [<imperva_sdk 'WebService' Object - 'web service name'>]
   >>> # Create user defined copy of policy
   >>> pol_dict = dict(pol)
   >>> pol_dict['Name'] = 'user defined - %s' % pol_dict['Name']
   >>> mx.create_web_service_custom_policy(**pol_dict)
-  <imperva-sdk 'WebServiceCustomPolicy' Object - 'user defined - Anti Google Hacking - 2'>
+  <imperva_sdk 'WebServiceCustomPolicy' Object - 'user defined - Anti Google Hacking - 2'>
 
   '''
 
@@ -110,11 +110,11 @@ class WebServiceCustomPolicy(MxObject):
   @property
   def ApplyTo(self):
     '''
-    Web Services that policy is applied to (list of :py:class:`imperva-sdk.WebService` objects). Can be in API JSON format or WebService objects
+    Web Services that policy is applied to (list of :py:class:`imperva_sdk.WebService` objects). Can be in API JSON format or WebService objects
 
     >>> pol.ApplyTo = [{'siteName': 'site name', 'serverGroupName': 'server group name', 'webServiceName': 'web service name'}]
     >>> pol.ApplyTo
-    [<imperva-sdk 'WebService' Object - 'web service name'>]
+    [<imperva_sdk 'WebService' Object - 'web service name'>]
 
     * siteName - Name of the site (string)
     * serverGroupName - Name of the server group (string)

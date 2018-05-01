@@ -6,9 +6,9 @@ import os
 valid_string_pattern  = re.compile(r'^[a-zA-Z0-9 _\.\'\-\[\]\,\(\)\:\+]*$')
 
 #
-# In "imperva-sdk", all Class parameters start with a capital letter.
+# In "imperva_sdk", all Class parameters start with a capital letter.
 # This is done to differentiate them from Class functions and other internal variables (export/import purposes).
-# For example, if the "server group" API has an "operationMode" parameter - in "imperva-sdk" it will be called "OperationMode"
+# For example, if the "server group" API has an "operationMode" parameter - in "imperva_sdk" it will be called "OperationMode"
 #
 is_parameter = re.compile(r'^[A-Z].*$')
 
@@ -23,7 +23,7 @@ class MxObject(object):
     self._connection = connection
 
   def __repr__(self):
-    return "<imperva-sdk '%s' Object - '%s'>" % (type(self).__name__, self.Name)
+    return "<imperva_sdk '%s' Object - '%s'>" % (type(self).__name__, self.Name)
 
   # Recursive dictionary representation of the MX object (used for JSON export/import) 
   def __iter__(self):
@@ -63,7 +63,7 @@ class MxList(list):
   def remove(self, item):
     raise MxException('No removing allowed.')
 
-def imperva-sdk_version():
+def imperva_sdk_version():
   try:
     here = os.path.abspath(os.path.dirname(__file__))
     with open(here + '/__init__.py', 'r') as fd:
@@ -73,5 +73,5 @@ def imperva-sdk_version():
       return version_match.group(1)
   except:
     pass
-  return "Error getting imperva-sdk version"
+  return "Error getting imperva_sdk version"
   

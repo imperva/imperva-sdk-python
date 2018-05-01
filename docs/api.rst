@@ -9,79 +9,79 @@ You may also need the official `MX Open API documentation <https://www.imperva.c
 
 MxConnection Class
 ==================
-.. autoclass:: imperva-sdk.MxConnection
+.. autoclass:: imperva_sdk.MxConnection
    :members:
    :undoc-members:
 
 Site Class
 ==========
-.. autoclass:: imperva-sdk.Site.Site
+.. autoclass:: imperva_sdk.Site.Site
    :members:
    :undoc-members:
 
 ServerGroup Class
 =================
-.. autoclass:: imperva-sdk.ServerGroup.ServerGroup
+.. autoclass:: imperva_sdk.ServerGroup.ServerGroup
    :members:
    :undoc-members:
 
 WebService Class
 ================
-.. autoclass:: imperva-sdk.WebService.WebService
+.. autoclass:: imperva_sdk.WebService.WebService
    :members:
    :undoc-members:
 
 WebApplication Class
 ====================
-.. autoclass:: imperva-sdk.WebApplication.WebApplication
+.. autoclass:: imperva_sdk.WebApplication.WebApplication
    :members:
    :undoc-members:
 
 KrpRule Class
 =============
-.. autoclass:: imperva-sdk.KrpRule.KrpRule
+.. autoclass:: imperva_sdk.KrpRule.KrpRule
    :members:
    :undoc-members:
 
 TrpRule Class
 =============
-.. autoclass:: imperva-sdk.TrpRule.TrpRule
+.. autoclass:: imperva_sdk.TrpRule.TrpRule
    :members:
    :undoc-members:
 
 WebServiceCustomPolicy Class
 ============================
-.. autoclass:: imperva-sdk.WebServiceCustomPolicy.WebServiceCustomPolicy
+.. autoclass:: imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy
    :members:
    :undoc-members:
 
 WebApplicationCustomPolicy Class
 ================================
-.. autoclass:: imperva-sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy
+.. autoclass:: imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy
    :members:
    :undoc-members:
 
 HttpProtocolSignaturesPolicy Class
 ==================================
-.. autoclass:: imperva-sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy
+.. autoclass:: imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy
    :members:
    :undoc-members:
 
 ActionSet Class
 ===============
-.. autoclass:: imperva-sdk.ActionSet.ActionSet
+.. autoclass:: imperva_sdk.ActionSet.ActionSet
    :members:
    :undoc-members:
 
 Action Class
 ============
-.. autoclass:: imperva-sdk.Action.Action
+.. autoclass:: imperva_sdk.Action.Action
    :members:
    :undoc-members:
 
 ParameterTypeGlobalObject Class
 ===============================
-.. autoclass:: imperva-sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject
+.. autoclass:: imperva_sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject
    :members:
    :undoc-members:
 

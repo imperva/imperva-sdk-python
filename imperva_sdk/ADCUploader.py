@@ -5,7 +5,7 @@ import json
 import threading
 
 from time import sleep
-from imperva-sdk.core import *
+from imperva_sdk.core import *
 
 
 class ADCUploader(MxObject):

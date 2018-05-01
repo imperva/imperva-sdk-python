@@ -25,8 +25,8 @@ You can also install the package with pip (or any other Python package manager).
 
 ::
 
-  import imperva-sdk
-  mx = imperva-sdk.MxConnection("1.2.3.4")
+  import imperva_sdk
+  mx = imperva_sdk.MxConnection("1.2.3.4")
   sites = mx.get_all_sites()
 
 Downloads
@@ -48,10 +48,10 @@ This is just a small sample of what you can do with imperva-sdk. Make sure you c
 
 ::
 
-  import imperva-sdk
+  import imperva_sdk
 
   # Create a connection to the MX
-  mx = imperva-sdk.MxConnection(Host="10.1.11.100", Port=8083, Username="admin", Password="1qa2ws3ed")
+  mx = imperva_sdk.MxConnection(Host="10.1.11.100", Port=8083, Username="admin", Password="1qa2ws3ed")
 
   # Display MX version
   mx.Version

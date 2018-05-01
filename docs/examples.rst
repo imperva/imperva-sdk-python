@@ -6,7 +6,7 @@ Example 1 - Build MX configuration from code
 
 ::
 
-  import imperva-sdk
+  import imperva_sdk
 
   # Settings
   app_name = "MyApp" # Name to use when creating resources
@@ -16,7 +16,7 @@ Example 1 - Build MX configuration from code
   cert_file = '/work/tmp/mycert.pem' # PEM file containing both public and private certificate information
 
   # Create site tree
-  mx = imperva-sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="1qa2ws3ed") # Connect to MX
+  mx = imperva_sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="1qa2ws3ed") # Connect to MX
   site = mx.create_site("%s site" % app_name) # Create Site
   sg = site.create_server_group("%s server group" % app_name, OperationMode='active') # Create Server Group
   ws = sg.create_web_service("%s web service" % app_name) # Create Web Service
@@ -39,9 +39,9 @@ Example 2 - Create user defined copies of all ADC predefined policies
 
 ::
 
-  import imperva-sdk
+  import imperva_sdk
 
-  mx = imperva-sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="1qa2ws3ed") # Connect to MX
+  mx = imperva_sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="1qa2ws3ed") # Connect to MX
 
   for pol in mx.get_all_web_service_custom_policies():
     # We'll use the "user defined" prefix to differentiate between user and predefined policies
@@ -62,15 +62,15 @@ Example 2 - Create user defined copies of all ADC predefined policies
 Example 3 - Copy configuration from one MX to another
 =====================================================
 
-.. note:: The configuration includes only objects that are implemented in imperva-sdk. It is not the entire MX configuration.
+.. note:: The configuration includes only objects that are implemented in imperva_sdk. It is not the entire MX configuration.
 
 ::
 
-  import imperva-sdk
+  import imperva_sdk
 
   # Open connection to MXs (use default credentials)
-  source_mx = imperva-sdk.MxConnection("10.1.11.57")
-  dest_mx = imperva-sdk.MxConnection("10.100.46.138")
+  source_mx = imperva_sdk.MxConnection("10.1.11.57")
+  dest_mx = imperva_sdk.MxConnection("10.100.46.138")
 
   # Export configuration from source MX
   source_export = source_mx.export_to_json()
@@ -90,17 +90,17 @@ Example 3 - Copy configuration from one MX to another
 Example 4 - Create MX configuration from JSON
 =============================================
 
-First we need to have an MX configuration in JSON format (this is a proprietary `imperva-sdk` format).
+First we need to have an MX configuration in JSON format (this is a proprietary `imperva_sdk` format).
 The easiest way to create a sample configuration is to create an export from a working MX.
 The following code exports the configuration from the MX configured in `Example 1`.
 We user the `Discard` parameter to remove policy `MatchCriteria` and `ApplyTo` information (which takes up most of the space and we won't be changing them in the import process)::
 
-  import imperva-sdk
+  import imperva_sdk
   import json
   import pprint
 
   # Connect to MX and export configuration
-  mx = imperva-sdk.MxConnection("10.100.46.138")
+  mx = imperva_sdk.MxConnection("10.100.46.138")
   export = mx.export_to_json(Discard=['MatchCriteria', 'ApplyTo'])
 
   # Pretty print the JSON with pprint
@@ -241,7 +241,7 @@ Note that to use this JSON you need certain prerequisites -
 
 :: 
 
-  import imperva-sdk
+  import imperva_sdk
   import ast
   import json
 
@@ -253,7 +253,7 @@ Note that to use this JSON you need certain prerequisites -
   json_text = json.dumps(json_dict)
 
   # Connect to MX and import configuration
-  mx = imperva-sdk.MxConnection("10.100.46.138")
+  mx = imperva_sdk.MxConnection("10.100.46.138")
   log = mx.import_from_json(json_text)
 
   # Go over log and print errors
@@ -266,15 +266,15 @@ Note that to use this JSON you need certain prerequisites -
 Example 5 - Swagger 2 Profile
 =============================
 
-In v12.3 SecureSphere added APIs to manage the application profile. `imperva-sdk` added support for these APIs in the WebApplication object. In addition, `imperva-sdk` provides the ability to apply a Swagger JSON as a SecureSphere profile. Many API applications can automatically generate their schema in Swagger format (URL paths, allowed methods, parameters...) - this `imperva-sdk` function enables you to automatically update your profile with a Swagger representation.
+In v12.3 SecureSphere added APIs to manage the application profile. `imperva_sdk` added support for these APIs in the WebApplication object. In addition, `imperva_sdk` provides the ability to apply a Swagger JSON as a SecureSphere profile. Many API applications can automatically generate their schema in Swagger format (URL paths, allowed methods, parameters...) - this `imperva_sdk` function enables you to automatically update your profile with a Swagger representation.
 
 ::
 
-  import imperva-sdk
+  import imperva_sdk
   import json
 
   # Connect to MX
-  mx = imperva-sdk.MxConnection("10.100.73.151", Password="Barbapapa12")
+  mx = imperva_sdk.MxConnection("10.100.73.151", Password="Barbapapa12")
 
   # Load swagger file as JSON
   with open('swagger_file.json', 'r') as fd:

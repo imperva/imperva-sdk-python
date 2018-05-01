@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
 
 class ActionSet(MxObject):
   '''
@@ -96,9 +96,9 @@ class ActionSet(MxObject):
     return True    
     
   def get_all_actions(self):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_all_actions`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_all_actions`. '''
     return self._connection.get_all_actions(ActionSet=self.Name)
   def create_action(self, Name=None, ActionType=None, Protocol=None, SyslogFacility=None, Host=None, SyslogLogLevel=None, SecondaryPort=None, ActionInterface=None, SecondaryHost=None, Message=None, Port=None, update=False):
-    ''' See :py:meth:`imperva-sdk.MxConnection.create_action`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.create_action`. '''
     return self._connection.create_action(Name=Name, ActionSet=self.Name, ActionType=ActionType, Protocol=Protocol, SyslogFacility=SyslogFacility, Host=Host, SyslogLogLevel=SyslogLogLevel, SecondaryPort=SecondaryPort, ActionInterface=ActionInterface, SecondaryHost=SecondaryHost, Message=Message, Port=Port, update=update)
 

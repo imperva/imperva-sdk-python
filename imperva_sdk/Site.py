@@ -1,7 +1,7 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
-from imperva-sdk.core import *
+from imperva_sdk.core import *
 
 class Site(MxObject):
   ''' 
@@ -109,15 +109,15 @@ class Site(MxObject):
   # Site child (server group) functions
   #
   def create_server_group(self, Name=None, OperationMode=None, ProtectedIps=[], update=False):
-    ''' See :py:meth:`imperva-sdk.MxConnection.create_server_group`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.create_server_group`. '''
     return self._connection.create_server_group(Name=Name, Site=self.Name, OperationMode=OperationMode, ProtectedIps=ProtectedIps, update=update)
   def delete_server_group(self, Name=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.delete_server_group`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.delete_server_group`. '''
     return self._connection.delete_server_group(Name=Name, Site=self.Name)
   def get_server_group(self, Name=None):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_server_group`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_server_group`. '''
     return self._connection.get_server_group(Name=Name, Site=self.Name)
   def get_all_server_groups(self):
-    ''' See :py:meth:`imperva-sdk.MxConnection.get_all_server_groups`. '''
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_all_server_groups`. '''
     return self._connection.get_all_server_groups(Site=self.Name)
 

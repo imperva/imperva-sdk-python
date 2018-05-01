@@ -19,12 +19,12 @@ If you find API version discrepancies that cause problems with `imperva-sdk`, pl
 
 `imperva-sdk` has a proprietary exception Class (`MxException`) that works just like any other Python exception -
 
-  >>> import imperva-sdk
-  >>> mx = imperva-sdk.MxConnection("10.100.46.138")
+  >>> import imperva_sdk
+  >>> mx = imperva_sdk.MxConnection("10.100.46.138")
   >>> site = mx.create_site("giora")
   >>> try:
   ...   site = mx.create_site("giora")
-  ... except imperva-sdk.MxException as e:
+  ... except imperva_sdk.MxException as e:
   ...   print e
   ...
   Site already exists

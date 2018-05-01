@@ -30,7 +30,7 @@ setup(
 
     #packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    py_modules=["imperva-sdk"],
+    py_modules=["imperva_sdk"],
     install_requires=['requests'],
 
     #extras_require={
