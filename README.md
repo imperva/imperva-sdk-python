@@ -5,4 +5,4 @@ imperva-sdk is an Imperva SecureSphere Open API SDK for Python, which allows Pyt
 
 [Download latest package](http://TBD)
 
-[Documentation](http://TBD)
+Detailed API documentation and code samples can be found [here](https://imperva.github.io/imperva-sdk-python/)
