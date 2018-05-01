@@ -2,11 +2,11 @@
 
 **For Submissions by Indivduals:**
 
-**Imperva User Community (“IUC”) Contributor License Agreement (Individual)**
+# Imperva User Community (“IUC”) Contributor License Agreement (Individual)
 
 Thank you for your interest in contributing to software projects on the Imperva User Commmunity managed by Imperva, Inc. (“We” or “Us”). This contributor agreement (“Agreement”) documents the rights granted by contributors to Us. You represent that you have the right to submit and license the contribution(s) under the license hereunder.  Please review, provide the necessary information, and accept the terms. This is a legally binding document, so please read it carefully before agreeing to it. The Agreement may cover more than one software project managed by Us**.**
 
-1\. Definitions:
+### 1\. Definitions:
 
 “You” means the individual who Submits a Contribution to Us.
 
@@ -18,7 +18,7 @@ Thank you for your interest in contributing to software projects on the Imperva 
 
 “Submission Date” means the date on which You Submit a Contribution to Us.
 
-2\. Grant of Rights.
+### 2\. Grant of Rights.
 
 2.1 Copyright License: (a) You retain ownership and title of the copyright in Your Contribution; (b) to the maximum extent permitted by the relevant law, You grant to Us a perpetual, worldwide, non-exclusive, transferable, royalty-free, paid-up, irrevocable license to the Contribution, with the right to sublicense such rights through multiple tiers of sublicensees, to prepare derivatives, reproduce, modify, display, perform and distribute the Contribution.
 
@@ -32,18 +32,19 @@ Thank you for your interest in contributing to software projects on the Imperva 
 
 2.6 Reservation of Rights. Any rights not expressly licensed under this section are expressly reserved by You.
 
-3\. Representation of Contribution.
+### 3\. Representation of Contribution.
 
 3.1 You represent the following: (a) Your Contributions is Your original creation; (b) You have the legal authority to enter into this Agreement. (c) You own the Copyright and patent claims covering the Contribution which are required to grant the rights under Section 2. (d) The grant of rights under Section 2 does not violate any grant of rights which You have made to third parties or have been granted by third parties.
 
 3.2 Should You wish to submit work that is not Your original creation, You may submit it to Us at gabi.beyo@imperva.com separately from any Contribution, identifying the complete details of the source code, owner, origin, and its license or other restriction (including, but not limited to, related patents, trademarks, and license agreements) of which you are personally aware, and conspicuously marking the work as "Submitted on behalf of a third-party \[named here\] or Submission includes third party code.”
 
-4\. Disclaimer. You are not expected to provide support for Your Contributions, except to the extent You desire to provide support. Unless required by applicable law or agreed to otherwise in writing: EXCEPT FOR THE EXPRESS WARRANTIES IN SECTION 3, THE CONTRIBUTION IS PROVIDED "AS IS." MORE PARTICULARLY, ALL EXPRESS OR IMPLIED WARRANTIES INCLUDING, WITHOUT LIMITATION, ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE EXPRESSLY DISCLAIMED BY YOU TO US. TO THE EXTENT THAT ANY SUCH WARRANTIES CANNOT BE DISCLAIMED, SUCH WARRANTY IS LIMITED IN DURATION TO THE MINIMUM PERIOD PERMITTED BY LAW.
+### 4\. Disclaimer. 
+You are not expected to provide support for Your Contributions, except to the extent You desire to provide support. Unless required by applicable law or agreed to otherwise in writing: EXCEPT FOR THE EXPRESS WARRANTIES IN SECTION 3, THE CONTRIBUTION IS PROVIDED "AS IS." MORE PARTICULARLY, ALL EXPRESS OR IMPLIED WARRANTIES INCLUDING, WITHOUT LIMITATION, ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE EXPRESSLY DISCLAIMED BY YOU TO US. TO THE EXTENT THAT ANY SUCH WARRANTIES CANNOT BE DISCLAIMED, SUCH WARRANTY IS LIMITED IN DURATION TO THE MINIMUM PERIOD PERMITTED BY LAW.
 
-5\. Consequential Damage Waiver. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT WILL EIHTER PARTY BE LIABLE FOR ANY LOSS OF PROFITS, LOSS OF ANTICIPATED SAVINGS, LOSS OF DATA, INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL AND EXEMPLARY DAMAGES ARISING OUT OF THIS AGREEMENT REGARDLESS OF THE LEGAL OR EQUITABLE THEORY (CONTRACT, TORT OR OTHERWISE) UPON WHICH THE CLAIM IS BASED.
+### 5\. Consequential Damage Waiver. 
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT WILL EIHTER PARTY BE LIABLE FOR ANY LOSS OF PROFITS, LOSS OF ANTICIPATED SAVINGS, LOSS OF DATA, INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL AND EXEMPLARY DAMAGES ARISING OUT OF THIS AGREEMENT REGARDLESS OF THE LEGAL OR EQUITABLE THEORY (CONTRACT, TORT OR OTHERWISE) UPON WHICH THE CLAIM IS BASED.
 
-6\. Miscellaneous
-
+### 6\. Miscellaneous
 6.1 This Agreement will be governed by and construed in accordance with the laws of California excluding its conflicts of law provisions.
 
 6.2 This Agreement sets out the entire agreement between You and Us for Your Contributions to Us and overrides all other agreements or understandings.
@@ -54,13 +55,15 @@ Thank you for your interest in contributing to software projects on the Imperva 
 
 6.5 If any provision of this Agreement is found void and unenforceable, such provision will be replaced to the extent possible with a provision that comes closest to the meaning of the original provision and which is enforceable. The terms and conditions set forth in this Agreement shall apply notwithstanding any failure of essential purpose of this Agreement or any limited remedy to the maximum extent possible under law.
 
+--------------------
+
 **For Submissions on behalf of Corporations or any other Legal Entities:**
 
-**Imperva User Community (“IUC”) Corporate Contributor License Agreement (Corporate)**
+# Imperva User Community (“IUC”) Corporate Contributor License Agreement (Corporate)
 
 Thank you for your interest in contributing to software projects on the Imperva User Commmunity managed by Imperva, Inc. (“We” or “Us”).  This contributor agreement (“Agreement”) documents the rights granted by contributors to Us.  You represent that you have the right to submit and license the contribution(s) under the license hereunder.  Please review, provide the necessary information, and accept the terms. This is a legally binding document, so please read it carefully before agreeing to it. The Agreement may cover more than one software project managed by Us**.**
 
-1\. Definitions:
+### 1\. Definitions:
 
 “You” means the copyright owner or Legal Entity authorized by the copyright owner that is entering into this Agreement with Us.
 
@@ -74,7 +77,7 @@ Thank you for your interest in contributing to software projects on the Imperva 
 
 “Submission Date” means the date on which You Submit a Contribution to Us.
 
-2\. Grant of Rights.
+### 2\. Grant of Rights.
 
 2.1 Copyright License: (a) You retain ownership and title of the copyright in Your Contribution; (b) to the maximum extent permitted by the relevant law, You grant to Us a perpetual, worldwide, non-exclusive, transferable, royalty-free, paid-up, irrevocable license to the Contribution, with the right to sublicense such rights through multiple tiers of sublicensees, to prepare derivatives, reproduce, modify, display, perform and distribute the Contribution.
 
@@ -88,17 +91,19 @@ Thank you for your interest in contributing to software projects on the Imperva 
 
 2.6 Reservation of Rights. Any rights not expressly licensed under this section are expressly reserved by You.
 
-3\. Representation of Contribution.
+### 3\. Representation of Contribution.
 
 3.1 You represent the following: (a) Your Contributions is Your original creation; (b) You have the legal authority to enter into this Agreement. (c) You or Your Affiliates own the Copyright and patent claims covering the Contribution which are required to grant the rights under Section 2. (d) The grant of rights under Section 2 does not violate any grant of rights which You or Your Affiliates have made to third parties or have been granted by third parties.
 
 3.2 Should You wish to submit work that is not Your original creation, You may submit it to Us at gabi.beyo@imperva.com separately from any Contribution, identifying the complete details of the source code, owner, origin, and its license or other restriction (including, but not limited to, related patents, trademarks, and license agreements) of which you are personally aware, and conspicuously marking the work as "Submitted on behalf of a third-party \[named here\] or Submission includes third party code.”
 
-4\. Disclaimer. You are not expected to provide support for Your Contributions, except to the extent You desire to provide support. Unless required by applicable law or agreed to otherwise in writing: EXCEPT FOR THE EXPRESS WARRANTIES IN SECTION 3, THE CONTRIBUTION IS PROVIDED "AS IS." MORE PARTICULARLY, ALL EXPRESS OR IMPLIED WARRANTIES INCLUDING, WITHOUT LIMITATION, ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE EXPRESSLY DISCLAIMED BY YOU TO US. TO THE EXTENT THAT ANY SUCH WARRANTIES CANNOT BE DISCLAIMED, SUCH WARRANTY IS LIMITED IN DURATION TO THE MINIMUM PERIOD PERMITTED BY LAW.
+### 4\. Disclaimer. 
+You are not expected to provide support for Your Contributions, except to the extent You desire to provide support. Unless required by applicable law or agreed to otherwise in writing: EXCEPT FOR THE EXPRESS WARRANTIES IN SECTION 3, THE CONTRIBUTION IS PROVIDED "AS IS." MORE PARTICULARLY, ALL EXPRESS OR IMPLIED WARRANTIES INCLUDING, WITHOUT LIMITATION, ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE EXPRESSLY DISCLAIMED BY YOU TO US. TO THE EXTENT THAT ANY SUCH WARRANTIES CANNOT BE DISCLAIMED, SUCH WARRANTY IS LIMITED IN DURATION TO THE MINIMUM PERIOD PERMITTED BY LAW.
 
-5\. Consequential Damage Waiver. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT WILL EIHTER PARTY BE LIABLE FOR ANY LOSS OF PROFITS, LOSS OF ANTICIPATED SAVINGS, LOSS OF DATA, INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL AND EXEMPLARY DAMAGES ARISING OUT OF THIS AGREEMENT REGARDLESS OF THE LEGAL OR EQUITABLE THEORY (CONTRACT, TORT OR OTHERWISE) UPON WHICH THE CLAIM IS BASED.
+### 5\. Consequential Damage Waiver. 
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT WILL EIHTER PARTY BE LIABLE FOR ANY LOSS OF PROFITS, LOSS OF ANTICIPATED SAVINGS, LOSS OF DATA, INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL AND EXEMPLARY DAMAGES ARISING OUT OF THIS AGREEMENT REGARDLESS OF THE LEGAL OR EQUITABLE THEORY (CONTRACT, TORT OR OTHERWISE) UPON WHICH THE CLAIM IS BASED.
 
-6\. Miscellaneous
+### 6\. Miscellaneous
 
 6.1 This Agreement will be governed by and construed in accordance with the laws of California excluding its conflicts of law provisions.
 
