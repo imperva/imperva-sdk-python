@@ -44,7 +44,7 @@ Version  Development Status               Download
 
 Using imperva-sdk
 =================
-This is just a small sample of what you can do with imperva-sdk. Make sure you check out the `API Reference page <api.html>`_ for more information.
+This is just a small sample of what you can do with imperva-sdk. Make sure you check out the :ref:`API Reference page <api>` for more information.
 
 ::
 
