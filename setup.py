@@ -14,7 +14,7 @@ setup(
     long_description=long_description,
     url='https://imperva.github.io/imperva-sdk-python/',
     author='Imperva Inc.',
-    author_email='support@imperva.com',
+    author_email='opensource-dev@imperva.com',
     license='Proprietary',
     classifiers=[
         'Development Status :: 4 - Beta',
