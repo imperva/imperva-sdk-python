@@ -3,7 +3,7 @@ API Reference
 
 This is a complete reference for the imperva-sdk module.
 
-If you are looking for usage examples, try the :ref:`Examples <examples>` page - it will probably be more helpful.
+If you are looking for usage examples, try the :ref:`Examples <Examples>` page - it will probably be more helpful.
 
 You may also need the official `MX Open API documentation <https://www.imperva.com/Login>`_ for more information. There are many differences between imperva-sdk and the Open API (hopefully for the better) such as parameter names, hierarchy, additional functionality and what not - so pay close attention.
 
