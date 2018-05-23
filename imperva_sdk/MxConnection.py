@@ -742,10 +742,22 @@ class MxConnection(object):
     '''
     :type Name: string
     :param Name: Action Name
+    :type ActionSet: string
+    :param ActionSet: Action Set Name
     :rtype: imperva_sdk.Action.Action
     :return: Action instance of specified action in Action Set.
     '''
     return Action._get_action(connection=self, Name=Name, ActionSet=ActionSet)
+
+  def delete_action(self, Name=None, ActionSet=None):
+    '''
+    :type Name: string
+    :param Name: Action Name
+    :type ActionSet: string
+    :param ActionSet: Action Set Name
+    '''
+    return Action._delete_action(connection=self, Name=Name, ActionSet=ActionSet)
+
     
   def create_action(self, Name=None, ActionSet=None, ActionType=None, Protocol=None, SyslogFacility=None, Host=None, SyslogLogLevel=None, SecondaryPort=None, ActionInterface=None, SecondaryHost=None, Message=None, Port=None, update=False):
     '''

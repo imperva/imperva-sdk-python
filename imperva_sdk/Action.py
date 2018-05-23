@@ -153,4 +153,14 @@ class Action(MxObject):
       
     connection._mx_api('POST', '/conf/actionSets/%s/%s' % (ActionSet, Name), data=json.dumps(body))
     return Action(connection=connection, Name=Name, ActionSet=ActionSet, ActionType=ActionType, Protocol=Protocol, SyslogFacility=SyslogFacility, Host=Host, SyslogLogLevel=SyslogLogLevel, SecondaryPort=SecondaryPort, ActionInterface=ActionInterface, SecondaryHost=SecondaryHost, Message=Message, Port=Port)
-
+  @staticmethod
+  def _delete_action(connection, Name, ActionSet):
+    validate_string(Name=Name)
+    obj = connection.get_action(Name=Name, ActionSet=ActionSet)
+    if obj:
+      connection._mx_api('DELETE', '/conf/actionSets/%s/%s' % (ActionSet, Name))
+      connection._instances.remove(obj)
+      del obj
+    else:
+      raise MxException("Action does not exist")
+    return True    

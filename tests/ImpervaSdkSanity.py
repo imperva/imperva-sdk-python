@@ -177,8 +177,9 @@ class TestImpervaSdkSanity(unittest.TestCase):
     if self.test_parameter_type_global_object:
       mx.delete_parameter_type_global_object(self.ParameterTypeGlobalObject["Name"])
     mx.delete_web_service_custom_policy(self.WebServiceCustomPolicy["Name"])
+    mx.delete_site(**self.Site)
     if self.test_action_set:
-      mx.delete_site(**self.Site)
+      mx.delete_action(ActionSet=self.ActionSet["Name"], Name=self.Action["Name"])
       mx.delete_action_set(self.ActionSet["Name"])
     mx.logout()
 
