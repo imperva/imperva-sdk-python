@@ -7,7 +7,7 @@ No. `imperva-sdk` is an open source project completely external to SecureSphere.
 
 **Q: There is an MX SecureSphere API that isn't available in imperva-sdk, what to do?**
 
-You may contribute to the `imperva-sdk` project and develop it yourself or open an issue in the `GitHub repo <https://github.com/imperva/imperva-sdk-python>`_.
+You may or may not contribute to the `imperva-sdk` project and develop it yourself or open an issue in the `GitHub repo <https://github.com/imperva/imperva-sdk-python>`_.
 
 **Q: Which SecureSphere versions does imperva-sdk work with?**
 
