@@ -102,3 +102,11 @@ class ActionSet(MxObject):
     ''' See :py:meth:`imperva_sdk.MxConnection.create_action`. '''
     return self._connection.create_action(Name=Name, ActionSet=self.Name, ActionType=ActionType, Protocol=Protocol, SyslogFacility=SyslogFacility, Host=Host, SyslogLogLevel=SyslogLogLevel, SecondaryPort=SecondaryPort, ActionInterface=ActionInterface, SecondaryHost=SecondaryHost, Message=Message, Port=Port, update=update)
 
+  def get_action(self, Name):
+    ''' See :py:meth:`imperva_sdk.MxConnection.get_action`. '''
+    return self._connection.get_action(ActionSet=self.Name, Name=Name)
+
+  def delete_action(self, Name):
+    ''' See :py:meth:`imperva_sdk.MxConnection.delete_action`. '''
+    return self._connection.delete_action(ActionSet=self.Name, Name=Name)
+
