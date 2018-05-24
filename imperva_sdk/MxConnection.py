@@ -787,7 +787,10 @@ class MxConnection(object):
     '''
   
     return Action._create_action(connection=self, Name=Name, ActionSet=ActionSet, ActionType=ActionType, Protocol=Protocol, SyslogFacility=SyslogFacility, Host=Host, SyslogLogLevel=SyslogLogLevel, SecondaryPort=SecondaryPort, ActionInterface=ActionInterface, SecondaryHost=SecondaryHost, Message=Message, Port=Port, update=update)
-    
+
+  def _update_action(self, ActionSet=None, Name=None, Parameter=None, Value=None):
+    return Action._update_action(connection=self, ActionSet=ActionSet, Name=Name, Parameter=Parameter, Value=Value)
+
   def get_all_web_service_custom_policies(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.WebServiceCustomPolicy.WebServiceCustomPolicy`

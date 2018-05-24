@@ -99,6 +99,57 @@ class Action(MxObject):
     return self._Port
 
   #
+  # Action setters
+  #
+  @Message.setter
+  def Message(self, Message):
+      if Message != self._Message:
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='message',Value=Message)
+          self._Message = Message
+
+  @SyslogLogLevel.setter
+  def SyslogLogLevel(self, SyslogLogLevel):
+      if SyslogLogLevel != self._SyslogLogLevel:
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='syslogLogLevel',Value=SyslogLogLevel)
+          self._SyslogLogLevel = SyslogLogLevel
+
+  @SyslogFacility.setter
+  def SyslogFacility(self, SyslogFacility):
+      if SyslogFacility != self._SyslogFacility:
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='syslogFacility',Value=SyslogFacility)
+          self._SyslogFacility = SyslogFacility
+  @Host.setter
+  def Host(self, Host):
+      if Host != self._Host:
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='host',Value=Host)
+          self._Host = Host
+  @Port.setter
+  def Port(self, Port):
+      if Port != self._Port:
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='port',Value=Port)
+          self._Port = Port
+  @SecondaryHost.setter
+  def SecondaryHost(self, SecondaryHost):
+      if SecondaryHost != self._SecondaryHost:
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='secondaryHost',Value=SecondaryHost)
+          self._SecondaryHost = SecondaryHost
+  @SecondaryPort.setter
+  def SecondaryPort(self, SecondaryPort):
+      if SecondaryPort != self._SecondaryPort:
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='secondaryPort',Value=SecondaryPort)
+          self._SecondaryPort = SecondaryPort
+  @Protocol.setter
+  def Protocol(self, Protocol):
+      if Protocol != self._Protocol:
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='protocol',Value=Protocol)
+          self._Protocol = Protocol
+  @Port.setter
+  def Port(self, Port):
+      if Port != self._Port:
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='port',Value=Port)
+          self._Port = Port
+
+  #
   # Action internal functions
   #
   @staticmethod
@@ -143,7 +194,10 @@ class Action(MxObject):
         raise MxException("Action '%s' already exists" % Name)
       else:
         # Update existing
-        pass
+        parameters = locals()
+        for cur_key in parameters:
+            if is_parameter.match(cur_key) and cur_key not in ['Name', 'ActionSet', 'ActionType'] and parameters[cur_key] != None:
+                setattr(action, cur_key, parameters[cur_key])
       return action
     body = {'type': ActionType}
     parameters = locals()
@@ -164,3 +218,19 @@ class Action(MxObject):
     else:
       raise MxException("Action does not exist")
     return True    
+
+  @staticmethod
+  def _update_action(connection, ActionSet=None, Name=None, Parameter=None, Value=None):
+    axnObj = connection.get_action(ActionSet=ActionSet, Name=Name)
+    axnDict = dict(axnObj)
+    axnDict[Parameter] = Value
+    body = {}
+    for param in axnDict:
+      if param == 'ActionType':
+        lowparam = 'type'
+      else:
+        func = lambda s: s[:1].lower() + s[1:] if s else ''
+        lowparam = func(param)
+      body[lowparam] = axnDict[param]
+    connection._mx_api('PUT', '/conf/actionSets/%s/%s' % (ActionSet, Name), data=json.dumps(body))
+    return True
