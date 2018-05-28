@@ -214,6 +214,7 @@ class HttpProtocolSignaturesPolicy(MxObject):
     except:
       return None
     if 'sendToCD' not in res: res['sendToCD'] = None
+    if 'exceptions' not in res: res['exceptions'] = []
     # Translate the ApplyTo dictionary to WebService objects
     ApplyToObjects = []
     for cur_apply in res['applyTo']:
@@ -256,7 +257,13 @@ class HttpProtocolSignaturesPolicy(MxObject):
         else:
           raise MxException("Bad 'ApplyTo' parameter")
       if ApplyToNames: body['applyTo'] = ApplyToNames
-      connection._mx_api('POST', '/conf/policies/security/httpProtocolSignaturesPolicies/%s' % Name, data=json.dumps(body))
+      try:
+        connection._mx_api('POST', '/conf/policies/security/httpProtocolSignaturesPolicies/%s' % Name, data=json.dumps(body))
+      except:
+        # We have a version that supports this policy but without exceptions, so this is a little hack for export/import
+        del body['exceptions']
+        Exceptions = []
+        connection._mx_api('POST', '/conf/policies/security/httpProtocolSignaturesPolicies/%s' % Name, data=json.dumps(body))
       return HttpProtocolSignaturesPolicy(connection=connection, Name=Name, SendToCd=SendToCd, DisplayResponsePage=DisplayResponsePage, ApplyTo=ApplyToObjects, Rules=Rules, Exceptions=Exceptions)
   @staticmethod
   def _delete_http_protocol_signatures_policy(connection, Name=None):

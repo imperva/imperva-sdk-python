@@ -78,7 +78,11 @@ class TrpRule(MxObject):
   @staticmethod
   def _get_all_trp_rules(connection, ServerGroup=None, Site=None, WebService=None):
     validate_string(Site=Site, ServerGroup=ServerGroup, WebService=WebService)
-    res = connection._mx_api('GET', '/conf/webServices/%s/%s/%s/trpRules' % (Site, ServerGroup, WebService))
+    try:
+      res = connection._mx_api('GET', '/conf/webServices/%s/%s/%s/trpRules' % (Site, ServerGroup, WebService))
+    except MxExceptionNotFound:
+      # For older versions that don't support trpRules API we return an empty list
+      return []
     try:
       trp_rules_list = res['trpRules']
     except:
