@@ -206,7 +206,7 @@ class TestImpervaSdkSanity(unittest.TestCase):
       if not action.ActionInterface == self.Action["ActionInterface"]: raise Exception("Failed getting action properties")
     if self.test_http_protocol_signatures_policy:
       pol = mx.get_http_protocol_signatures_policy(self.HttpProtocolSignaturesPolicy["Name"])
-      if pol.Exceptions[0]["comment"] != self.HttpProtocolSignaturesPolicy["Exceptions"][0]["comment"]: raise Exception("Failed getting http protocol signatures policy properties")
+      if pol.Rules[0]["action"] != self.HttpProtocolSignaturesPolicy["Rules"][0]["action"]: raise Exception("Failed getting http protocol signatures policy properties")
     if self.test_parameter_type_global_object:
       obj = mx.get_parameter_type_global_object(self.ParameterTypeGlobalObject["Name"])
       if obj.Regex != self.ParameterTypeGlobalObject["Regex"]: raise Exception("Failed getting parameter type configuration global object")
