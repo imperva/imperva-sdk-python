@@ -1283,7 +1283,7 @@ class MxConnection(object):
               dict_discard(obj_dict, Discard)
               tmp_json['global_objects'][object_type].append(obj_dict)
           except:
-            # Some versions don't have all policy APIs
+            # Some versions don't have all Global Object APIs
             pass
     return json.dumps(tmp_json)
 
