@@ -1405,7 +1405,7 @@ class MxConnection(object):
     :param AuthPolicy: Type of Authentication (Basic, Digest, NTLM)
     :type Domain: String
     :param Domain: Domain name for use with NTLM authentication only
-    :return:
+
     '''
     body = {
       'useProxy': UseProxy,
