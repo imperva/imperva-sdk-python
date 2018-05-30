@@ -188,7 +188,7 @@ class WebApplicationCustomPolicy(MxObject):
           'operation': 'add'
         }
         change.append(apply_dict)
-    # Check if we need to add anything
+    # Check if we need to remove anything
     for cur_apply in self._ApplyTo:
       if cur_apply not in ApplyToObjects:
         apply_dict = {
@@ -236,7 +236,7 @@ class WebApplicationCustomPolicy(MxObject):
     if 'followedAction' not in res: res['followedAction'] = ''
     if 'oneAlertPerSession' not in res: res['oneAlertPerSession'] = None
     if 'sendToCD' not in res: res['sendToCD'] = None
-    # Translate the ApplyTo dictionary to WebService objects
+    # Translate the ApplyTo dictionary to WebApplication objects
     ApplyToObjects = []
     for cur_apply in res['applyTo']:
       # Check if we already have the web service instance created, we can use it instead of creating a new one

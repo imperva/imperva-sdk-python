@@ -16,7 +16,6 @@
 
 import unittest
 import imperva_sdk
-import json
 import os
 
 class TestImpervaSdkSanity(unittest.TestCase):
@@ -31,6 +30,7 @@ class TestImpervaSdkSanity(unittest.TestCase):
   test_http_protocol_signatures_policy	= True
   test_parameter_type_global_object	= True
   test_profile		= True
+  test_web_profile_policy = True
 
   Site			= {"Name": "imperva_sdk sanity site"}
   ServerGroup		= {"Name": "imperva_sdk sanity server group", "Site": Site["Name"], "ProtectedIps": [], "OperationMode": "active"}
@@ -73,6 +73,16 @@ class TestImpervaSdkSanity(unittest.TestCase):
                             "Rules": [{u'action': u'block', u'enabled': True, u'name': u'Recommended for Blocking for Web Applications ', u'severity': u'medium', 'followedAction': ActionSet["Name"]}], 
                             "Exceptions": [{u'comment': u'exception comment', u'predicates': [{u'type': u'httpRequestUrl', u'operation': u'atLeastOne', u'values': [u'/login', '/logout'], u'match': u'prefix'}], u'ruleName': u'Recommended for Blocking for Web Applications '}]
                           }
+
+  WebProfilePolicy = {
+    "Name": "imperva_sdk sanity web profile policy",
+    "ApplyTo": [{'siteName': Site["Name"], 'serverGroupName': ServerGroup["Name"], 'webServiceName': WebApplication["WebService"], 'webApplicationName': WebApplication['Name']}],
+    "Rules": [{'name': 'Cookie Injection', 'enabled': True, 'severity': 'medium', 'action': 'none'}],
+    "Exceptions": [{'ruleName': 'Cookie Injection', 'comment': 'Sanity Exception', 'predicates': [{'matchNoOrUnknownUser': False, 'values': ['Sanity'], 'type': 'applicationUser', 'operation': 'atLeastOne'}]}],
+    "ApuConfig": {'SOAP Element Value Length Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Parameter Read Only Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, "Reuse of Expired Session's Cookie": {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'SOAP Element Value Type Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Required Parameter Not Found': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Unauthorized Method for Known URL': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Unknown Parameter': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Parameter Type Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Unauthorized SOAP Action': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Unknown SOAP Element': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Required XML Element Not Found': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Parameter Value Length Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Cookie Injection': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Cookie Tampering': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}},
+    "DisableLearning": False,
+    "DisplayResponsePage": True
+  }
 
   Swagger		= {
                             "swagger": "2.0",
@@ -132,6 +142,7 @@ class TestImpervaSdkSanity(unittest.TestCase):
     if mx.get_parameter_type_global_object(self.ParameterTypeGlobalObject["Name"]): mx.delete_parameter_type_global_object(self.ParameterTypeGlobalObject["Name"])
     if mx.get_web_service_custom_policy(self.WebServiceCustomPolicy["Name"]): mx.delete_web_service_custom_policy(self.WebServiceCustomPolicy["Name"])
     if mx.get_action_set(self.ActionSet["Name"]): mx.delete_action_set(self.ActionSet["Name"])
+    if mx.get_web_profile_policy(self.WebProfilePolicy['Name']): mx.delete_web_profile_policy(self.WebProfilePolicy['Name'])
     mx.logout()
 
     # Create test resources
@@ -160,6 +171,10 @@ class TestImpervaSdkSanity(unittest.TestCase):
     except imperva_sdk.MxExceptionNotFound:
       self.test_profile = False
     mx.create_web_service_custom_policy(**self.WebServiceCustomPolicy)
+    try:
+      mx.create_web_profile_policy(**self.WebProfilePolicy)
+    except imperva_sdk.MxExceptionNotFound:
+      self.test_web_profile_policy = False
     mx.logout()
 
     # Export to JSON
@@ -177,6 +192,8 @@ class TestImpervaSdkSanity(unittest.TestCase):
     if self.test_parameter_type_global_object:
       mx.delete_parameter_type_global_object(self.ParameterTypeGlobalObject["Name"])
     mx.delete_web_service_custom_policy(self.WebServiceCustomPolicy["Name"])
+    if self.test_web_profile_policy:
+      mx.delete_web_profile_policy(self.WebProfilePolicy['Name'])
     mx.delete_site(**self.Site)
     if self.test_action_set:
       mx.delete_action(ActionSet=self.ActionSet["Name"], Name=self.Action["Name"])
@@ -215,6 +232,10 @@ class TestImpervaSdkSanity(unittest.TestCase):
       if len(profile["webProfileUrls"]) != len(self.Swagger["paths"]): raise Exception("Failed getting profile")
     pol = mx.get_web_service_custom_policy(self.WebServiceCustomPolicy["Name"])
     if pol.FollowedAction != self.WebServiceCustomPolicy["FollowedAction"]: raise Exception("Failed getting web service custom policy")
+    if self.test_web_profile_policy:
+      policy = mx.get_web_profile_policy(self.WebProfilePolicy['Name'])
+      if not policy:
+        raise Exception("Failed getting WebProfilePolicy %s" % self.WebProfilePolicy['Name'])
     mx.logout()
 
 if __name__ == '__main__':

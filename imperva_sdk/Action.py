@@ -146,7 +146,7 @@ class Action(MxObject):
   @Port.setter
   def Port(self, Port):
       if Port != self._Port:
-          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='port',Value=Port)
+          self._connection._update_action(ActionSet=self._ActionSet, Name=self._Name, Parameter='port', Value=Port)
           self._Port = Port
 
   #
@@ -196,7 +196,7 @@ class Action(MxObject):
         # Update existing
         parameters = locals()
         for cur_key in parameters:
-            if is_parameter.match(cur_key) and cur_key not in ['Name', 'ActionSet', 'ActionType'] and parameters[cur_key] != None:
+            if is_parameter.match(cur_key) and cur_key not in ['Name', 'ActionSet', 'ActionType', 'ActionInterface'] and parameters[cur_key] != None:
                 setattr(action, cur_key, parameters[cur_key])
       return action
     body = {'type': ActionType}
