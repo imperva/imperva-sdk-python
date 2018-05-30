@@ -136,7 +136,7 @@ class HttpProtocolSignaturesPolicy(MxObject):
           'operation': 'add'
         }
         change.append(apply_dict)
-    # Check if we need to add anything
+    # Check if we need to remove anything
     for cur_apply in self._ApplyTo:
       if cur_apply not in ApplyToObjects:
         apply_dict = {

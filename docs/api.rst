@@ -85,3 +85,9 @@ ParameterTypeGlobalObject Class
    :members:
    :undoc-members:
 
+WebProfilePolicy Class
+======================
+.. autoclass:: imperva_sdk.WebProfilePolicy.WebProfilePolicy
+   :members:
+   :undoc-members:
+

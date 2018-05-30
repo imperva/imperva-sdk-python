@@ -16,6 +16,7 @@ from imperva_sdk.ActionSet                      import *
 from imperva_sdk.Action                         import *
 from imperva_sdk.WebServiceCustomPolicy         import *
 from imperva_sdk.WebApplicationCustomPolicy     import *
+from imperva_sdk.WebProfilePolicy               import *
 from imperva_sdk.HttpProtocolSignaturesPolicy   import *
 from imperva_sdk.ParameterTypeGlobalObject      import *
 from imperva_sdk.ADCUploader                    import *
@@ -905,6 +906,64 @@ class MxConnection(object):
   def _update_web_application_custom_policy(self, Name=None, Parameter=None, Value=None):
     return WebApplicationCustomPolicy._update_web_application_custom_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
+  def get_all_web_profile_policies(self):
+    '''
+    :rtype: `list` of :obj:`imperva_sdk.WebProfilePolicy.WebProfilePolicy`
+    :return: List of all "web profile" policies.
+    '''
+    return WebProfilePolicy._get_all_web_profile_policies(connection=self)
+
+  def get_web_profile_policy(self, Name=None):
+    '''
+    .. note:: Policies with the / character in their name cannot be fetched.
+
+    :type Name: string
+    :param Name: Policy Name
+    :rtype: imperva_sdk.WebProfilePolicy.WebProfilePolicy
+    :return: WebProfilePolicy instance of specified policy.
+    '''
+    return WebProfilePolicy._get_web_profile_policy(connection=self, Name=Name)
+
+  def create_web_profile_policy(self, Name=None, SendToCd=None, DisplayResponsePage=None, DisableLearning=None,
+                                ApplyTo=[], Rules=[], Exceptions=[], ApuConfig={}, update=False):
+    '''
+    Create (or update) a "web Progile" policy.
+
+    >>> policy = mx.create_web_profile_policy(Name="New web profile policy", SendToCd=True, DisplayResponsePage=True, DisableLearning=False, ApplyTo=[{'siteName': 'site name', 'webServiceName': 'advanced web service', 'serverGroupName': 'server group name'}], Rules=[{u'action': u'block', u'enabled': False, u'name': u'Cookie Injection', u'severity': u'medium'}], Exceptions=[{u'comment': u'exception comment', u'predicates': [{u'type': u'httpRequestUrl', u'operation': u'atLeastOne', u'values': [u'/login'], u'match': u'prefix'}], u'ruleName': u'Cookie Injection'}], ApuConfig={'SOAP Element Value Length Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Parameter Read Only Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, "Reuse of Expired Session's Cookie": {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'SOAP Element Value Type Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Required Parameter Not Found': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Unauthorized Method for Known URL': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Unknown Parameter': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Parameter Type Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Unauthorized SOAP Action': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Unknown SOAP Element': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Required XML Element Not Found': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Parameter Value Length Violation': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Cookie Injection': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}, 'Cookie Tampering': {'enabled': True, 'sources': 50, 'occurrences': 50, 'hours': 12}}, update=False)
+
+    :type Name: string
+    :param Name: Policy Name
+    :param SendToCd: See :py:attr:`imperva_sdk.WebProfilePolicy.WebProfilePolicy.SendToCd`
+    :param DisplayResponsePage: See :py:attr:`imperva_sdk.WebProfilePolicy.WebProfilePolicy.DisplayResponsePage`
+    :param DisableLearning: See :py:attr:`imperva_sdk.WebProfilePolicy.WebProfilePolicy.DisableLearning`
+    :param ApplyTo: See :py:attr:`imperva_sdk.WebProfilePolicy.WebProfilePolicy.ApplyTo`
+    :param Rules: See :py:attr:`imperva_sdk.WebProfilePolicy.WebProfilePolicy.Rules`
+    :param Exceptions: See :py:attr:`imperva_sdk.WebProfilePolicy.WebProfilePolicy.Exceptions`
+    :param ApuConfig: See :py:attr:`imperva_sdk.WebProfilePolicy.WebProfilePolicy.ApuConfig`
+    :type update: boolean
+    :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
+
+    :rtype: imperva_sdk.WebProfilePolicy.WebProfilePolicy
+    :return: Created WebProfilePolicy instance.
+    '''
+    return WebProfilePolicy._create_web_profile_policy(connection=self, Name=Name, SendToCd=SendToCd,
+                                                       DisplayResponsePage=DisplayResponsePage, DisableLearning=DisableLearning, ApplyTo=ApplyTo,
+                                                       Rules=Rules, Exceptions=Exceptions, ApuConfig=ApuConfig, update=update)
+
+  def delete_web_profile_policy(self, Name=None):
+    '''
+    Deletes policy.
+
+    If policy does not exist, an exception will be raised. Cannot delete ADC predefined policies.
+
+    :type Name: string
+    :param Name: Policy name.
+    '''
+    return WebProfilePolicy._delete_web_profile_policy(connection=self, Name=Name)
+
+  def _update_web_profile_policy(self, Name=None, Parameter=None, Value=None):
+    return WebProfilePolicy._update_web_profile_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
   def get_all_parameter_type_global_objects(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject`
@@ -1006,14 +1065,6 @@ class MxConnection(object):
     adc_uploader = ADCUploader(self)
     status = adc_uploader.upload_adc_and_wait(path)
     return True if status['success'] == 'true' else False
-    
-  # Internal experimental function
-  def _update_web_profile_policy(self, Name=None, DisableLearningEngine=False):
-    if DisableLearningEngine == True:
-      self._mx_api('PUT', '/waf/profilePolicies/%s/disableLearningEngine' % Name, ApiVersion="experimental")
-      return True
-    else:
-      return False
 
   # Internal function to return MX API swagger JSON
   def _get_mx_swagger(self):
@@ -1269,20 +1320,6 @@ class MxConnection(object):
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
 
-    if 'disable_profile_learning' in json_config:
-      for policy_name in json_config['disable_profile_learning']:
-        log_entry = {
-          'Function': "_update_web_profile_policy",
-          'Policy Name': policy_name
-        }
-        try:
-          self._update_web_profile_policy(Name=policy_name, DisableLearningEngine=True)
-          log_entry['Result'] = "SUCCESS"
-        except Exception as e:
-          log_entry['Result'] = "ERROR"
-          log_entry['Error Message'] = str(e)
-        log.append(log_entry)
-
     return log
 
   def _create_objects_from_json(self, Objects=None, Type=None, update=True):
@@ -1334,3 +1371,4 @@ class MxConnection(object):
           
         log += self._create_tree_from_json(child_objects, parent_object)
     return log
+
