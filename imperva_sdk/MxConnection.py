@@ -1372,3 +1372,51 @@ class MxConnection(object):
         log += self._create_tree_from_json(child_objects, parent_object)
     return log
 
+  def get_mx_proxy_settings(self):
+    '''
+    Gets 'External HTTP Settings' from 'System Definitions'
+
+    :rtype: JSON string
+    :return: External HTTP Settings
+
+    '''
+    response = self._mx_api('GET', '/conf/systemDefinitions/httpProxy')
+
+    if 'useProxy' in response:
+      return response
+    else:
+      return None
+
+  def set_mx_proxy_settings(self, UseProxy=None, Host=None, Port=None, User=None, Password=None, AuthPolicy='Basic', Domain=None):
+    '''
+    Sets 'External HTTP Settings' in 'System Definitions'
+
+    :type UseProxy: boolean
+    :param UseProxy: If UpdateProxy=True the MX will use proxy to access Imperva services
+    :type Host: String
+    :param Host: Hostname or IP of the proxy server
+    :type Port: String
+    :param Port: Port number of the proxy server
+    :type User: String
+    :param User: Username for authentication with the proxy server
+    :type Password: String
+    :param Password: Password of the user used for authentication with the proxy server
+    :type AuthPolicy: String
+    :param AuthPolicy: Type of Authentication (Basic, Digest, NTLM)
+    :type Domain: String
+    :param Domain: Domain name for use with NTLM authentication only
+    :return:
+    '''
+    body = {
+      'useProxy': UseProxy,
+      'host': Host,
+      'port': Port,
+      'user': User,
+      'password': Password,
+      'authPolicy': AuthPolicy,
+      'domain': Domain
+    }
+
+    self._mx_api('PUT', '/conf/systemDefinitions/httpProxy', body=body)
+
+    return True
