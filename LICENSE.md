@@ -1,4 +1,4 @@
-# imperva-sdk-python Community License Agreement
+# Imperva-Community Developer License
 
 IMPORTANT – PLEASE READ THIS LICENSE AGREEMENT (“Agreement”) CAREFULLY BEFORE ATTEMPTING TO DOWNLOAD OR USE ANY SOFTWARE OR OTHER MATERIALS MADE AVAILABLE THROUGH THIS WEBSITE.  This Agreement, effective on the date of its download or other form of delivery (the "Effective Date"), is entered into between Imperva, Inc., a corporation organized under the laws of Delaware, or its affiliate(s) and You or the company which You represent and are authorized to bind ("Licensee" or “You”). To the extent you are entering into this Agreement on behalf of a company, You have the power and authority to bind that company.
 
