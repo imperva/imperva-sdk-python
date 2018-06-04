@@ -1372,7 +1372,7 @@ class MxConnection(object):
         log += self._create_tree_from_json(child_objects, parent_object)
     return log
 
-  def get_mx_proxy_settings(self):
+  def _get_mx_proxy_settings(self):
     '''
     Gets 'External HTTP Settings' from 'System Definitions'
 
@@ -1387,7 +1387,7 @@ class MxConnection(object):
     else:
       return None
 
-  def set_mx_proxy_settings(self, UseProxy=None, Host=None, Port=None, User=None, Password=None, AuthPolicy='Basic', Domain=None):
+  def _set_mx_proxy_settings(self, UseProxy=None, Host=None, Port=None, User=None, Password=None, AuthPolicy='Basic', Domain=None):
     '''
     Sets 'External HTTP Settings' in 'System Definitions'
 
