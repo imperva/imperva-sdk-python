@@ -1417,6 +1417,6 @@ class MxConnection(object):
       'domain': Domain
     }
 
-    self._mx_api('PUT', '/conf/systemDefinitions/httpProxy', body=body)
+    self._mx_api('PUT', '/conf/systemDefinitions/httpProxy', data=json.dumps(body))
 
     return True
