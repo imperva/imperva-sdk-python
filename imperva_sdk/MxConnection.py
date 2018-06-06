@@ -70,6 +70,8 @@ class MxConnection(object):
   :param Password: MX server UI user password (default='***REMOVED***')
   :type FirstTime: boolean
   :param FirstTime: Set to True if 'admin' password is not set (First Time Password). Not available on physical appliances. (default=False)
+  :type Unlicensed: boolean
+  :param Unlicensed: Set to True if the MX did not apply a license yet (default=False)
   :type Debug: boolean
   :param Debug: Print API HTTP debug information (default=False)
   :rtype: imperva_sdk.MxConnection
@@ -78,7 +80,7 @@ class MxConnection(object):
   .. note:: All of the MX objects that are retrieved using the API are stored in the context of the MxConnection instance to prevent redundant API calls.
   '''
 
-  def __init__(self, Host=None, Port=DefaultMxPort, Username=DefaultMxUsername, Password=DefaultMxPassword, FirstTime=False, Debug=False):
+  def __init__(self, Host=None, Port=DefaultMxPort, Username=DefaultMxUsername, Password=DefaultMxPassword, FirstTime=False, Unlicensed=False, Debug=False):
     # 
     # We store all of the MX objects in '_instances' to prevent duplicate objects and redundant API calls.
     # Because the ID of the object is inconsistent (e.g. can have the same server group names under different sites),
@@ -118,16 +120,20 @@ class MxConnection(object):
       except:
         raise MxException("Failed authenticating to MX")
     del self.__Headers['Authorization']
-    try:
-      response = self._mx_api('GET', '/administration/version')
-      self.__Version = response['serverVersion']
-    except:
+    if Unlicensed:
       self.__Version = "Unknown"
-    try:
-      response = self._mx_api('GET', '/administration/challenge')
-      self.__Challenge = response['challenge']
-    except:
       self.__Challenge = "Unknown"
+    else:
+      try:
+        response = self._mx_api('GET', '/administration/version')
+        self.__Version = response['serverVersion']
+      except:
+        self.__Version = "Unknown"
+      try:
+        response = self._mx_api('GET', '/administration/challenge')
+        self.__Challenge = response['challenge']
+      except:
+        self.__Challenge = "Unknown"
     self.__IsAuthenticated = True
 
   #
