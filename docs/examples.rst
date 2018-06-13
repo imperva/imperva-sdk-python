@@ -16,7 +16,7 @@ Example 1 - Build MX configuration from code
   cert_file = '/work/tmp/mycert.pem' # PEM file containing both public and private certificate information
 
   # Create site tree
-  mx = imperva_sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="1qa2ws3ed") # Connect to MX
+  mx = imperva_sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="password") # Connect to MX
   site = mx.create_site("%s site" % app_name) # Create Site
   sg = site.create_server_group("%s server group" % app_name, OperationMode='active') # Create Server Group
   ws = sg.create_web_service("%s web service" % app_name) # Create Web Service
@@ -41,7 +41,7 @@ Example 2 - Create user defined copies of all ADC predefined policies
 
   import imperva_sdk
 
-  mx = imperva_sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="1qa2ws3ed") # Connect to MX
+  mx = imperva_sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="password") # Connect to MX
 
   for pol in mx.get_all_web_service_custom_policies():
     # We'll use the "user defined" prefix to differentiate between user and predefined policies
@@ -274,7 +274,7 @@ In v12.3 SecureSphere added APIs to manage the application profile. `imperva_sdk
   import json
 
   # Connect to MX
-  mx = imperva_sdk.MxConnection("10.100.73.151", Password="Barbapapa12")
+  mx = imperva_sdk.MxConnection("10.100.73.151", Password="password")
 
   # Load swagger file as JSON
   with open('swagger_file.json', 'r') as fd:
