@@ -22,7 +22,7 @@ class TestImpervaSdkSanity(unittest.TestCase):
 
   host			= None
   user			= "admin"
-  password		= "***REMOVED***"
+  password		= "1qa2ws3ed"
   port			= 8083
   license		= ""
 

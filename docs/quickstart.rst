@@ -37,7 +37,7 @@ imperva-sdk downloads:
 =======  ===============================  ==============================================================
 Version  Development Status               Download
 =======  ===============================  ==============================================================
-0.1.9    Latest in progress               :download:`imperva-sdk-latest-wip.tar.gz </imperva-sdk-latest-wip.tar.gz>`
+0.1.8    Latest in progress               :download:`imperva-sdk-latest-wip.tar.gz </imperva-sdk-latest-wip.tar.gz>`
 0.1.8    Latest stable package            :download:`imperva-sdk-latest.tar.gz </imperva-sdk-latest.tar.gz>`
 0.1.9    Beta                             :download:`imperva-sdk-0.1.9.tar.gz </imperva-sdk-0.1.9.tar.gz>`
 0.1.8    Beta                             :download:`imperva-sdk-0.1.8.tar.gz </imperva-sdk-0.1.8.tar.gz>`
@@ -53,7 +53,7 @@ This is just a small sample of what you can do with imperva-sdk. Make sure you c
   import imperva_sdk
 
   # Create a connection to the MX
-  mx = imperva_sdk.MxConnection(Host="10.1.11.100", Port=8083, Username="admin", Password="***REMOVED***")
+  mx = imperva_sdk.MxConnection(Host="10.1.11.100", Port=8083, Username="admin", Password="1qa2ws3ed")
 
   # Display MX version
   mx.Version

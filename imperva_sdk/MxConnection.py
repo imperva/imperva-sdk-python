@@ -24,7 +24,7 @@ from imperva_sdk.ADCUploader                    import *
 ApiVersion = "v1"
 DefaultMxPort = 8083
 DefaultMxUsername = "admin"
-DefaultMxPassword = "***REMOVED***"
+DefaultMxPassword = "1qa2ws3ed"
 ConnectionTimeout = 300
 
 #
@@ -67,7 +67,7 @@ class MxConnection(object):
   :type Username: string
   :param Username: MX server UI user name (default='admin')
   :type Password: string
-  :param Password: MX server UI user password (default='***REMOVED***')
+  :param Password: MX server UI user password (default='1qa2ws3ed')
   :type FirstTime: boolean
   :param FirstTime: Set to True if 'admin' password is not set (First Time Password). Not available on physical appliances. (default=False)
   :type Unlicensed: boolean
