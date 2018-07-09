@@ -8,7 +8,7 @@ class TestServerGroup(unittest.TestCase):
 
   host                  = None
   user                  = "admin"
-  password              = "***REMOVED***"
+  password              = "password"
   port                  = 8083
 
   SiteName = "TestServerGroup site"

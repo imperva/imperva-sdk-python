@@ -16,7 +16,7 @@ Example 1 - Build MX configuration from code
   cert_file = '/work/tmp/mycert.pem' # PEM file containing both public and private certificate information
 
   # Create site tree
-  mx = imperva_sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="password") # Connect to MX
+  mx = imperva_sdk.MxConnection(Host="10.0.0.1", Username="admin", Password="password") # Connect to MX
   site = mx.create_site("%s site" % app_name) # Create Site
   sg = site.create_server_group("%s server group" % app_name, OperationMode='active') # Create Server Group
   ws = sg.create_web_service("%s web service" % app_name) # Create Web Service
@@ -41,7 +41,7 @@ Example 2 - Create user defined copies of all ADC predefined policies
 
   import imperva_sdk
 
-  mx = imperva_sdk.MxConnection(Host="10.100.46.138", Username="admin", Password="password") # Connect to MX
+  mx = imperva_sdk.MxConnection(Host="10.0.0.1", Username="admin", Password="password") # Connect to MX
 
   for pol in mx.get_all_web_service_custom_policies():
     # We'll use the "user defined" prefix to differentiate between user and predefined policies
@@ -69,8 +69,8 @@ Example 3 - Copy configuration from one MX to another
   import imperva_sdk
 
   # Open connection to MXs (use default credentials)
-  source_mx = imperva_sdk.MxConnection("10.1.11.57")
-  dest_mx = imperva_sdk.MxConnection("10.100.46.138")
+  source_mx = imperva_sdk.MxConnection("10.0.0.1")
+  dest_mx = imperva_sdk.MxConnection("10.0.0.2")
 
   # Export configuration from source MX
   source_export = source_mx.export_to_json()
@@ -100,7 +100,7 @@ We user the `Discard` parameter to remove policy `MatchCriteria` and `ApplyTo` i
   import pprint
 
   # Connect to MX and export configuration
-  mx = imperva_sdk.MxConnection("10.100.46.138")
+  mx = imperva_sdk.MxConnection("10.0.0.1")
   export = mx.export_to_json(Discard=['MatchCriteria', 'ApplyTo'])
 
   # Pretty print the JSON with pprint
@@ -117,7 +117,7 @@ This JSON can be modified and manipulated to fit different MXs and deployments.
     {
       u'Challenge': u'k+hvfY+Vgv8a',
       u'ExportTime': u'2017-04-18 12:06:36',
-      u'Host': u'10.100.46.138',
+      u'Host': u'10.0.0.1',
       u'SdkVersion': u'0.1.4',
       u'Version': u'12.0.0.41'
     },
@@ -253,7 +253,7 @@ Note that to use this JSON you need certain prerequisites -
   json_text = json.dumps(json_dict)
 
   # Connect to MX and import configuration
-  mx = imperva_sdk.MxConnection("10.100.46.138")
+  mx = imperva_sdk.MxConnection("10.0.0.1")
   log = mx.import_from_json(json_text)
 
   # Go over log and print errors
@@ -274,7 +274,7 @@ In v12.3 SecureSphere added APIs to manage the application profile. `imperva_sdk
   import json
 
   # Connect to MX
-  mx = imperva_sdk.MxConnection("10.100.73.151", Password="password")
+  mx = imperva_sdk.MxConnection("10.0.0.1", Password="password")
 
   # Load swagger file as JSON
   with open('swagger_file.json', 'r') as fd:

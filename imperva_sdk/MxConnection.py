@@ -24,7 +24,7 @@ from imperva_sdk.ADCUploader                    import *
 ApiVersion = "v1"
 DefaultMxPort = 8083
 DefaultMxUsername = "admin"
-DefaultMxPassword = "***REMOVED***"
+DefaultMxPassword = "password"
 ConnectionTimeout = 300
 
 #
@@ -67,7 +67,7 @@ class MxConnection(object):
   :type Username: string
   :param Username: MX server UI user name (default='admin')
   :type Password: string
-  :param Password: MX server UI user password (default='***REMOVED***')
+  :param Password: MX server UI user password (default='password')
   :type FirstTime: boolean
   :param FirstTime: Set to True if 'admin' password is not set (First Time Password). Not available on physical appliances. (default=False)
   :type Unlicensed: boolean
@@ -1159,7 +1159,7 @@ class MxConnection(object):
     >>> pprint.pprint(json.loads(export))
     {u'metadata': {u'Challenge': u'k+hvfY+Vgv8a',
                    u'ExportTime': u'2017-04-12 13:39:10',
-                   u'Host': u'10.100.46.138',
+                   u'Host': u'10.0.0.1',
                    u'SdkVersion': u'0.1.4',
                    u'Version': u'12.0.0.41'},
      u'policies': {},
@@ -1300,8 +1300,8 @@ class MxConnection(object):
     .. note:: The function only imports objects that are implemented in imperva_sdk. It is not the entire MX configuration.
 
     >>> # Copy site tree (without policies) from one MX to another
-    >>> mx1 = imperva_sdk.MxConnection("10.1.11.57")
-    >>> mx2 = imperva_sdk.MxConnection("10.100.46.138")
+    >>> mx1 = imperva_sdk.MxConnection("10.0.0.1")
+    >>> mx2 = imperva_sdk.MxConnection("10.0.0.2")
     >>> export = mx1.export_to_json(Discard=['policies'])
     >>> log = mx2.import_from_json(export)
     >>> log[0]
