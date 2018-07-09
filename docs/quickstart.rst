@@ -53,7 +53,7 @@ This is just a small sample of what you can do with imperva-sdk. Make sure you c
   import imperva_sdk
 
   # Create a connection to the MX
-  mx = imperva_sdk.MxConnection(Host="10.1.11.100", Port=8083, Username="admin", Password="***REMOVED***")
+  mx = imperva_sdk.MxConnection(Host="10.0.0.1", Port=8083, Username="admin", Password="password")
 
   # Display MX version
   mx.Version
