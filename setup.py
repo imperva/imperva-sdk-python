@@ -9,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='imperva-sdk',
-    version='0.1.8',
+    version='0.1.9',
     description='SDK for Imperva SecureSphere Open API',
     long_description=long_description,
     url='https://imperva.github.io/imperva-sdk-python/',
