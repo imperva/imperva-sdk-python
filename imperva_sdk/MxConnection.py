@@ -58,7 +58,7 @@ class MxConnection(object):
   This is your starting point for using imperva_sdk.
 
     >>> import imperva_sdk
-    >>> mx = imperva_sdk.MxConnection(Host="192.168.0.1", Username="admin", Password="admin12")
+    >>> mx = imperva_sdk.MxConnection(Host="192.168.0.1", Username="admin", Password="password")
 
   :type Host: string
   :param Host: MX server IP Address or Host name
