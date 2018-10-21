@@ -20,6 +20,8 @@ from imperva_sdk.WebProfilePolicy               import *
 from imperva_sdk.HttpProtocolSignaturesPolicy   import *
 from imperva_sdk.ParameterTypeGlobalObject      import *
 from imperva_sdk.ADCUploader                    import *
+from imperva_sdk.AssessmentScan import *
+
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1066,6 +1068,32 @@ class MxConnection(object):
 
   def _update_http_protocol_signatures_policy(self, Name=None, Parameter=None, Value=None):
     return HttpProtocolSignaturesPolicy._update_http_protocol_signatures_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  #
+  #-----------------------------------------------------------------------------
+  # DB Assessment Scans
+  #-----------------------------------------------------------------------------
+
+  def get_assessment_scan(self, Name=None):
+    return AssessmentScan._get_assessment_scan(connection=self, Name=Name)
+
+  def get_all_assessment_scans(self):
+    return AssessmentScan._get_all_assessment_scans(connection=self)
+
+  def create_assessment_scan(self, Name=None, Type=None, PreTest=None, PolicyTags=[], DbConnectionTags=[],
+    ApplyTo=[], Scheduling=None, update=False):
+    return AssessmentScan._create_assessment_scan(connection=self,Name=Name,Type=Type, PreTest=PreTest, PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
+                                                  ApplyTo=ApplyTo, Scheduling=Scheduling, update=update)
+
+  def update_assessment_scan(self, Name=None, Parameter=None, Value=None):
+    return AssessmentScan._update_assessment_scan(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  def delete_assessment_scan(self, Name=None):
+    return AssessmentScan._delete_assessment_scan(connection=self,Name=Name)
+
+  ##################################################################################
+
+
 
   def _upload_adc_content(self, path):
     adc_uploader = ADCUploader(self)
