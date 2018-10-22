@@ -20,6 +20,8 @@ from imperva_sdk.WebProfilePolicy               import *
 from imperva_sdk.HttpProtocolSignaturesPolicy   import *
 from imperva_sdk.ParameterTypeGlobalObject      import *
 from imperva_sdk.ADCUploader                    import *
+from imperva_sdk.AgentMonitoringRule            import *
+from imperva_sdk.DataEnrichmentPolicy           import *
 from imperva_sdk.DBAuditReport                  import *
 
 ApiVersion = "v1"
@@ -971,6 +973,22 @@ class MxConnection(object):
   def _update_web_profile_policy(self, Name=None, Parameter=None, Value=None):
     return WebProfilePolicy._update_web_profile_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
+#
+# -----------------------------------------------------------------------------
+# Data Enrichment Policies
+# -----------------------------------------------------------------------------
+#
+  def get_all_data_enrichment_policies(self):
+    return DataEnrichmentPolicy._get_all_data_enrichment_policies(connection=self)
+  def get_data_enrichment_policy(self, Name=None):
+    return DataEnrichmentPolicy._get_data_enrichment_policy(connection=self, Name=Name)
+  def create_data_enrichment_policy(self, Name=None, Type=None,Rules=[], MatchCriteria=[], ApplyTo=[]):
+    return DataEnrichmentPolicy._create_data_enrichment_policy(connection=self, Name=Name, Type=Type, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
+  def update_data_enrichment_policy(self, Name=None, Rules=[], MatchCriteria=[], ApplyTo=[]):
+    return DataEnrichmentPolicy._update_data_enrichment_policy(connection=self, Name=Name, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
+  def delete_data_enrichment_policy(self, Name=None):
+    return DataEnrichmentPolicy._delete_data_enrichment_policy(connection=self, Name=Name)
+
   def get_all_parameter_type_global_objects(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject`
@@ -1048,7 +1066,7 @@ class MxConnection(object):
     :param Exceptions: See :py:attr:`imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy.Exceptions`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
-
+  
     :rtype: imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy
     :return: Created HttpProtocolSignaturesPolicy instance.
     '''
@@ -1146,6 +1164,50 @@ class MxConnection(object):
       if cur_item.startswith('get_all_') and cur_item.endswith('_global_objects') and cur_item != 'get_all_global_objects':
         types.append(cur_item.replace('get_all_','').replace('_global_objects',''))
     return types
+
+  def get_all_agent_monitoring_rules_global_objects(self):
+    '''
+    :rtype: `list` of :obj:`imperva_sdk.AgentMonitoringRule.AgentMonitoringRule`
+    :return: List of all agent monitoring rules.
+    '''
+    return AgentMonitoringRule._get_all_agent_monitoring_rules(connection=self)
+
+  def get_agent_monitoring_rule(self, Name):
+    '''
+    :type Name: string
+    :param Name: Rule Name
+    :rtype: imperva_sdk.AgentMonitoringRule.AgentMonitoringRule
+    :return: AgentMonitoringRule instance of specified policy.
+    '''
+    return AgentMonitoringRule._get_agent_monitoring_rules_by_name(connection=self, Name=Name)
+
+  def _update_agent_monitoring_rule(self, Name=None, Parameter=None, Value=None):
+    """
+
+    :param Name: Rule name (string)
+    :param Parameter: The parameter in the rule need to update (string)
+    :param Value: The value of the parameter
+    :return: True on success or exception on failure
+    """
+    return AgentMonitoringRule._update_agent_monitoring_rule(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  def create_agent_monitoring_rules_global_object(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[], update=False):
+    """
+
+    :param Name: Rule name (string)
+    :param PolicyType: The type of the policy (string)
+    :param Action: The followed action of the rule (string)
+    :param CustomPredicates: Policy Match Criteria in API JSON format
+    :param update: If `update=True` and the resource already exists, update and return the existing resource.
+                  If `update=False` (default) and the resource exists, an exception will be raised.
+    :return:  AgentMonitoringRule instance
+    """
+    return AgentMonitoringRule._create_agent_monitoring_rule(connection=self,
+                                                             Name=Name,
+                                                             PolicyType=PolicyType,
+                                                             Action=Action,
+                                                             CustomPredicates=CustomPredicates,
+                                                             update=update)
 
   def get_all_global_objects(self):
     ''' Returns all global objects by type '''
