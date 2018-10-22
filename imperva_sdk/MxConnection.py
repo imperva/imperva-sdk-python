@@ -20,6 +20,7 @@ from imperva_sdk.WebProfilePolicy               import *
 from imperva_sdk.HttpProtocolSignaturesPolicy   import *
 from imperva_sdk.ParameterTypeGlobalObject      import *
 from imperva_sdk.ADCUploader                    import *
+from imperva_sdk.DataEnrichmentPolicy           import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -970,6 +971,22 @@ class MxConnection(object):
   def _update_web_profile_policy(self, Name=None, Parameter=None, Value=None):
     return WebProfilePolicy._update_web_profile_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
+#
+# -----------------------------------------------------------------------------
+# Data Enrichment Policies
+# -----------------------------------------------------------------------------
+#
+  def get_all_data_enrichment_policies(self):
+    return DataEnrichmentPolicy._get_all_data_enrichment_policies(connection=self)
+  def get_data_enrichment_policy(self, Name=None):
+    return DataEnrichmentPolicy._get_data_enrichment_policy(connection=self, Name=Name)
+  def create_data_enrichment_policy(self, Name=None, Type=None,Rules=[], MatchCriteria=[], ApplyTo=[]):
+    return DataEnrichmentPolicy._create_data_enrichment_policy(connection=self, Name=Name, Type=Type, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
+  def update_data_enrichment_policy(self, Name=None, Rules=[], MatchCriteria=[], ApplyTo=[]):
+    return DataEnrichmentPolicy._update_data_enrichment_policy(connection=self, Name=Name, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
+  def delete_data_enrichment_policy(self, Name=None):
+    return DataEnrichmentPolicy._delete_data_enrichment_policy(connection=self, Name=Name)
+	
   def get_all_parameter_type_global_objects(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject`
