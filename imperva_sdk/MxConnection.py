@@ -23,6 +23,7 @@ from imperva_sdk.ADCUploader                    import *
 from imperva_sdk.AgentMonitoringRule            import *
 from imperva_sdk.DataEnrichmentPolicy           import *
 from imperva_sdk.DBAuditReport                  import *
+from imperva_sdk.LookupDataSet                  import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1164,6 +1165,43 @@ class MxConnection(object):
       if cur_item.startswith('get_all_') and cur_item.endswith('_global_objects') and cur_item != 'get_all_global_objects':
         types.append(cur_item.replace('get_all_','').replace('_global_objects',''))
     return types
+  def get_all_lookup_data_set_global_objects(self):
+    '''
+    :rtype: `list` of :obj:`imperva_sdk.LookupDataSet.LookupDataSet`
+    :return: List of all lookup data sets.
+    '''
+    return LookupDataSet._get_all_lookup_data_set(connection=self)
+
+  def get_lookup_data_set(self, Name):
+    '''
+    :type Name: string
+    :param Name: data set Name
+    :rtype: imperva_sdk.LookupDataSet.LookupDataSet
+    :return: LookupDataSet instance of specified data set.
+    '''
+    return LookupDataSet._get_lookup_data_set_by_name(connection=self, Name=Name)
+
+  def _update_lookup_data_set(self, Name=None, Parameter=None, Value=None):
+    """
+
+    :param Name: Data set name (string)
+    :param Parameter: The parameter to update (string)
+    :param Value: The value of the parameter to update
+    :return: True on success or exception on failure
+    """
+    return LookupDataSet._update_lookup_data_set(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  def create_lookup_data_set_global_object(self, Name=None, Records=[], Columns=[], update=False):
+    """
+
+    :param Name: Data set name (string)
+    :param Records: The records in the data set
+    :param Columns: the columns of the data set
+    :param update: If `update=True` and the data set already exists, update and return the existing data set.
+                  If `update=False` (default) and the data set exists, an exception will be raised.
+    :return:  LookupDataSet instance
+    """
+    return LookupDataSet._create_lookup_data_set(connection=self, Name=Name, Records=Records, Columns=Columns, update=update)
 
   def get_all_agent_monitoring_rules_global_objects(self):
     '''
