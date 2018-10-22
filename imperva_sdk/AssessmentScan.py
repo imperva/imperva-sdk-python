@@ -3,7 +3,7 @@
 import json
 from imperva_sdk.core import *
 
-# Assessment Scan - Iris - new file - still under construction - not for run
+# Assessment Scan - Iris
 
 class AssessmentScan(MxObject):
     '''
@@ -40,7 +40,7 @@ class AssessmentScan(MxObject):
         self._Scheduling = Scheduling
 
 
-    # Override the MxObject __iter__ function to print ApplyTo Assessment Scan objects as dictionaries
+    # Override the MxObject __iter__ function to print ApplyTo Assessment Scan objects
     def __iter__(self):
         iters = {}
         for field in dir(self):
@@ -89,16 +89,6 @@ class AssessmentScan(MxObject):
     def ApplyTo(self):
         '''
         DB Connections that scan is applied to (list of :py:class:`imperva_sdk.DbConnection` objects). Can be in API JSON format or DBConnection objects
-
-        >>> scan.ApplyTo = [{'siteName': 'site name', 'serverGroupName': 'server group name', 'dbServiceName': 'db service name', 'dbConnectionName': 'DB Connection name'}]
-        >>> scan.ApplyTo
-        [<imperva_sdk 'DbConnection' Object - 'DB connection name'>]
-
-        * siteName - Name of the site (string)
-        * serverGroupName - Name of the server group (string)
-        * dbServiceName - Name of the DB service (string)
-        * dbConnectionName - Name of the DB Connection (string)
-
         '''
         return self._ApplyTo
 
@@ -123,16 +113,6 @@ class AssessmentScan(MxObject):
         if PreTest != self._PreTest:
             self._connection._update_assessment_scan(Name=self._Name, Parameter='preTest', Value=PreTest)
             self._PreTest = PreTest
-
-    # TODO for all parameters
-
-    def sortList(ListItems):
-        tmp1 = []
-        for cur_item in ListItems:
-            tmp1.append(''.join(sorted(str(cur_item).replace('u', ''))))
-        tmp1 = sorted(tmp1)
-        return tmp1
-
 
 
     @PolicyTags.setter
