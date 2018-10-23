@@ -6,18 +6,27 @@ import json
 class LookupDataSet(MxObject):
   '''
   MX global object lookup dataset Class
-  #TODO orf - update usage examples
-  >>> rule = mx.get_agent_monitoring_rule("testRuleFromSDK")
-  >>> rule.PolicyType
-  'db-agents-monitoring-rule'
-  >>> rule.Action = 'Exclude'
-  >>> rule.CustomPredicates
-  [{'predicate-type': 'event-type', 'operation': 'different-than', 'values': ['logout', 'query', 'login']}, {'predicate-type': 'data-type', 'operation': 'exclude-all', 'values': ['Address']}]
-  >>> # Create user defined copy of policy
-  >>> rule_dict = dict(rule)
-  >>> rule_dict['Name'] = 'user defined - %s' % rule_dict['Name']
-  >>> mx.create_agent_monitoring_rules_global_object(**rule_dict)
-  <imperva_sdk 'AgentMonitoringRule' Object - 'user defined - testRuleFromSDK'>
+
+  >>> dataSet = mx.get_lookup_data_set("testDataSet")
+  >>> dataSet.records
+  [{'Organizational Account': 'dfgdfgdfgdfg', 'DB Account': '345345345'},
+  {'Organizational Account': 'bbb1', 'DB Account': 'aaa1'},
+  {'Organizational Account': '345345', 'DB Account': 'dfgdfg'},
+  {'Organizational Account': '1111111111111', 'DB Account': 'ssssssss'}]
+
+  Note that for setting Records the columns name must be exist
+  >>> dataSet.Records = [{'Organizational Account': 'dfgdfgdfgdfg', 'DB Account': '345345345'}]
+
+  Note that we don't support in updating/add columns. Only creating new dataset
+  >>> dataSet.Columns
+  [{'name': 'DB Account', 'key': True}, {'name': 'Organizational Account', 'key': False}]
+
+  >>> # Create user defined copy of dataset
+  >>> dataset_dict = dict(dataSet)
+  >>> dataset_dict['Name'] = 'user defined - %s' % dataset_dict['Name']
+  >>> dataset_dict['update'] = True
+  >>> mx._create_lookup_data_set(**dataset_dict)
+  <imperva_sdk 'LookupDataSet' Object - 'user defined - testDataSet'>
 
   '''
 
@@ -104,16 +113,27 @@ class LookupDataSet(MxObject):
       }
       self._connection._update_lookup_data_set(Name=self._Name, Parameter='Records', Value=record_dict)
 
+    # There's always at least one column and a single key in a dataset
+    resColumns = self._connection._mx_api('GET', '/conf/dataSets/%s/columns' % self._Name)
+    keyColStr = [col['name'] for col in resColumns["columns"] if col["key"] is True][0]
+
     # Check if we need to remove anything
     deleteRecords = []
     for record in self._Records:
       if record not in Records:
         deleteRecords.append(record)
 
-    if deleteRecords:
+    # remove only records we didn't update before
+    deleteKeys = set([record[keyColStr] for record in deleteRecords])
+    addKeys = set([record[keyColStr] for record in addRecords])
+
+    reallyDeleteRecordsKeys = deleteKeys - addKeys
+    reallyDeleteRecords = [record for record in deleteRecords if record[keyColStr] in reallyDeleteRecordsKeys]
+
+    if reallyDeleteRecords:
       record_dict = {
         'action': "delete",
-        'records': deleteRecords
+        'records': reallyDeleteRecords
       }
       self._connection._update_lookup_data_set(Name=self._Name, Parameter='Records', Value=record_dict)
 
