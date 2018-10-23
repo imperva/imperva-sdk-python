@@ -22,6 +22,7 @@ from imperva_sdk.ParameterTypeGlobalObject      import *
 from imperva_sdk.ADCUploader                    import *
 from imperva_sdk.AgentMonitoringRule            import *
 from imperva_sdk.DataEnrichmentPolicy           import *
+from imperva_sdk.DBAuditReport                  import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1094,6 +1095,68 @@ class MxConnection(object):
   def _get_mx_swagger(self):
     return self._mx_api('GET', '/internal/swagger', ApiVersion="experimental")
 
+  def get_all_report_types(self):
+    ''' Returns all available report types '''
+    types = []
+    for cur_item in dir(self):
+      if cur_item.startswith('get_all_') and cur_item.endswith('_reports') and cur_item != 'get_all_report_types':
+        types.append(cur_item.replace('get_all_','').replace('_reports',''))
+    return types
+
+  def get_all_db_audit_reports(self):
+    '''
+    :rtype: `list` of :obj:`imperva_sdk.AgentMonitoringRule.AgentMonitoringRule`
+    :return: List of all agent monitoring rules.
+    '''
+    return DBAuditReport._get_all_db_audit_reports(connection=self)
+
+  def get_db_audit_report(self, Name):
+    '''
+    :type Name: string
+    :param Name: Rule Name
+    :rtype: imperva_sdk.AgentMonitoringRule.AgentMonitoringRule
+    :return: AgentMonitoringRule instance of specified policy.
+    '''
+    return DBAuditReport._get_db_audit_report_by_name(connection=self, Name=Name)
+
+  def _update_db_audit_report(self, Name=None, Parameter=None, Value=None):
+    """
+
+    :param Name: Rule name (string)
+    :param Parameter: The parameter in the rule need to update (string)
+    :param Value: The value of the parameter
+    :return: True on success or exception on failure
+    """
+    return DBAuditReport._update_db_audit_report(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  def create_db_audit_report(self, Name=None, ReportFormat=None, ReportId = None, Columns=[],
+                              Filters=[], Policies=[],  Sorting=[], TimeFrame={}, Scheduling=[], update=False):
+    """
+
+    :param Name: Rule name (string)
+    :param ReportFormat: The format of the report (string)
+    :param ReportId: The ID of the report (string)
+    :param Columns: A list of columns in the report (list)
+    :param Filters: The filters applied to the report (list)
+    :param Policies: The policies applied to the report (list)
+    :param Sorting: The sorting criterion (list)
+    :param TimeFrame: The time frame of the report (dict)
+    :param Scheduling: The scheduling to determine the time the report will run
+    :param update: If `update=True` and the report already exists, update and return the existing report.
+                   If `update=False` (default) and the report exists, an exception will be raised.
+    :return: DBAuditReport instance
+    """
+    return DBAuditReport._create_db_audit_report(connection=self,
+                                                 Name=Name,
+                                                 ReportFormat=ReportFormat,
+                                                 ReportId=ReportId,
+                                                 Columns=Columns,
+                                                 Filters=Filters,
+                                                 Policies=Policies,
+                                                 Sorting=Sorting,
+                                                 TimeFrame=TimeFrame,
+                                                 Scheduling=Scheduling,
+                                                 update=update)
   def get_all_global_object_types(self):
     ''' Returns all available global_object types '''
     types = []
@@ -1353,6 +1416,22 @@ class MxConnection(object):
           except:
             # Some versions don't have all Global Object APIs
             pass
+    tmp_json['reports'] = {}
+    if 'reports' not in Discard:
+      object_types = self.get_all_report_types()
+      for object_type in object_types:
+        tmp_json['reports'][object_type] = []
+        if object_type not in Discard:
+          try:
+            get_pol_func = getattr(self, 'get_all_' + object_type + '_reports')
+            objects = get_pol_func()
+            for cur_object in objects:
+              obj_dict = dict(cur_object)
+              dict_discard(obj_dict, Discard)
+              tmp_json['reports'][object_type].append(obj_dict)
+          except:
+            # Some versions don't have all Global Object APIs
+            pass
     return json.dumps(tmp_json)
 
   def import_from_json(self, Json=None, update=True):
@@ -1387,6 +1466,7 @@ class MxConnection(object):
     log += self._create_tree_from_json(Dict={'sites': json_config['sites']}, ParentObject=self, update=update)
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
+    log += self._create_objects_from_json(Objects=json_config['reports'], Type="report", update=update)
 
     return log
 
