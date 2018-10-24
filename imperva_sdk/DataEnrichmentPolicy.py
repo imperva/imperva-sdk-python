@@ -2,6 +2,7 @@
 
 import json
 from imperva_sdk.core import *
+import sys
 
 class DataEnrichmentPolicy(MxObject):
     '''
@@ -20,20 +21,21 @@ class DataEnrichmentPolicy(MxObject):
 
     @staticmethod
     def _exists(connection=None, Name=None):
-        for cur_obj in connection._instances:
-            if type(cur_obj).__name__ == 'DataEnrichmentPolicy':
-                if cur_obj.Name == Name:
-                    return cur_obj
+        for curr_obj in connection._instances:
+            if type(curr_obj).__name__ == 'DataEnrichmentPolicy':
+                if curr_obj.Name == Name:
+                    return curr_obj
         return None
     #
-    def __init__(self, connection=None, Name=None,
+    def __init__(self, connection=None, Name=None, PolicyType=None,
         Rules = [],
         MatchCriteria=[], ApplyTo=[]):
 
         super(DataEnrichmentPolicy, self).__init__(connection=connection, Name=Name)
 
-        self._Rules                = MxList(Rules)
-        self._MatchCriteria          = MxList(MatchCriteria)
+        self._Type = PolicyType
+        self._Rules = MxList(Rules)
+        self._MatchCriteria = MxList(MatchCriteria)
         self._ApplyTo = MxList(ApplyTo)
 
     # Method: __iter__
@@ -46,17 +48,7 @@ class DataEnrichmentPolicy(MxObject):
         for field in dir(self):
             if is_parameter.match(field):
                 variable_function = getattr(self, field)
-                if field == 'ApplyTo':
-                    ApplyToNames = []
-                    for cur_apply in variable_function:
-                        ApplyToNames.append({
-                           u'siteName'          : cur_apply._Site,
-                           u'serverGroupName'   : cur_apply._ServerGroup,
-                           u'dbServiceName'     : cur_apply._DbService,
-                           u'webApplicationName': cur_apply.Name})
-                    iters[field] = ApplyToNames
-                else:
-                    iters[field] = variable_function
+                iters[field] = variable_function
         for x, y in iters.items():
             yield x, y
 
@@ -67,6 +59,8 @@ class DataEnrichmentPolicy(MxObject):
     #
     @property
     def Name                  (self): return self._Name
+    @property
+    def Type                  (self): return self._Type
     @property
     def Rules                 (self): return self._Rules
     @property
@@ -79,18 +73,24 @@ class DataEnrichmentPolicy(MxObject):
     #
     @staticmethod
     def _get_all_data_enrichment_policies(connection):
-        policy_names = connection._mx_api('GET', '/conf/dataEnrichmentPolicies')
-        policy_objects = []
-        for policy_name in policy_names:
+        try:
+            policyNames = connection._mx_api('GET', '/conf/dataEnrichmentPolicies')
+        except:
+            raise MxException("Failed getting Data Enrichment Policies")
+        policyObjects = []
+        for policyName in policyNames:
             # Bug - we have policies with '/' character that don't work with the API...
-            if '/' in policy_name:
-                print("%s cannot be used by the API. Skipping..." % policy_name)
+            if '/' in policyName:
+                print("%s cannot be used by the API. Skipping..." % policyName)
                 continue
-#            pol_obj = connection.get_db_audit_policy(Name=policy_name)
-#            if pol_obj:
-#                policy_objects.append(pol_obj)
-#        return policy_objects
-        return policy_names
+            try:
+                policy = connection._mx_api('GET', '/conf/dataEnrichmentPolicies/' + policyName)
+            except:
+                raise MxException("Failed getting Data Enrichment Policy '%s'" % policyName)
+            policyObj = DataEnrichmentPolicy(connection=connection, Name=policy['policy-name'], PolicyType=policy['policy-type'], Rules=policy['rules'],
+                                    MatchCriteria=policy['match-criteria'], ApplyTo=policy['apply-to'])
+            policyObjects.append(policyObj)
+        return policyObjects
 
     @staticmethod
     def _get_data_enrichment_policy(connection, Name=None):
@@ -101,27 +101,26 @@ class DataEnrichmentPolicy(MxObject):
         try:
             policy = connection._mx_api('GET', '/conf/dataEnrichmentPolicies/' + Name)
         except:
-            policy = None
-        if(policy):
-            return policy
-        return DataEnrichmentPolicy(connection=connection, Name=Name)
+            raise MxException("Failed getting Data Enrichment Policy '%s'" % Name)
+
+        return DataEnrichmentPolicy(connection=connection, Name=policy['policy-name'], PolicyType=policy['policy-type'], Rules=policy['rules'],
+                                    MatchCriteria=policy['match-criteria'], ApplyTo=policy['apply-to'])
+
 
     @staticmethod
-    def _create_data_enrichment_policy(connection, Name=None, Type=None, Rules=[], MatchCriteria=[], ApplyTo=[]):
+    def _create_data_enrichment_policy(connection, Name=None, PolicyType=None, Rules=[], MatchCriteria=[], ApplyTo=[]):
         validate_string(Name=Name)
-
         body = {}
         body['policy-name'] = Name
-        body['policy-type'] = Type
+        body['policy-type'] = PolicyType
         body['apply-to'] = ApplyTo
         body['rules'] = Rules
-        body['predicates'] = MatchCriteria
+        body['match-criteria'] = MatchCriteria
 
         # print(json.dumps(body))
-        # sys.exit()
 
         connection._mx_api('POST', '/conf/dataEnrichmentPolicies/%s' % slash(Name), data=json.dumps(body))
-        return DataEnrichmentPolicy(connection=connection, Name=Name, ApplyTo=ApplyTo, MatchCriteria=MatchCriteria)
+        return DataEnrichmentPolicy(connection=connection, Name=Name, PolicyType=PolicyType, ApplyTo=ApplyTo, Rules=Rules, MatchCriteria=MatchCriteria)
 
 
     @staticmethod
