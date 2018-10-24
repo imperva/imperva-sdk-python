@@ -32,7 +32,7 @@ class DataEnrichmentPolicy(MxObject):
 
         super(DataEnrichmentPolicy, self).__init__(connection=connection, Name=Name)
 
-        self._Type = PolicyType
+        self._PolicyType = PolicyType
         self._Rules = MxList(Rules)
         self._MatchCriteria = MxList(MatchCriteria)
         self._ApplyTo = MxList(ApplyTo)
@@ -59,7 +59,7 @@ class DataEnrichmentPolicy(MxObject):
     @property
     def Name                  (self): return self._Name
     @property
-    def Type                  (self): return self._Type
+    def PolicyType                  (self): return self._PolicyType
     @property
     def Rules                 (self): return self._Rules
     @property
