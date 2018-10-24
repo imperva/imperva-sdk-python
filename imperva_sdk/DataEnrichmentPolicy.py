@@ -2,7 +2,6 @@
 
 import json
 from imperva_sdk.core import *
-import sys
 
 class DataEnrichmentPolicy(MxObject):
     '''
