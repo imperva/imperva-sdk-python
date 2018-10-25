@@ -25,6 +25,7 @@ from imperva_sdk.DataEnrichmentPolicy           import *
 from imperva_sdk.DBAuditReport                  import *
 from imperva_sdk.AssessmentScan                 import *
 from imperva_sdk.LookupDataSet                  import *
+from imperva_sdk.DBConnection                  import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -990,6 +991,38 @@ class MxConnection(object):
     return DataEnrichmentPolicy._update_data_enrichment_policy(connection=self, Name=Name, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
   def delete_data_enrichment_policy(self, Name=None):
     return DataEnrichmentPolicy._delete_data_enrichment_policy(connection=self, Name=Name)
+
+#
+# -----------------------------------------------------------------------------
+# DB connection
+# -----------------------------------------------------------------------------
+#
+  def get_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None):
+    return DBConnection._get_db_connection(connection=self, SiteName=SiteName,
+                                           ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName)
+  def get_all_db_connections(self, SiteName=None, ServerGroupName=None, ServiceName=None):
+    return DBConnection._get_all_db_connections(Connection=self, SiteName=SiteName,
+                                             ServerGroupName=ServerGroupName, ServiceName=ServiceName)
+
+  def create_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None,
+                              UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
+                              ServerName=None, UserMapping=None, ConnectionString=None, ServiceDirectory=None,
+                              TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None):
+    return DBConnection._create_db_connection(connection=self, SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName,
+                              UserName=UserName, Password=Password, Port=Port, IpAddress=IpAddress, DbName=DbName,
+                              ServerName=ServerName, UserMapping=UserMapping, ConnectionString=ConnectionString, ServiceDirectory=ServiceDirectory,
+                              TnsAdmin=TnsAdmin, HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName)
+  def update_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None,
+                              UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
+                              ServerName=None, UserMapping=None, ConnectionString=None, ServiceDirectory=None,
+                              TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None):
+    return DBConnection._update_db_connection(connection=self, SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName,
+                              UserName=UserName, Password=Password, Port=Port, IpAddress=IpAddress, DbName=DbName,
+                              ServerName=ServerName, UserMapping=UserMapping, ConnectionString=ConnectionString, ServiceDirectory=ServiceDirectory,
+                              TnsAdmin=TnsAdmin, HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName)
+  def delete_db_connection(self):
+    return DBConnection_delete_db_connection(connection=self, siteName=None, serverGroupName=None, serviceName=None, connectionName=None)
+
 
   def get_all_parameter_type_global_objects(self):
     '''
