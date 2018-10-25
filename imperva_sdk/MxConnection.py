@@ -25,6 +25,7 @@ from imperva_sdk.DataEnrichmentPolicy           import *
 from imperva_sdk.DBAuditReport                  import *
 from imperva_sdk.AssessmentScan                 import *
 from imperva_sdk.LookupDataSet                  import *
+from imperva_sdk.TableGroup                     import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1133,25 +1134,25 @@ class MxConnection(object):
 
   def get_all_db_audit_reports(self):
     '''
-    :rtype: `list` of :obj:`imperva_sdk.AgentMonitoringRule.AgentMonitoringRule`
-    :return: List of all agent monitoring rules.
+    :rtype: `list` of :obj:`imperva_sdk.DBAuditReport.DBAuditReport`
+    :return: List of all db audit reports.
     '''
     return DBAuditReport._get_all_db_audit_reports(connection=self)
 
   def get_db_audit_report(self, Name):
     '''
     :type Name: string
-    :param Name: Rule Name
-    :rtype: imperva_sdk.AgentMonitoringRule.AgentMonitoringRule
-    :return: AgentMonitoringRule instance of specified policy.
+    :param Name: The report Name
+    :rtype: imperva_sdk.DBAuditReport.DBAuditReport
+    :return: DBAuditReport instance of specified report.
     '''
     return DBAuditReport._get_db_audit_report_by_name(connection=self, Name=Name)
 
   def _update_db_audit_report(self, Name=None, Parameter=None, Value=None):
     """
 
-    :param Name: Rule name (string)
-    :param Parameter: The parameter in the rule need to update (string)
+    :param Name: The report name (string)
+    :param Parameter: The parameter in the report need to update (string)
     :param Value: The value of the parameter
     :return: True on success or exception on failure
     """
@@ -1161,7 +1162,7 @@ class MxConnection(object):
                               Filters=[], Policies=[],  Sorting=[], TimeFrame={}, Scheduling=[], update=False):
     """
 
-    :param Name: Rule name (string)
+    :param Name: The report name (string)
     :param ReportFormat: The format of the report (string)
     :param ReportId: The ID of the report (string)
     :param Columns: A list of columns in the report (list)
@@ -1192,6 +1193,13 @@ class MxConnection(object):
       if cur_item.startswith('get_all_') and cur_item.endswith('_global_objects') and cur_item != 'get_all_global_objects':
         types.append(cur_item.replace('get_all_','').replace('_global_objects',''))
     return types
+
+  #
+  # -----------------------------------------------------------------------------
+  # Lookup data sets
+  # -----------------------------------------------------------------------------
+  #
+
   def get_all_lookup_data_set_global_objects(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.LookupDataSet.LookupDataSet`
@@ -1229,6 +1237,60 @@ class MxConnection(object):
     :return:  LookupDataSet instance
     """
     return LookupDataSet._create_lookup_data_set(connection=self, Name=Name, Records=Records, Columns=Columns, update=update)
+
+  #
+  # -----------------------------------------------------------------------------
+  # Table Groups
+  # -----------------------------------------------------------------------------
+  #
+
+  def get_all_table_groups_global_objects(self):
+    '''
+    :rtype: `list` of :obj:`imperva_sdk.TableGroup.TableGroup`
+    :return: List of all table groups.
+    '''
+    return TableGroup._get_all_table_groups(connection=self)
+
+
+  def get_table_group(self, Name, IsSensitive=None, ServiceTypes=[]):
+    """
+    :param Name: Table group name (string)
+    :param IsSensitive: Is the table group sesitive (boolean)
+    :param ServiceTypes: a list of the servie types (list)
+    :return: TableGroup instance of specified table group.
+    """
+    return TableGroup._get_table_group_by_name(connection=self, Name=Name, IsSensitive=IsSensitive,
+                                               ServiceTypes=ServiceTypes)
+
+  def create_table_groups_global_object(self, Name=None, IsSensitive=None, DataType=None, ServiceTypes=[], Records=[],
+                                       update=False):
+    """
+    :param Name: Table group name (string)
+    :param IsSensitive: Is the table group sesitive (boolean)
+    :param DataType: the data type of the table group (string)
+    :param ServiceTypes: a list of the servie types (list)
+    :param Records: a list of records (list)
+    :param update: update: If `update=True` and the resource already exists, update and return the existing resource.
+                  If `update=False` (default) and the resource exists, an exception will be raised.
+    :return: TableGroup instance
+    """
+    return TableGroup._create_table_group(connection=self, Name=Name, IsSensitive=IsSensitive, DataType=DataType,
+                                          ServiceTypes=ServiceTypes, Records=Records, update=update)
+
+  def _update_table_group(self, Name=None, Parameter=None, Value=None):
+    """
+    :param Name: Table group name (string)
+    :param Parameter: The parameter in the table needed to be updated (string)
+    :param Value: The value of the parameter
+    :return: True on success or exception on failure
+    """
+    return TableGroup._update_table_group(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  #
+  # -----------------------------------------------------------------------------
+  # Agent Monitoring Rules
+  # -----------------------------------------------------------------------------
+  #
 
   def get_all_agent_monitoring_rules_global_objects(self):
     '''
