@@ -26,6 +26,8 @@ from imperva_sdk.DBAuditReport                  import *
 from imperva_sdk.AssessmentScan                 import *
 from imperva_sdk.LookupDataSet                  import *
 from imperva_sdk.TableGroup                     import *
+from imperva_sdk.ClassificationScan             import *
+
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1112,6 +1114,28 @@ class MxConnection(object):
     return AssessmentScan._delete_assessment_scan(connection=self,Name=Name)
 
   ##################################################################################
+
+  #
+  #-----------------------------------------------------------------------------
+  # DB Classification Scans
+  #-----------------------------------------------------------------------------
+
+  def get_classification_scan(self, Name=None):
+    return ClassificationScan._get_classification_scan(connection=self, Name=Name)
+
+  def get_all_classification_scans(self):
+    return ClassificationScan._get_all_classification_scans(connection=self)
+
+  def create_classification_scan(self, Name=None, ProfileName=None, ApplyTo=[], Scheduling=None, update=False):
+    return ClassificationScan._create_classification_scan(connection=self,Name=Name, ProfileName=ProfileName,
+                                                  ApplyTo=ApplyTo, Scheduling=Scheduling, update=update)
+
+  def update_classification_scan(self, Name=None, Parameter=None, Value=None):
+    return ClassificationScan._update_classification_scan(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  def delete_classification_scan(self, Name=None):
+    return ClassificationScan._delete_classification_scan(connection=self,Name=Name)
+
 
 
 
