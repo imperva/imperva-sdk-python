@@ -27,7 +27,9 @@ from imperva_sdk.AssessmentScan                 import *
 from imperva_sdk.LookupDataSet                  import *
 from imperva_sdk.DBConnection                   import *
 from imperva_sdk.TableGroup                     import *
+from imperva_sdk.DbSecurityPolicy               import *
 from imperva_sdk.ClassificationScan             import *
+
 
 
 ApiVersion = "v1"
@@ -978,6 +980,31 @@ class MxConnection(object):
 
   def _update_web_profile_policy(self, Name=None, Parameter=None, Value=None):
     return WebProfilePolicy._update_web_profile_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  #
+  #-----------------------------------------------------------------------------
+  # DB Security Policies
+  #-----------------------------------------------------------------------------
+  #
+  def get_all_db_security_policies(self):
+    return DbSecurityPolicy._get_all_db_security_policies(connection=self)
+
+  def get_db_security_policy(self, Name=None):
+    return DbSecurityPolicy._get_db_security_policy(connection=self, Name=Name)
+
+  def create_db_security_policy(self, Name=None, PolicyType=None, Enabled=None, Severity=None, Action=None, FollowedAction=None,
+                                   ApplyTo=None, AutoApply=None, MatchCriteria=None, update=False):
+
+    return DbSecurityPolicy._create_db_security_policy(connection=self, Name=Name, PolicyType=PolicyType, Enabled=Enabled,
+                                                             Severity=Severity, Action=Action, FollowedAction=FollowedAction,
+                                                             ApplyTo=ApplyTo, AutoApply=AutoApply, MatchCriteria=MatchCriteria, update=update)
+
+  def delete_db_security_policy(self, Name=None):
+    return DbSecurityPolicy._delete_db_security_policy(connection=self, Name=Name)
+
+  def _update_db_security_policy(self, Name=None, Parameter=None, Value=None):
+    return DbSecurityPolicy._update_db_security_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
 
 #
 # -----------------------------------------------------------------------------
