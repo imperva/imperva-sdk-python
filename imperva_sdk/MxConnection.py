@@ -1686,6 +1686,22 @@ class MxConnection(object):
           except:
             # Some versions don't have all Global Object APIs
             pass
+    tmp_json['reports'] = {}
+    if 'reports' not in Discard:
+      object_types = self.get_all_report_types()
+      for object_type in object_types:
+        tmp_json['reports'][object_type] = []
+        if object_type not in Discard:
+          try:
+            get_pol_func = getattr(self, 'get_all_' + object_type + '_reports')
+            objects = get_pol_func()
+            for cur_object in objects:
+              obj_dict = dict(cur_object)
+              dict_discard(obj_dict, Discard)
+              tmp_json['reports'][object_type].append(obj_dict)
+          except:
+            # Some versions don't have all Global Object APIs
+            pass
     return json.dumps(tmp_json)
 
   def import_from_json(self, Json=None, update=True):
@@ -1720,6 +1736,7 @@ class MxConnection(object):
     log += self._create_tree_from_json(Dict={'sites': json_config['sites']}, ParentObject=self, update=update)
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
+    log += self._create_objects_from_json(Objects=json_config['reports'], Type="report", update=update)
 
     return log
 
