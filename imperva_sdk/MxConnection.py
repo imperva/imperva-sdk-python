@@ -25,8 +25,12 @@ from imperva_sdk.DataEnrichmentPolicy           import *
 from imperva_sdk.DBAuditReport                  import *
 from imperva_sdk.AssessmentScan                 import *
 from imperva_sdk.LookupDataSet                  import *
+from imperva_sdk.DBConnection                   import *
 from imperva_sdk.TableGroup                     import *
 from imperva_sdk.DbSecurityPolicy               import *
+from imperva_sdk.ClassificationScan             import *
+
+
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1018,6 +1022,38 @@ class MxConnection(object):
   def delete_data_enrichment_policy(self, Name=None):
     return DataEnrichmentPolicy._delete_data_enrichment_policy(connection=self, Name=Name)
 
+#
+# -----------------------------------------------------------------------------
+# DB connection
+# -----------------------------------------------------------------------------
+#
+  def get_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None):
+    return DBConnection._get_db_connection(connection=self, SiteName=SiteName,
+                                           ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName)
+  def get_all_db_connections(self, SiteName=None, ServerGroupName=None, ServiceName=None):
+    return DBConnection._get_all_db_connections(Connection=self, SiteName=SiteName,
+                                             ServerGroupName=ServerGroupName, ServiceName=ServiceName)
+
+  def create_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None,
+                              UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
+                              ServerName=None, UserMapping=None, ConnectionString=None, ServiceDirectory=None,
+                              TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None):
+    return DBConnection._create_db_connection(connection=self, SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName,
+                              UserName=UserName, Password=Password, Port=Port, IpAddress=IpAddress, DbName=DbName,
+                              ServerName=ServerName, UserMapping=UserMapping, ConnectionString=ConnectionString, ServiceDirectory=ServiceDirectory,
+                              TnsAdmin=TnsAdmin, HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName)
+  def update_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None,
+                              UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
+                              ServerName=None, UserMapping=None, ConnectionString=None, ServiceDirectory=None,
+                              TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None):
+    return DBConnection._update_db_connection(connection=self, SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName,
+                              UserName=UserName, Password=Password, Port=Port, IpAddress=IpAddress, DbName=DbName,
+                              ServerName=ServerName, UserMapping=UserMapping, ConnectionString=ConnectionString, ServiceDirectory=ServiceDirectory,
+                              TnsAdmin=TnsAdmin, HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName)
+  def delete_db_connection(self):
+    return DBConnection_delete_db_connection(connection=self, siteName=None, serverGroupName=None, serviceName=None, connectionName=None)
+
+
   def get_all_parameter_type_global_objects(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.ParameterTypeGlobalObject.ParameterTypeGlobalObject`
@@ -1138,6 +1174,28 @@ class MxConnection(object):
     return AssessmentScan._delete_assessment_scan(connection=self,Name=Name)
 
   ##################################################################################
+
+  #
+  #-----------------------------------------------------------------------------
+  # DB Classification Scans
+  #-----------------------------------------------------------------------------
+
+  def get_classification_scan(self, Name=None):
+    return ClassificationScan._get_classification_scan(connection=self, Name=Name)
+
+  def get_all_classification_scans(self):
+    return ClassificationScan._get_all_classification_scans(connection=self)
+
+  def create_classification_scan(self, Name=None, ProfileName=None, ApplyTo=[], Scheduling=None, update=False):
+    return ClassificationScan._create_classification_scan(connection=self,Name=Name, ProfileName=ProfileName,
+                                                  ApplyTo=ApplyTo, Scheduling=Scheduling, update=update)
+
+  def update_classification_scan(self, Name=None, Parameter=None, Value=None):
+    return ClassificationScan._update_classification_scan(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  def delete_classification_scan(self, Name=None):
+    return ClassificationScan._delete_classification_scan(connection=self,Name=Name)
+
 
 
 
