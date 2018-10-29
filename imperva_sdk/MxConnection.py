@@ -27,6 +27,7 @@ from imperva_sdk.AssessmentScan                 import *
 from imperva_sdk.LookupDataSet                  import *
 from imperva_sdk.TableGroup                     import *
 from imperva_sdk.ClassificationScan             import *
+from imperva_sdk.ClassificationProfile          import *
 
 
 ApiVersion = "v1"
@@ -1135,6 +1136,39 @@ class MxConnection(object):
 
   def delete_classification_scan(self, Name=None):
     return ClassificationScan._delete_classification_scan(connection=self,Name=Name)
+
+
+  #
+  #-----------------------------------------------------------------------------
+  # DB Classification Profile
+  #-----------------------------------------------------------------------------
+
+  def get_classification_profile(self, Name=None):
+    return ClassificationProfile._get_classification_profile(connection=self, Name=Name)
+
+  def get_all_classification_profiles(self):
+    return ClassificationProfile._get_all_classification_profiles(connection=self)
+
+  def create_classification_profile(self, Name=None, SiteName=None, DataTypes=[], AutoAcceptResults=None,
+                                    ScanViewsAndSynonyms=None, SaveSampleData=None, DataSampleAccuracy=None,
+                                         ScanSystemSchemas=None, DbsAndSchemasUsage=None, DbsAndSchemas=[],
+                                          ExcludeTablesAndColumns=[], DelayBetweenQueries=None,
+                                         NumberOfConcurrentDbConnection=None, update=False):
+    return ClassificationProfile._create_classification_profile(connection=self, Name=Name, SiteName=SiteName,
+                                         DataTypes=DataTypes, AutoAcceptResults=AutoAcceptResults,
+                                         ScanViewsAndSynonyms=ScanViewsAndSynonyms, SaveSampleData=SaveSampleData,
+                                         DataSampleAccuracy=DataSampleAccuracy, ScanSystemSchemas=ScanSystemSchemas,
+                                         DbsAndSchemasUsage=DbsAndSchemasUsage, DbsAndSchemas=DbsAndSchemas,
+                                         ExcludeTablesAndColumns=ExcludeTablesAndColumns,
+                                         DelayBetweenQueries=DelayBetweenQueries,
+                                         NumberOfConcurrentDbConnection=NumberOfConcurrentDbConnection, update=update)
+
+
+  def update_classification_profile(self, Name=None, Parameter=None, Value=None):
+    return ClassificationProfile._update_classification_profile(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  def delete_classification_profile(self, Name=None):
+    return ClassificationProfile._delete_classification_profile(connection=self, Name=Name)
 
 
 
