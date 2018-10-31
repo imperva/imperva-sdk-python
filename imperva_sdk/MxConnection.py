@@ -25,6 +25,7 @@ from imperva_sdk.DataEnrichmentPolicy           import *
 from imperva_sdk.DBAuditReport                  import *
 from imperva_sdk.AssessmentScan                 import *
 from imperva_sdk.LookupDataSet                  import *
+from imperva_sdk.DataType                       import *
 from imperva_sdk.DBConnection                   import *
 from imperva_sdk.TableGroup                     import *
 from imperva_sdk.DbSecurityPolicy               import *
@@ -1279,10 +1280,56 @@ class MxConnection(object):
     return types
 
   #
-  # -----------------------------------------------------------------------------
-  # Lookup data sets
-  # -----------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
+  #           Data type
+  #-----------------------------------------------------------------------------
+
+  def get_all_data_type_global_objects(self):
+    '''
+    :rtype: `list` of :obj:`imperva_sdk.DataType.DataType`
+    :return: List of all data types.
+    '''
+    return DataType._get_all_data_type(connection=self)
+
+  def get_data_type(self, Name):
+    '''
+    :type Name: string
+    :param Name: data type Name
+    :rtype: imperva_sdk.DataType.DataType
+    :return: DataType instance of specified data type.
+    '''
+    return DataType._get_data_type_by_name(connection=self, Name=Name)
+
+  def create_data_type_global_object(self, Name=None, IsSensitive=True, Rules=[], TargetTableGroupName=None,
+                                     update=False):
+    """
+    :param Name: Data type name (string)
+    :param IsSensitive: True if data type is sensitive (boolean)
+    :param Rules: the rules of the data type (list)
+    :param TargetTableGroupName: The name of the target table group (string)
+    :param update: If `update=True` and the data type already exists, update and return the existing data type.
+                  If `update=False` (default) and the data type exists, an exception will be raised.
+    :return:  DataType instance
+    """
+    return DataType._create_data_type(connection=self, Name=Name, IsSensitive=IsSensitive, Rules=Rules,
+                                      TargetTableGroupName=TargetTableGroupName, update=update)
+
+  def _update_data_type(self, Name=None, Parameter=None, Value=None):
+    """
+
+    :param Name: Data type name (string)
+    :param Parameter: The parameter to update (string)
+    :param Value: The value of the parameter to update
+    :return: True on success or exception on failure
+    """
+    return DataType._update_data_type(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+
   #
+  #-----------------------------------------------------------------------------
+  #           Lookup data set
+  #-----------------------------------------------------------------------------
+
 
   def get_all_lookup_data_set_global_objects(self):
     '''

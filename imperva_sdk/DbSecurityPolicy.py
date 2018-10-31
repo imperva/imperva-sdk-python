@@ -186,7 +186,7 @@ class DbSecurityPolicy(MxObject):
       return obj_exists
     try:
       res = connection._mx_api('GET', '/conf/dbSecurityPolicies/%s' % Name)
-      print(res)
+      # print(res)
     except:
       return None
     # Translate the ApplyTo dictionary to WebService objects
