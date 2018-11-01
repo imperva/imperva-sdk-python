@@ -25,7 +25,7 @@ class LookupDataSet(MxObject):
   >>> dataset_dict = dict(dataSet)
   >>> dataset_dict['Name'] = 'user defined - %s' % dataset_dict['Name']
   >>> dataset_dict['update'] = True
-  >>> mx._create_lookup_data_set(**dataset_dict)
+  >>> mx._create_lookup_dam_data_set(**dataset_dict)
   <imperva_sdk 'LookupDataSet' Object - 'user defined - testDataSet'>
 
   '''
