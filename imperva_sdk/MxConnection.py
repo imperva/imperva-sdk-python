@@ -10,6 +10,8 @@ from imperva_sdk.Site                           import *
 from imperva_sdk.ServerGroup                    import *
 from imperva_sdk.WebService                     import *
 from imperva_sdk.WebApplication                 import *
+from imperva_sdk.DbService                      import *
+from imperva_sdk.DbApplication                  import *
 from imperva_sdk.KrpRule                        import *
 from imperva_sdk.TrpRule                        import *
 from imperva_sdk.ActionSet                      import *
@@ -20,6 +22,7 @@ from imperva_sdk.WebProfilePolicy               import *
 from imperva_sdk.HttpProtocolSignaturesPolicy   import *
 from imperva_sdk.ParameterTypeGlobalObject      import *
 from imperva_sdk.ADCUploader                    import *
+from imperva_sdk.DbAuditPolicy                  import *
 from imperva_sdk.AgentMonitoringRule            import *
 from imperva_sdk.DataEnrichmentPolicy           import *
 from imperva_sdk.DBAuditReport                  import *
@@ -149,6 +152,10 @@ class MxConnection(object):
         self.__Challenge = "Unknown"
     self.__IsAuthenticated = True
 
+
+  def Debug(self, value):
+    self.__Debug = value
+
   #
   # MX Connection Parameters
   #  
@@ -173,8 +180,11 @@ class MxConnection(object):
   def logout(self):
     ''' Close connection to MX '''
     if self.IsAuthenticated:
-      self._mx_api('DELETE', '/auth/session')
-      self.__IsAuthenticated = False
+      try:
+        self._mx_api('DELETE', '/auth/session')
+      except:
+        pass
+    self.__IsAuthenticated = False
     for mx_object in self._instances:
       del mx_object
     self._instances = []
@@ -236,7 +246,7 @@ class MxConnection(object):
     elif response.status_code == 404:
       raise MxExceptionNotFound("404 - API URL not found")
     else:
-      error_message = "Unknown Error"
+      error_message = "Unknown Error (response code = %d)" % response.status_code
       try:
         response_json = json.loads(response.text)
         error_message = response_json['errors']
@@ -403,6 +413,37 @@ class MxConnection(object):
     :param Site: Site name
     '''
     return WebService._delete_web_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
+
+  def get_all_db_services(self, ServerGroup=None, Site=None):
+    return DbService._get_all_db_services(connection=self, ServerGroup=ServerGroup, Site=Site)
+
+  def get_db_service(self, Name=None, ServerGroup=None, Site=None):
+    return DbService._get_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
+    
+  def create_db_service(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], SecurityPolicies=[], AuditPolicies=[], DbServiceType=None, update=False):
+    return DbService._create_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbConnections=DbConnections, SecurityPolicies=SecurityPolicies, AuditPolicies=AuditPolicies, DbServiceType=DbServiceType, update=update)
+
+  # Create - the part of post children. It's only needed to create the db mappings, but I leave the parameters the same for simplicity
+  def create_db_service_pc(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, SecurityPolicies=[], AuditPolicies=[], update=False):
+    return DbService._create_db_service_pc(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbConnections=DbConnections, SecurityPolicies=SecurityPolicies, AuditPolicies=AuditPolicies, DbServiceType=DbServiceType, update=update)
+
+  def delete_db_service(self, Name=None, ServerGroup=None, Site=None):
+    return DbService._delete_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
+
+  def get_all_db_applications(self, ServerGroup=None, Site=None, DbService=None):
+    return DbApplication._get_all_db_applications(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService)
+    
+  def get_db_application(self, Name=None, ServerGroup=None, Site=None, DbService=None):
+    return DbApplication._get_db_application(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService, Name=Name)
+    
+  def create_db_application(self, Name=None, DbService=None, ServerGroup=None, Site=None, TableGroupValues=None, update=False):
+    return DbApplication._create_db_application(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService, Name=Name, TableGroupValues=TableGroupValues, update=update)
+
+  def delete_db_application(self, Name=None, DbService=None, ServerGroup=None, Site=None):
+    return DbApplication._delete_db_application(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService, Name=Name)
+
+#  def _update_db_application(self, DbService=None, ServerGroup=None, Site=None, Name=None, Parameter=None, Value=None):
+#    return DbApplication._update_db_application(connection=self, DbService=DbService, ServerGroup=ServerGroup, Site=Site, Name=Name, Parameter=Parameter, Value=Value)
 
   def get_all_web_applications(self, ServerGroup=None, Site=None, WebService=None):
     '''
@@ -925,6 +966,23 @@ class MxConnection(object):
   def _update_web_application_custom_policy(self, Name=None, Parameter=None, Value=None):
     return WebApplicationCustomPolicy._update_web_application_custom_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
+  #
+  #-----------------------------------------------------------------------------
+  # DB Audit Policies
+  #-----------------------------------------------------------------------------
+  #
+  def get_all_db_audit_policies(self):
+    return DbAuditPolicy._get_all_db_audit_policies(connection=self)
+  def get_db_audit_policy(self, Name=None):
+    return DbAuditPolicy._get_db_audit_policy(connection=self, Name=Name)
+  def create_db_audit_policy(self, Name=None, Parameters=[], update=False):
+    return DbAuditPolicy._create_db_audit_policy(connection=self, Name=Name, Parameters=Parameters, update=update)
+  def delete_db_audit_policy(self, Name=None):
+    return DbAuditPolicy._delete_db_audit_policy(connection=self, Name=Name)
+  def _update_db_audit_policy(self, Name=None, Parameter=None, Value=None):
+    return DbAuditPolicy._update_db_audit_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+
   def get_all_web_profile_policies(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.WebProfilePolicy.WebProfilePolicy`
@@ -1305,6 +1363,7 @@ class MxConnection(object):
                                                  TimeFrame=TimeFrame,
                                                  Scheduling=Scheduling,
                                                  update=update)
+
   def get_all_global_object_types(self):
     ''' Returns all available global_object types '''
     types = []
@@ -1810,6 +1869,31 @@ class MxConnection(object):
         log.append(log_entry)
           
         log += self._create_tree_from_json(child_objects, parent_object)
+
+        #-----------------------------------------------------------------------
+        # Unfortunately, there are cases in which you must update the created
+        # object after creating the children. One such case is a DB service in
+        # the case that there are multiple applications. The applications are
+        # not recognized when the service is created. Therefore, the creation
+        # has to be split into two parts. The regular name is for pre-children
+        # and there's a create_db_service_pc (post_children) function for after
+        # the children are created.
+        # We are using the same parameters so we don't need to change the list
+        # of parameters that we created above
+        #-----------------------------------------------------------------------
+
+        funcname = "create_" + object_type[:-1] + "_pc"
+        if funcname in dir(ParentObject):
+          try:
+            log_entry['Function'] = funcname
+            create_function = getattr(ParentObject, funcname)
+            parent_object = create_function(**parent_object_parameters)
+            log_entry['Result'] = "SUCCESS"
+          except Exception as e:
+            log_entry['Result'] = "ERROR"
+            log_entry['Error Message'] = str(e)
+          log.append(log_entry)
+
     return log
 
   def _get_mx_proxy_settings(self):
