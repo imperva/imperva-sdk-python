@@ -1030,22 +1030,6 @@ class MxConnection(object):
   def _update_web_application_custom_policy(self, Name=None, Parameter=None, Value=None):
     return WebApplicationCustomPolicy._update_web_application_custom_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
-  #
-  #-----------------------------------------------------------------------------
-  # DB Audit Policies
-  #-----------------------------------------------------------------------------
-  #
-  def get_all_db_audit_policies(self):
-    return DbAuditPolicy._get_all_db_audit_policies(connection=self)
-  def get_db_audit_policy(self, Name=None):
-    return DbAuditPolicy._get_db_audit_policy(connection=self, Name=Name)
-  def create_db_audit_policy(self, Name=None, Parameters=[], update=False):
-    return DbAuditPolicy._create_db_audit_policy(connection=self, Name=Name, Parameters=Parameters, update=update)
-  def delete_db_audit_policy(self, Name=None):
-    return DbAuditPolicy._delete_db_audit_policy(connection=self, Name=Name)
-  def _update_db_audit_policy(self, Name=None, Parameter=None, Value=None):
-    return DbAuditPolicy._update_db_audit_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
-
 
   def get_all_web_profile_policies(self):
     '''
@@ -1148,6 +1132,22 @@ class MxConnection(object):
                                                                MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
   def delete_data_enrichment_policy(self, Name=None):
     return DataEnrichmentPolicy._delete_data_enrichment_policy(connection=self, Name=Name)
+
+  #
+  #-----------------------------------------------------------------------------
+  # DB Audit Policies
+  #-----------------------------------------------------------------------------
+  #
+  def get_all_db_audit_dam_policies(self):
+    return DbAuditPolicy._get_all_db_audit_policies(connection=self)
+  def get_db_audit_policy(self, Name=None):
+    return DbAuditPolicy._get_db_audit_policy(connection=self, Name=Name)
+  def create_db_audit_dam_policy(self, Name=None, Parameters=[], update=False):
+    return DbAuditPolicy._create_db_audit_policy(connection=self, Name=Name, Parameters=Parameters, update=update)
+  def delete_db_audit_policy(self, Name=None):
+    return DbAuditPolicy._delete_db_audit_policy(connection=self, Name=Name)
+  def _update_db_audit_policy(self, Name=None, Parameter=None, Value=None):
+    return DbAuditPolicy._update_db_audit_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
 
   def export_dam_policies(self):
