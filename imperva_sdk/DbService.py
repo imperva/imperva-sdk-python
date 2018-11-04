@@ -38,7 +38,7 @@ class DbService(MxObject):
           return cur_obj
     return None
 
-  def __init__(self, connection=None, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], SecurityPolicies=[], AuditPolicies=[], DbServiceType=None):
+  def __init__(self, connection=None, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None):
     super(DbService, self).__init__(connection=connection, Name=Name)
     validate_string(Site=Site, ServerGroup=ServerGroup)
     self._Site = Site
@@ -50,8 +50,6 @@ class DbService(MxObject):
     self._DefaultApp = DefaultApp
     self._DbMappings = DbMappings
     self._TextReplacement = TextReplacement
-    self._SecurityPolicies = SecurityPolicies
-    self._AuditPolicies = AuditPolicies
 
   #
   # DB Service Parameters
@@ -90,14 +88,6 @@ class DbService(MxObject):
   @property
   def TextReplacement(self):
     return self._TextReplacement
-
-  @property
-  def SecurityPolicies(self):
-    return self._SecurityPolicies
-
-  @property
-  def AuditPolicies(self):
-    return self._AuditPolicies
 
   @Name.setter
   def Name(self, Name):
@@ -150,23 +140,22 @@ class DbService(MxObject):
       DbConnections = connection._mx_api('GET', '/conf/dbServices/%s/%s/%s/dbConnections' % (Site, ServerGroup, Name))
       DbConnections = DbConnections['connections']
 
-      # Get all security policies and audit policies attached to this service
-      sps = connection._mx_api('GET', '/conf/dbServices/%s/%s/%s/dbSecurityPolicies' % (Site, ServerGroup, Name))
-      SecurityPolicies = [p['policy-name'] for p in sps['db-security-policies']]
-      aps = connection._mx_api('GET', '/conf/dbServices/%s/%s/%s/auditPolicies' % (Site, ServerGroup, Name))
-      AuditPolicies = [p['policy-name'] for p in aps['audit-policies']]
+      # Do not get all security policies and audit policies attached to this service - they will be handled by the policies
+      # sps = connection._mx_api('GET', '/conf/dbServices/%s/%s/%s/dbSecurityPolicies' % (Site, ServerGroup, Name))
+      # SecurityPolicies = [p['policy-name'] for p in sps['db-security-policies']]
+      # aps = connection._mx_api('GET', '/conf/dbServices/%s/%s/%s/auditPolicies' % (Site, ServerGroup, Name))
+      # AuditPolicies = [p['policy-name'] for p in aps['audit-policies']]
 
       return DbService(
           connection=connection, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, 
           DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement,
           LogCollectors=LogCollectors, DbConnections=DbConnections,
-          SecurityPolicies=SecurityPolicies, AuditPolicies=AuditPolicies,
           DbServiceType=DbServiceType)
     else:
       return None
 
   @staticmethod    
-  def _create_db_service(connection, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], SecurityPolicies=[], AuditPolicies=[], DbServiceType=None, update=False):
+  def _create_db_service(connection, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
     validate_string(Name=Name, Site=Site, ServerGroup=ServerGroup)
     dbs = connection.get_db_service(Name=Name, Site=Site, ServerGroup=ServerGroup)
     if dbs:
@@ -238,13 +227,13 @@ class DbService(MxObject):
   #-----------------------------------------------------------------------------
 
   @staticmethod
-  def _create_db_service_pc(connection, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], SecurityPolicies=[], AuditPolicies=[], DbServiceType=None, update=False):
+  def _create_db_service_pc(connection, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
     validate_string(Name=Name, Site=Site, ServerGroup=ServerGroup)
     if DbMappings:
       body = {}
       body['db-mappings'] = DbMappings
       connection._mx_api('PUT', '/conf/dbServices/%s/%s/%s' % (Site, ServerGroup, Name), data=json.dumps(body))
-    return DbService(connection=connection, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, LogCollectors=LogCollectors, DbConnections=DbConnections, SecurityPolicies=SecurityPolicies, AuditPolicies=AuditPolicies, DbServiceType=DbServiceType)
+    return DbService(connection=connection, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, LogCollectors=LogCollectors, DbConnections=DbConnections, DbServiceType=DbServiceType)
 
   @staticmethod
   def _delete_db_service(connection, Name=None, ServerGroup=None, Site=None):
@@ -269,24 +258,4 @@ class DbService(MxObject):
     return self._connection.create_db_application(DbService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, Name=Name, TableGroupValues=TableGroupValues, update=update)
   def delete_db_application(self, Name=None):
     return self._connection.delete_db_application(DbService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, Name=Name)
-
-  #
-  # DB Service extra functions
-  #
-  def upload_ssl_certificate(self, SslKeyName=None, Hsm=False, Private=None, Certificate=None):
-    ''' Uploads SSL Certificate to DB Service. See :py:attr:`imperva_sdk.dbService.SslKeys`. '''
-    ssl_key = {
-      'format': 'pem',
-      'hsm': Hsm,
-      'private': Private,
-      'certificate': Certificate
-    }
-    self._connection._mx_api('POST', '/conf/dbServices/%s/%s/%s/sslCertificates/%s' % (self._Site, self._ServerGroup, self.Name, SslKeyName), data=json.dumps(ssl_key))
-    self._SslKeys = DbService._get_ssl_keys(self._connection, Name=self.Name, ServerGroup=self._ServerGroup, Site=self._Site)
-    return True
-  def delete_ssl_certificate(self, SslKeyName=None):
-    ''' Deletes SSL Certificate from DB Service. See :py:attr:`imperva_sdk.DbService.SslKeys`. '''
-    self._connection._mx_api('DELETE', '/conf/dbServices/%s/%s/%s/sslCertificates/%s' % (self._Site, self._ServerGroup, self.Name, SslKeyName))
-    self._SslKeys = DbService._get_ssl_keys(self._connection, Name=self.Name, ServerGroup=self._ServerGroup, Site=self._Site)
-    return True
 

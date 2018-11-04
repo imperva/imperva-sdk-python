@@ -26,7 +26,10 @@ def _auditPoliciesEqual(pol1, pol2):
          return False
    # match-criteria is an array and we check that each item exists in the other list
    if 'match-criteria' in pol1:
-      return _auditMatchEqual(pol1['match-criteria'], pol2['match-criteria'])
+      if 'match-criteria' in pol2:
+         return _auditMatchEqual(pol1['match-criteria'], pol2['match-criteria'])
+      else:
+         return False
    return True
 
 
