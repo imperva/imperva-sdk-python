@@ -5,7 +5,7 @@ class AssessmentTest(MxObject):
     '''
     MX Assessment Test Class
     '''
-     # Store created DB Audit Policy objects in _instances to prevent duplicate instances and redundant API calls
+     # Store created Assessment test objects in _instances to prevent duplicate instances and redundant API calls
     def __new__(Type, *args, **kwargs):
         obj_exists = AssessmentTest._exists(connection=kwargs['connection'], Name=kwargs['Name'])
         if obj_exists:
@@ -51,9 +51,9 @@ class AssessmentTest(MxObject):
                 iters[field] = variable_function
         for x, y in iters.items():
             yield x, y
-     # Policy Parameter getters
+     # Test Parameter getters
     #-----------------------------------------------------------------------------------------------------
-    # Description: properties for all policy parameters
+    # Description: properties for all test parameters
     #-----------------------------------------------------------------------------------------------------
     #
     @property
@@ -153,7 +153,7 @@ class AssessmentTest(MxObject):
                                 TestScript=None, AdditionalScript=None, ResultsLayout=[]):
         raise MxException("Assessment Update API currently not supported")
     @staticmethod
-    def _delete_assessment_policy(connection, Name=None):
+    def _delete_assessment_test(connection, Name=None):
         raise MxException("Assessment Delete API currently not supported")
 
     @staticmethod
