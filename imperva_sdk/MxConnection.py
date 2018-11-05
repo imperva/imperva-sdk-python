@@ -1888,6 +1888,12 @@ class MxConnection(object):
           except:
             # Some versions don't have all Global Object APIs
             pass
+
+    tmp_json['agent_configurations'] = []
+    if 'agent_configurations' not in Discard:
+      res = self._export_agents_configuration()
+      tmp_json['agent_configurations'] += res['agent_configurations']
+
     tmp_json['reports'] = {}
     if 'reports' not in Discard:
       object_types = self.get_all_report_types()
@@ -1938,6 +1944,8 @@ class MxConnection(object):
     log += self._create_tree_from_json(Dict={'sites': json_config['sites']}, ParentObject=self, update=update)
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
+    log += self._create_tree_from_json(Dict={'agent_configurations': json_config['agent_configurations']},
+                                       ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['reports'], Type="report", update=update)
 
     return log
