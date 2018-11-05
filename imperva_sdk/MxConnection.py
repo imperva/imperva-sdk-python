@@ -1318,13 +1318,16 @@ class MxConnection(object):
     """
     return AgentMonitoringRule._update_agent_monitoring_rule(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
-  def create_agent_monitoring_rules_global_object(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[], update=False):
+  def create_agent_monitoring_rules_global_object(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[],
+                                                  ApplyToAgent=[], ApplyToTag=[], update=False):
     """
 
     :param Name: Rule name (string)
     :param PolicyType: The type of the policy (string)
     :param Action: The followed action of the rule (string)
     :param CustomPredicates: Policy Match Criteria in API JSON format
+    :param ApplyToAgent: Agents that rule is applied to, in API JSON format
+    :param ApplyToTag: Tags that rule is applied to, in API JSON format
     :param update: If `update=True` and the resource already exists, update and return the existing resource.
                   If `update=False` (default) and the resource exists, an exception will be raised.
     :return:  AgentMonitoringRule instance
@@ -1334,6 +1337,8 @@ class MxConnection(object):
                                                              PolicyType=PolicyType,
                                                              Action=Action,
                                                              CustomPredicates=CustomPredicates,
+                                                             ApplyToAgent=ApplyToAgent,
+                                                             ApplyToTag=ApplyToTag,
                                                              update=update)
 
   def get_all_global_objects(self):
