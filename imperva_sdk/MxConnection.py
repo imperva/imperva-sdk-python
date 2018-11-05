@@ -26,6 +26,7 @@ from imperva_sdk.DBAuditReport                  import *
 from imperva_sdk.AssessmentScan                 import *
 from imperva_sdk.LookupDataSet                  import *
 from imperva_sdk.TableGroup                     import *
+from imperva_sdk.AssessmentTest                     import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -991,6 +992,22 @@ class MxConnection(object):
     return DataEnrichmentPolicy._update_data_enrichment_policy(connection=self, Name=Name, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
   def delete_data_enrichment_policy(self, Name=None):
     return DataEnrichmentPolicy._delete_data_enrichment_policy(connection=self, Name=Name)
+
+#
+# -----------------------------------------------------------------------------
+# Assessment Tests
+# -----------------------------------------------------------------------------
+#
+  def get_all_assessment_tests(self):
+    return AssessmentTest._get_all_assessment_tests(connection=self)
+  def get_assessment_test(self, Name=None):
+    return AssessmentTest._get_assessment_test(connection=self, Name=Name)
+  def create_assessment_test(self, Name=None, Description=None,
+                                        Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None, RecommendedFix=None,
+                                        TestScript=None, AdditionalScript=None, ResultsLayout=[]):
+    return AssessmentTest._create_assessment_test(connection=self, Name=Name, Description=Description,
+                                                    Severity=Severity, Category=Category, ScriptType=ScriptType, OsType=OsType, DbType=DbType, RecommendedFix=RecommendedFix,
+                                                    TestScript=TestScript, AdditionalScript=AdditionalScript, ResultsLayout=ResultsLayout)
 
   def get_all_parameter_type_global_objects(self):
     '''
