@@ -2,7 +2,7 @@
 
 import re
 import os
-valid_string_pattern = re.compile(r'^[a-zA-Z0-9 _\.\'\-\[\]\,\(\)\:\+\/]*$')
+valid_string_pattern = re.compile(r'^[a-zA-Z0-9 _\.\'\-\[\]\,\(\)\:\+]*$')
 
 #
 # In "imperva_sdk", all Class parameters start with a capital letter.
@@ -39,7 +39,10 @@ class MxObject(object):
         get_all_function = getattr(self, field)
         children = get_all_function()
         for child in children:
-          iters[child_title].append(dict(child))
+          if child:
+            iters[child_title].append(dict(child))
+          else:
+            print("Child of <imperva_sdk '%s' Object - '%s'> is null" % (type(self).__name__, self.Name))
     for x,y in iters.items():
       yield x, y
       
