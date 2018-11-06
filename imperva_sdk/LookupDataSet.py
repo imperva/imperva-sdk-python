@@ -53,9 +53,9 @@ class LookupDataSet(MxObject):
     self._Records = MxList(Records)
     self._Columns = MxList(Columns)
 
-    #
-    # Lookup dataset Parameters
-    #
+  #
+  # Lookup dataset Parameters
+  #
 
   @property
   def Name(self):
@@ -67,7 +67,7 @@ class LookupDataSet(MxObject):
     '''
     A dataset record in API JSON format.
 
-    >>> rule = mx.get_Lookup_Data_Set("testSet")
+    >>> rule = mx.get_lookup_data_set("testSet")
     >>> rule.Record
     [
       {
@@ -83,7 +83,7 @@ class LookupDataSet(MxObject):
     '''
     A dataset Columns in API JSON format.
 
-    >>> rule = mx.get_Lookup_Data_Set("testSet")
+    >>> rule = mx.get_lookup_data_set("testSet")
     >>> rule.Columns
     [
       {
@@ -166,7 +166,7 @@ class LookupDataSet(MxObject):
       try:
         obj = connection.get_lookup_data_set(Name=name)
       except:
-        raise MxException("Failed getting all DB audit reports")
+        raise MxException("Failed getting all lookup data sets")
       if obj:
         rules_objects.append(obj)
     return rules_objects

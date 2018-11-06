@@ -243,8 +243,8 @@ class AssessmentScan(MxObject):
             # Create new scan
             body = {
                 'pre-test': PreTest,
+                'type': Type,
             }
-            if Type: body['type'] = Type
             if PolicyTags: body['policy-tags'] = PolicyTags
             if DbConnectionTags: body['db-connection-tags'] = DbConnectionTags
 
@@ -259,6 +259,7 @@ class AssessmentScan(MxObject):
                     else:
                         raise MxException("Bad 'ApplyTo' parameter")
             if ApplyToNames: body['apply-to'] = ApplyToNames
+            if Scheduling: body['scheduling'] = Scheduling
             connection._mx_api('POST', '/conf/assessment/scans/%s' % Name, data=json.dumps(body))
             return AssessmentScan(connection=connection, Name=Name, Type=Type, PreTest=PreTest,
                                               PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
