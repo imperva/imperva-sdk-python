@@ -325,7 +325,7 @@ class AgentConfiguration(MxObject):
             setattr(obj, cur_key, parameters[cur_key])
         return obj
 
-    print("WARNING: doesn't support creating a new agent configuration")
+    raise MxException("Doesn't support creating a new agent configuration")
 
   @staticmethod
   def _update_agent_configuration(connection, Name=None, Parameter=None, Value=None):

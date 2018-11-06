@@ -1111,7 +1111,7 @@ class MxConnection(object):
                               ServerName=ServerName, UserMapping=UserMapping, ConnectionString=ConnectionString, ServiceDirectory=ServiceDirectory,
                               TnsAdmin=TnsAdmin, HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName)
   def delete_db_connection(self):
-    return DBConnection_delete_db_connection(connection=self, siteName=None, serverGroupName=None, serviceName=None, connectionName=None)
+    return DBConnection._delete_db_connection(connection=self, siteName=None, serverGroupName=None, serviceName=None, connectionName=None)
 
 
   def get_all_parameter_type_global_objects(self):
@@ -1367,6 +1367,59 @@ class MxConnection(object):
     :return: True on success or exception on failure
     """
     return AgentConfiguration._update_agent_configuration(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+  def _export_agents_configuration(self):
+    actionSetDict = {
+      'metadata': {
+        'Host': self.Host,
+        'Version': self.Version,
+        'Challenge': self.Challenge,
+        'SdkVersion': imperva_sdk_version(),
+        'ExportTime': time.strftime("%Y-%m-%d %H:%M:%S")
+      }
+    }
+
+    actionSetDict['agent_configurations'] = []
+    try:
+      agents_config = self.get_all_agent_configurations()
+      for agent in agents_config:
+        as_dict = dict(agent)
+        actionSetDict['agent_configurations'].append(as_dict)
+    except:
+      # Previous versions didn't have action set APIs
+      pass
+
+    return actionSetDict
+
+  def export_agent_configurations(self):
+    """
+    Export all agents configurations in the MX
+
+    >>> specificExport = srcMx.export_agents_configuration()
+    >>> pSpecificExport = json.loads(specificExport)
+
+    :return json object
+    """
+    return json.dumps(self._export_agents_configuration())
+
+  def import_agent_configurations(self, Json=None, update=True):
+    """
+    Import all the agent configuration from valid JSON string.
+
+    >>> targetMx.import_agent_configurations(specificExport)
+
+    :param Json (string): valid imperva_sdk JSON export
+    :param update (boolean): Set to `True` to update existing resources (default in import function).
+                             If set to `False`, existing resources will cause import operations to fail.
+    :return: (list of dict) Log with details of all import events and their outcome.
+    """
+    try:
+      json_config = json.loads(Json)
+    except:
+      raise MxException("Invalid JSON configuration")
+
+    return self._create_tree_from_json(Dict={'agent_configurations': json_config['agent_configurations']}, ParentObject=self, update=update)
+
 
 
   def get_all_report_types(self):
@@ -1840,6 +1893,12 @@ class MxConnection(object):
           except:
             # Some versions don't have all Global Object APIs
             pass
+
+    tmp_json['agent_configurations'] = []
+    if 'agent_configurations' not in Discard:
+      res = self._export_agents_configuration()
+      tmp_json['agent_configurations'] += res['agent_configurations']
+
     tmp_json['reports'] = {}
     if 'reports' not in Discard:
       object_types = self.get_all_report_types()
@@ -1890,6 +1949,8 @@ class MxConnection(object):
     log += self._create_tree_from_json(Dict={'sites': json_config['sites']}, ParentObject=self, update=update)
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
+    log += self._create_tree_from_json(Dict={'agent_configurations': json_config['agent_configurations']},
+                                       ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['reports'], Type="report", update=update)
 
     return log
