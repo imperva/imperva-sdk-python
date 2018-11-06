@@ -31,6 +31,7 @@ from imperva_sdk.LookupDataSet                  import *
 from imperva_sdk.DataType                       import *
 from imperva_sdk.DBConnection                   import *
 from imperva_sdk.TableGroup                     import *
+from imperva_sdk.AssessmentPolicy               import *
 from imperva_sdk.AssessmentTest                 import *
 from imperva_sdk.DbSecurityPolicy               import *
 from imperva_sdk.ClassificationScan             import *
@@ -209,7 +210,7 @@ class MxConnection(object):
       api_version = ApiVersion
 
     url = "https://%s:%d%s/%s%s" % (self.Host, self.__Port, prefix, api_version, path)
-    
+
     if self.__Debug:
       print ("%s %s" % (method, url))
       for header in kwargs["headers"]:
@@ -254,7 +255,7 @@ class MxConnection(object):
       except:
         pass
       raise MxException("MX returned errors - %s" % str(error_message))
-	
+
   def get_all_sites(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.Site.Site`
@@ -312,7 +313,7 @@ class MxConnection(object):
     :return: ServerGroup instance of server group with specified name and site. (:obj:`None` if server group does not exist)
     '''
     return ServerGroup._get_server_group(connection=self, Name=Name, Site=Site)
-      
+
   def create_server_group(self, Name=None, Site=None, OperationMode=None, ProtectedIps=[], update=False):
     '''
     :type Name: string
@@ -365,7 +366,7 @@ class MxConnection(object):
     :return: WebService instance of web service with specified name, server group and site. (:obj:`None` if web service does not exist)
     '''
     return WebService._get_web_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
-    
+
   def create_web_service(self, Name=None, ServerGroup=None, Site=None, Ports=[], SslPorts=[], ForwardedConnections={}, ForwardedClientIp={}, SslKeys=[], TrpMode=None, update=False):
     '''
     Creates a web (HTTP) service under specified server group and site.
@@ -458,7 +459,7 @@ class MxConnection(object):
     :return: List of all web applications in MX under a given site, server group and web service
     '''
     return WebApplication._get_all_web_applications(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService)
-    
+
   def get_web_application(self, Name=None, ServerGroup=None, Site=None, WebService=None):
     '''
     :type Name: string
@@ -473,7 +474,7 @@ class MxConnection(object):
     :return: WebApplication instance of web application with specified name, web service, server group and site. (:obj:`None` if web service does not exist)
     '''
     return WebApplication._get_web_application(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, Name=Name)
-    
+
   def create_web_application(self, Name=None, WebService=None, ServerGroup=None, Site=None, LearnSettings=None, ParseOcspRequests=None, RestrictMonitoringToUrls=None, IgnoreUrlsDirectories=None, Profile=None, Mappings=None, update=False):
     '''
     :type Name: string
@@ -607,10 +608,10 @@ class MxConnection(object):
     :param Site: Site name
     '''
     return WebApplication._update_profile(connection=self, Application=Application, ServerGroup=ServerGroup, Site=Site, WebService=WebService, Profile=Profile, SwaggerJson=SwaggerJson)
-    
+
   def _update_web_application(self, WebService=None, ServerGroup=None, Site=None, Name=None, Parameter=None, Value=None):
     return WebApplication._update_web_application(connection=self, WebService=WebService, ServerGroup=ServerGroup, Site=Site, Name=Name, Parameter=Parameter, Value=Value)
-    
+
   def get_all_krp_rules(self, ServerGroup=None, Site=None, WebService=None):
     '''
     :type WebService: string
@@ -623,7 +624,7 @@ class MxConnection(object):
     :return: List of all KRP rules (inbound and outbound) under specified web service.
     '''
     return KrpRule._get_all_krp_rules(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService)
-    
+
   def get_krp_rule(self, ServerGroup=None, Site=None, WebService=None, GatewayGroup=None, Alias=None, GatewayPorts=None):
     '''
     :type WebService: string
@@ -639,7 +640,7 @@ class MxConnection(object):
     :return: KrpRule instance of a krp (reverse proxy) rule under web service with specified gateway group, alias and gateway port.
     '''
     return KrpRule._get_krp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts)
-    
+
   def create_krp_rule(self, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, Alias=None, GatewayPorts=[], ServerCertificate=None, ClientAuthenticationAuthorities=None, OutboundRules=[], Name=None, update=False):
     '''
     Creates KRP (reverse proxy) rule. Must specify at least one outbound rule on creation.
@@ -684,7 +685,7 @@ class MxConnection(object):
     :param GatewayPorts: See :py:attr:`imperva_sdk.KrpRule.KrpRule.GatewayPorts`. Can be only one of the inbound ports but needs to be a list type `[]`.
     '''
     return KrpRule._delete_krp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts)
-    
+
   def get_all_trp_rules(self, ServerGroup=None, Site=None, WebService=None):
     '''
     :type WebService: string
@@ -697,7 +698,7 @@ class MxConnection(object):
     :return: List of all TRP rules under specified web service.
     '''
     return TrpRule._get_all_trp_rules(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService)
-    
+
   def get_trp_rule(self, ServerGroup=None, Site=None, WebService=None, ServerIp=None, ListenerPorts=None):
     '''
     :type WebService: string
@@ -712,7 +713,7 @@ class MxConnection(object):
     :return: TrpRule instance of a trp rule under web service with specified server IP and listener port.
     '''
     return TrpRule._get_trp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, ServerIp=ServerIp, ListenerPorts=ListenerPorts)
-    
+
   def create_trp_rule(self, WebService=None, ServerGroup=None, Site=None, ServerIp=None, ListenerPorts=[], ServerSidePort=None, EncryptServerConnection=None, Certificate=None, Name=None, update=False):
     '''
     Creates TRP (transparent reverse proxy) rule. 
@@ -753,7 +754,7 @@ class MxConnection(object):
     :param ListenerPorts: See :py:attr:`imperva_sdk.TrpRule.TrpRule.ListenerPorts`. Can be only one of the ports but needs to be a list type `[]`.
     '''
     return TrpRule._delete_trp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, ServerIp=ServerIp, ListenerPorts=ListenerPorts)
-    
+
   def get_all_action_sets(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.ActionSet.ActionSet`
@@ -770,14 +771,14 @@ class MxConnection(object):
     :return: ActionSet instance of specified action set.
     '''
     return ActionSet._get_action_set(connection=self, Name=Name)
-    
+
   def delete_action_set(self, Name=None):
     '''
     :type Name: string
     :param Name: Action Set Name
     '''
     return ActionSet._delete_action_set(connection=self, Name=Name)
-    
+
   def create_action_set(self, Name=None, AsType=None, update=False):
     '''
     Create (or update) an "action set"
@@ -820,7 +821,7 @@ class MxConnection(object):
     '''
     return Action._delete_action(connection=self, Name=Name, ActionSet=ActionSet)
 
-    
+
   def create_action(self, Name=None, ActionSet=None, ActionType=None, Protocol=None, SyslogFacility=None, Host=None, SyslogLogLevel=None, SecondaryPort=None, ActionInterface=None, SecondaryHost=None, Message=None, Port=None, update=False):
     '''
     Create (or update) an "action set" action.
@@ -847,7 +848,7 @@ class MxConnection(object):
     :rtype: imperva_sdk.Action.Action
     :return: Created Action instance.
     '''
-  
+
     return Action._create_action(connection=self, Name=Name, ActionSet=ActionSet, ActionType=ActionType, Protocol=Protocol, SyslogFacility=SyslogFacility, Host=Host, SyslogLogLevel=SyslogLogLevel, SecondaryPort=SecondaryPort, ActionInterface=ActionInterface, SecondaryHost=SecondaryHost, Message=Message, Port=Port, update=update)
 
   def _update_action(self, ActionSet=None, Name=None, Parameter=None, Value=None):
@@ -906,10 +907,10 @@ class MxConnection(object):
     :param Name: Policy name.
     '''
     return WebServiceCustomPolicy._delete_web_service_custom_policy(connection=self, Name=Name)
-    
+
   def _update_web_service_custom_policy(self, Name=None, Parameter=None, Value=None):
     return WebServiceCustomPolicy._update_web_service_custom_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
-    
+
   def get_all_web_application_custom_policies(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.WebApplicationCustomPolicy.WebApplicationCustomPolicy`
@@ -963,7 +964,7 @@ class MxConnection(object):
     :param Name: Policy name.
     '''
     return WebApplicationCustomPolicy._delete_web_application_custom_policy(connection=self, Name=Name)
-    
+
   def _update_web_application_custom_policy(self, Name=None, Parameter=None, Value=None):
     return WebApplicationCustomPolicy._update_web_application_custom_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
@@ -1073,18 +1074,35 @@ class MxConnection(object):
 # -----------------------------------------------------------------------------
 #
   def get_all_data_enrichment_policies(self):
-    return DataEnrichmentPolicy._get_all_data_enrichment_policies(connection=self)
+   return DataEnrichmentPolicy._get_all_data_enrichment_policies(connection=self)
+
   def get_data_enrichment_policy(self, Name=None):
     return DataEnrichmentPolicy._get_data_enrichment_policy(connection=self, Name=Name)
+
   def create_data_enrichment_policy(self, Name=None, Type=None,Rules=[], MatchCriteria=[], ApplyTo=[]):
     return DataEnrichmentPolicy._create_data_enrichment_policy(connection=self, Name=Name, Type=Type, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
+
   def update_data_enrichment_policy(self, Name=None, Rules=[], MatchCriteria=[], ApplyTo=[]):
     return DataEnrichmentPolicy._update_data_enrichment_policy(connection=self, Name=Name, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
+
   def delete_data_enrichment_policy(self, Name=None):
     return DataEnrichmentPolicy._delete_data_enrichment_policy(connection=self, Name=Name)
 
 #
 # -----------------------------------------------------------------------------
+# Assessment Policies
+# -----------------------------------------------------------------------------
+#
+  def get_all_assessment_policies(self):
+    return AssessmentPolicy._get_all_assessment_policies(connection=self)
+
+  def get_assessment_policy(self, Name=None):
+    return AssessmentPolicy._get_assessment_policy(connection=self, Name=Name)
+
+  def create_assessment_policy(self, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[], TestNames=[]):
+    return AssessmentPolicy._create_assessment_policy(connection=self, Name=Name, Description=Description, DbType=DbType,
+                                                      PolicyTags=PolicyTags, AdcKeywords=AdcKeywords, TestNames=TestNames)
+
 # Assessment Tests
 # -----------------------------------------------------------------------------
 #
@@ -1170,7 +1188,7 @@ class MxConnection(object):
 
   def _update_parameter_type_global_object(self, Name=None, Parameter=None, Value=None):
     return ParameterTypeGlobalObject._update_parameter_type_global_object(connection=self, Name=Name, Parameter=Parameter, Value=Value)
-    
+
   def get_all_http_protocol_signatures_policies(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.HttpProtocolSignaturesPolicy.HttpProtocolSignaturesPolicy`
@@ -1987,7 +2005,7 @@ class MxConnection(object):
           log_entry['Error Message'] = str(e)
         log.append(log_entry)
     return log
-  
+
   def _create_tree_from_json(self, Dict=None, ParentObject=None, update=True):
     log = []
     for object_type in Dict:
@@ -2014,7 +2032,7 @@ class MxConnection(object):
           log_entry['Result'] = "ERROR"
           log_entry['Error Message'] = str(e)
         log.append(log_entry)
-          
+
         log += self._create_tree_from_json(child_objects, parent_object)
 
         #-----------------------------------------------------------------------
