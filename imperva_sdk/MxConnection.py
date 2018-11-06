@@ -421,7 +421,7 @@ class MxConnection(object):
 
   def get_db_service(self, Name=None, ServerGroup=None, Site=None):
     return DbService._get_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
-    
+
   def create_db_service(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
     return DbService._create_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbConnections=DbConnections, DbServiceType=DbServiceType, update=update)
 
@@ -434,10 +434,10 @@ class MxConnection(object):
 
   def get_all_db_applications(self, ServerGroup=None, Site=None, DbService=None):
     return DbApplication._get_all_db_applications(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService)
-    
+
   def get_db_application(self, Name=None, ServerGroup=None, Site=None, DbService=None):
     return DbApplication._get_db_application(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService, Name=Name)
-    
+
   def create_db_application(self, Name=None, DbService=None, ServerGroup=None, Site=None, TableGroupValues=None, update=False):
     return DbApplication._create_db_application(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService, Name=Name, TableGroupValues=TableGroupValues, update=update)
 
@@ -1351,6 +1351,8 @@ class MxConnection(object):
   def _update_http_protocol_signatures_policy(self, Name=None, Parameter=None, Value=None):
     return HttpProtocolSignaturesPolicy._update_http_protocol_signatures_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
+  # ====================================== DAS Objects ==================================================
+
   #
   #-----------------------------------------------------------------------------
   # DB Assessment Scans
@@ -1359,10 +1361,10 @@ class MxConnection(object):
   def get_assessment_scan(self, Name=None):
     return AssessmentScan._get_assessment_scan(connection=self, Name=Name)
 
-  def get_all_assessment_scans(self):
+  def get_all_assessment_scan_das_objects(self):
     return AssessmentScan._get_all_assessment_scans(connection=self)
 
-  def create_assessment_scan(self, Name=None, Type=None, PreTest=None, PolicyTags=[], DbConnectionTags=[],
+  def create_assessment_scan_das_object(self, Name=None, Type=None, PreTest=None, PolicyTags=[], DbConnectionTags=[],
     ApplyTo=[], Scheduling=None, update=False):
     return AssessmentScan._create_assessment_scan(connection=self,Name=Name,Type=Type, PreTest=PreTest, PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
                                                   ApplyTo=ApplyTo, Scheduling=Scheduling, update=update)
@@ -1373,7 +1375,6 @@ class MxConnection(object):
   def delete_assessment_scan(self, Name=None):
     return AssessmentScan._delete_assessment_scan(connection=self,Name=Name)
 
-  ##################################################################################
 
   #
   #-----------------------------------------------------------------------------
@@ -1383,10 +1384,10 @@ class MxConnection(object):
   def get_classification_scan(self, Name=None):
     return ClassificationScan._get_classification_scan(connection=self, Name=Name)
 
-  def get_all_classification_scans(self):
+  def get_all_classification_scan_das_objects(self):
     return ClassificationScan._get_all_classification_scans(connection=self)
 
-  def create_classification_scan(self, Name=None, ProfileName=None, ApplyTo=[], Scheduling=None, update=False):
+  def create_classification_scan_das_object(self, Name=None, ProfileName=None, ApplyTo=[], Scheduling=None, update=False):
     return ClassificationScan._create_classification_scan(connection=self,Name=Name, ProfileName=ProfileName,
                                                   ApplyTo=ApplyTo, Scheduling=Scheduling, update=update)
 
@@ -1405,10 +1406,10 @@ class MxConnection(object):
   def get_classification_profile(self, Name=None):
     return ClassificationProfile._get_classification_profile(connection=self, Name=Name)
 
-  def get_all_classification_profiles(self):
+  def get_all_classification_profile_das_objects(self):
     return ClassificationProfile._get_all_classification_profiles(connection=self)
 
-  def create_classification_profile(self, Name=None, SiteName=None, DataTypes=[], AutoAcceptResults=None,
+  def create_classification_profile_das_object(self, Name=None, SiteName=None, DataTypes=[], AutoAcceptResults=None,
                                     ScanViewsAndSynonyms=None, SaveSampleData=None, DataSampleAccuracy=None,
                                          ScanSystemSchemas=None, DbsAndSchemasUsage=None, DbsAndSchemas=[],
                                           ExcludeTablesAndColumns=[], DelayBetweenQueries=None,
@@ -1430,6 +1431,36 @@ class MxConnection(object):
     return ClassificationProfile._delete_classification_profile(connection=self, Name=Name)
 
 
+  def export_das_objects(self):
+    """
+    Export all the das objects in the MX
+
+    :return a dictionary in a json like format
+    """
+    dasObjectsDict = {
+      'metadata': {
+        'Host': self.Host,
+        'Version': self.Version,
+        'Challenge': self.Challenge,
+        'SdkVersion': imperva_sdk_version(),
+        'ExportTime': time.strftime("%Y-%m-%d %H:%M:%S")
+      }
+    }
+    dasObjectsDict.update(self._export_objects_to_dict('objects', 'das'))
+    return json.dumps(dasObjectsDict)
+
+  def import_das_objects(self, Json=None, update=True):
+    """
+    Import only the das objects from valid JSON string.
+    :param Json (string): valid imperva_sdk JSON export
+    :param update (boolean): Set to `True` to update existing resources (default in import function).
+                             If set to `False`, existing resources will cause import operations to fail.
+    :return: (list of dict) Log with details of all import events and their outcome.
+    """
+    return self._import_object_from_json(Json=Json, ObjectType='objects', Context='das', Type='object', update=update)
+
+  # ====================================== END DAS Objects ==============================================
+
   #-----------------------------------------------------------------------------
   # Tags
   #-----------------------------------------------------------------------------
@@ -1449,6 +1480,7 @@ class MxConnection(object):
   # Internal function to return MX API swagger JSON
   def _get_mx_swagger(self):
     return self._mx_api('GET', '/internal/swagger', ApiVersion="experimental")
+
 
   # ====================================== DAM reports ==================================================
 
@@ -1667,7 +1699,7 @@ class MxConnection(object):
   # -----------------------------------------------------------------------------
   #
 
-  def get_all_table_groups_dam_global_objects(self):
+  def get_all_table_group_dam_global_objects(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.TableGroup.TableGroup`
     :return: List of all table groups.
@@ -1685,7 +1717,7 @@ class MxConnection(object):
     return TableGroup._get_table_group_by_name(connection=self, Name=Name, IsSensitive=IsSensitive,
                                                ServiceTypes=ServiceTypes)
 
-  def create_table_groups_dam_global_object(self, Name=None, IsSensitive=None, DataType=None, ServiceTypes=[], Records=[],
+  def create_table_group_dam_global_object(self, Name=None, IsSensitive=None, DataType=None, ServiceTypes=[], Records=[],
                                             update=False):
     """
     :param Name: Table group name (string)
@@ -1759,7 +1791,7 @@ class MxConnection(object):
   # -----------------------------------------------------------------------------
   #
 
-  def get_all_agent_monitoring_rules_dam_global_objects(self):
+  def get_all_agent_monitoring_rule_dam_global_objects(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.AgentMonitoringRule.AgentMonitoringRule`
     :return: List of all agent monitoring rules.
@@ -1784,7 +1816,7 @@ class MxConnection(object):
     """
     return AgentMonitoringRule._update_agent_monitoring_rule(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
-  def create_agent_monitoring_rules_dam_global_object(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[], update=False):
+  def create_agent_monitoring_rule_dam_global_object(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[], update=False):
     """
     :param Name: Rule name (string)
     :param PolicyType: The type of the policy (string)
@@ -1905,6 +1937,14 @@ class MxConnection(object):
         types.append(cur_item.replace('get_all_','').replace('_dam_global_objects',''))
     return types
 
+  def get_all_das_objects_types(self):
+    ''' Returns all available DAS object types '''
+    types = []
+    for cur_item in dir(self):
+      if cur_item.startswith('get_all_') and cur_item.endswith('_das_objects') and cur_item != 'get_all_das_objects_types':
+        types.append(cur_item.replace('get_all_','').replace('_das_objects',''))
+    return types
+
   def get_all_global_object_types(self):
     ''' Returns all available global_object types '''
     types = []
@@ -1985,21 +2025,21 @@ class MxConnection(object):
     :return a dictionary in a json like format
     """
     json_like_obj = {}
-    json_like_obj[object_type] = {}
+    full_object_name = context + '_' + object_type
+    json_like_obj[full_object_name] = {}
     try:
       object_types_fun = getattr(self, 'get_all_' + context + '_' + object_type + '_' + 'types')
       inner_object_types = object_types_fun()
     except:
       return
     for type in inner_object_types:
-      full_type_name = type + '_' + context
-      json_like_obj[object_type][full_type_name] = []
+      json_like_obj[full_object_name][type] = []
       try:
-        get_pol_func = getattr(self, 'get_all_' + full_type_name + '_' + object_type)
+        get_pol_func = getattr(self, 'get_all_' + type + '_' + full_object_name)
         objects = get_pol_func()
         for cur_object in objects:
           obj_dict = dict(cur_object)
-          json_like_obj[object_type][full_type_name].append(obj_dict)
+          json_like_obj[full_object_name][type].append(obj_dict)
       except Exception as e:
         # Some versions don't have all Object APIs
         pass
@@ -2152,10 +2192,15 @@ class MxConnection(object):
       res = self._export_agents_configuration()
       tmp_json['agent_configurations'] += res['agent_configurations']
 
-    tmp_json['reports'] = {}
+    tmp_json['dam_reports'] = {}
     if 'reports' not in Discard:
       res = self._export_objects_to_dict('reports', 'dam')
-      tmp_json['reports'].update(res['reports'])
+      tmp_json['dam_reports'].update(res['dam_reports'])
+
+    tmp_json['das_objects'] = {}
+    if 'das' not in Discard:
+      res = self._export_objects_to_dict('objects', 'das')
+      tmp_json['das_objects'].update(res['das_objects'])
 
     return json.dumps(tmp_json)
 
@@ -2169,8 +2214,8 @@ class MxConnection(object):
     except:
       raise MxException("Invalid JSON configuration")
 
-    objects = {obj:val for obj,val in json_config[ObjectType].items() if '_' + Context + '_' not in obj}
-    return self._create_objects_from_json(Objects=objects, Type=Type, update=update)
+    full_object_name = Context + '_' + ObjectType
+    return self._create_objects_from_json(Objects=json_config[full_object_name], Type= Context+'_'+Type, update=update)
 
   def import_from_json(self, Json=None, update=True):
     '''
@@ -2206,14 +2251,18 @@ class MxConnection(object):
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
     log += self._create_tree_from_json(Dict={'agent_configurations': json_config['agent_configurations']},
                                        ParentObject=self, update=update)
-    log += self._create_objects_from_json(Objects=json_config['reports'], Type="report", update=update)
+    log += self.import_dam_reports(Json)
+    log += self.import_das_objects(Json)
 
     return log
 
   def _create_objects_from_json(self, Objects=None, Type=None, update=True):
     log = []
     for object_type in Objects:
-      create_name = 'create_' + object_type + '_' + Type
+      create_name = 'create_' + object_type
+      if Type:
+        create_name += '_' + Type
+
       create_function = getattr(self, create_name)
       for cur_object in Objects[object_type]:
         log_entry = {
