@@ -189,6 +189,7 @@ class ClassificationScan(MxObject):
                     else:
                         raise MxException("Bad 'ApplyTo' parameter")
             if ApplyToNames: body['apply-to'] = ApplyToNames
+            if Scheduling: body['scheduling'] = Scheduling
             connection._mx_api('POST', '/conf/classification/scans/%s' % Name, data=json.dumps(body))
             return ClassificationScan(connection=connection, Name=Name, ProfileName=ProfileName,
                                       ApplyTo=ApplyToObjects, Scheduling=Scheduling)
