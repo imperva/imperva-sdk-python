@@ -34,8 +34,8 @@ from imperva_sdk.TableGroup                     import *
 from imperva_sdk.DbSecurityPolicy               import *
 from imperva_sdk.ClassificationScan             import *
 from imperva_sdk.ClassificationProfile          import *
-
-
+from imperva_sdk.AgentConfiguration             import *
+from imperva_sdk.Tag                            import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -419,7 +419,7 @@ class MxConnection(object):
 
   def get_db_service(self, Name=None, ServerGroup=None, Site=None):
     return DbService._get_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
-    
+
   def create_db_service(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
     return DbService._create_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbConnections=DbConnections, DbServiceType=DbServiceType, update=update)
 
@@ -432,10 +432,10 @@ class MxConnection(object):
 
   def get_all_db_applications(self, ServerGroup=None, Site=None, DbService=None):
     return DbApplication._get_all_db_applications(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService)
-    
+
   def get_db_application(self, Name=None, ServerGroup=None, Site=None, DbService=None):
     return DbApplication._get_db_application(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService, Name=Name)
-    
+
   def create_db_application(self, Name=None, DbService=None, ServerGroup=None, Site=None, TableGroupValues=None, update=False):
     return DbApplication._create_db_application(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService, Name=Name, TableGroupValues=TableGroupValues, update=update)
 
@@ -1290,6 +1290,15 @@ class MxConnection(object):
     return ClassificationProfile._delete_classification_profile(connection=self, Name=Name)
 
 
+  #-----------------------------------------------------------------------------
+  # Tags
+  #-----------------------------------------------------------------------------
+
+  def get_all_tags(self):
+    return Tag._get_all_tags(connection=self)
+
+  def create_tag(self, Name=None, update=False):
+    return Tag._create_tag(connection=self, Name=Name)
 
 
   def _upload_adc_content(self, path):
@@ -1300,6 +1309,65 @@ class MxConnection(object):
   # Internal function to return MX API swagger JSON
   def _get_mx_swagger(self):
     return self._mx_api('GET', '/internal/swagger', ApiVersion="experimental")
+
+  #
+  # -----------------------------------------------------------------------------
+  # Agent configuration
+  # -----------------------------------------------------------------------------
+
+  def get_all_agent_configurations(self):
+    '''
+    :rtype: `list` of :obj:`imperva_sdk.AgentConfiguration.AgentConfiguration`
+    :return: List of all agent configurations.
+    '''
+    return AgentConfiguration._get_all_agent_configurations(connection=self)
+
+  def get_agent_configuration(self, Name, Ip=None):
+    '''
+    :type Name: string
+    :param Name: Agent Name
+    :rtype: imperva_sdk.AgentConfiguration.AgentConfiguration
+    :return: AgentConfiguration instance.
+    '''
+    return AgentConfiguration._get_agent_configuration_by_name(connection=self, Name=Name, Ip=Ip)
+
+  def create_agent_configuration(self, Name=None, Ip=None, DataInterfaces=[], Tags=[], AdvancedConfig={},
+                                 DiscoverySettings={}, CpuUsageRestraining={}, GeneralDetails={}, update=False):
+    """
+
+    :param Name (string): agent's name
+    :param Ip (string): agent's IP
+    :param DataInterfaces (list): agent's data interfaces
+    :param Tags (list): agent's tags
+    :param AdvancedConfig (dict): agent's advanced configuration
+    :param DiscoverySettings (dict): agent's discovery settings
+    :param CpuUsageRestraining (dict): agent's cpu usage restraining
+    :param GeneralDetails (dict): agent's additional general details
+    :param update: If `update=True` and the data set already exists, update and return the existing data set.
+                  If `update=False` (default) and the data set exists, an exception will be raised.
+    :return: AgentConfiguration instance
+    """
+    return AgentConfiguration._create_agent_configuration(connection=self,
+                                                          Name=Name,
+                                                          Ip=Ip,
+                                                          DataInterfaces=DataInterfaces,
+                                                          Tags=Tags,
+                                                          AdvancedConfig=AdvancedConfig,
+                                                          DiscoverySettings=DiscoverySettings,
+                                                          CpuUsageRestraining=CpuUsageRestraining,
+                                                          GeneralDetails=GeneralDetails,
+                                                          update=update)
+
+  def _update_agent_configuration(self, Name=None, Parameter=None, Value=None):
+    """
+
+    :param Name: Agent name (string)
+    :param Parameter: The parameter in the agent configuration need to be updated (string)
+    :param Value: The value of the parameter
+    :return: True on success or exception on failure
+    """
+    return AgentConfiguration._update_agent_configuration(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
 
   def get_all_report_types(self):
     ''' Returns all available report types '''
