@@ -34,22 +34,6 @@ class DbSecurityPolicy(MxObject):
     self._ApplyTo = MxList(ApplyTo)
     self._AutoApply = AutoApply
 
-  # Override the MxObject __iter__ function to print ApplyTo WebService objects as dictionaries    
-  def __iter__(self):
-    iters = {}
-    for field in dir(self):
-      if is_parameter.match(field):
-        variable_function = getattr(self, field)
-        if field == 'ApplyTo':
-          ApplyToNames = []
-          for cur_apply in variable_function:
-            ApplyToNames.append({u'siteName': cur_apply._Site, u'serverGroupName': cur_apply._ServerGroup, u'dbServiceName': cur_apply.Name})
-          iters[field] = ApplyToNames
-        else:
-          iters[field] = variable_function
-    for x,y in iters.items():
-      yield x, y
-
   #
   # DB Service Custom Policy Parameters
   #
@@ -203,7 +187,7 @@ class DbSecurityPolicy(MxObject):
   def _create_db_security_policy(connection, Name=None, PolicyType='db-service-custom',
                                        Enabled=None, Severity=None, Action=None,
                                        FollowedAction=None, ApplyTo=None, AutoApply=None,
-                                       MatchCriteria=None, update=False):
+                                       MatchCriteria=[], update=False):
     validate_string(Name=Name)
     pol = connection.get_db_security_policy(Name=Name)
     if pol:

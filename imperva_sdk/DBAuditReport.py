@@ -15,7 +15,7 @@ class DBAuditReport(MxObject):
    >>> # Create user defined copy of report
    >>> report_dict = dict(report)
    >>> report_dict['Name'] = 'user defined - %s' % report_dict['Name']
-   >>> mx.create_db_audit_report(**report_dict)
+   >>> mx.create_db_audit_dam_report(**report_dict)
    <imperva_sdk 'DBAuditReport' Object - 'user defined - testReport'>
 
    '''

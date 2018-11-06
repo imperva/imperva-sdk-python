@@ -16,7 +16,7 @@ class AgentMonitoringRule(MxObject):
   >>> # Create user defined copy of policy
   >>> rule_dict = dict(rule)
   >>> rule_dict['Name'] = 'user defined - %s' % rule_dict['Name']
-  >>> mx.create_agent_monitoring_rules_global_object(**rule_dict)
+  >>> mx.create_agent_monitoring_rules_dam_global_object(**rule_dict)
   <imperva_sdk 'AgentMonitoringRule' Object - 'user defined - testRuleFromSDK'>
 
   '''
