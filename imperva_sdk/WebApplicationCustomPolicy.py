@@ -262,7 +262,7 @@ class WebApplicationCustomPolicy(MxObject):
         raise MxException("Policy '%s' already exists" % Name)
       else:
         # Update existing policy
-        parameters = locals()
+        parameters = dict(locals())
         for cur_key in parameters:
           if is_parameter.match(cur_key) and cur_key != 'Name' and parameters[cur_key] != None:
             setattr(pol, cur_key, parameters[cur_key])
