@@ -31,6 +31,7 @@ from imperva_sdk.LookupDataSet                  import *
 from imperva_sdk.DataType                       import *
 from imperva_sdk.DBConnection                   import *
 from imperva_sdk.TableGroup                     import *
+from imperva_sdk.AssessmentTest                 import *
 from imperva_sdk.DbSecurityPolicy               import *
 from imperva_sdk.ClassificationScan             import *
 from imperva_sdk.ClassificationProfile          import *
@@ -1084,6 +1085,19 @@ class MxConnection(object):
 
 #
 # -----------------------------------------------------------------------------
+# Assessment Tests
+# -----------------------------------------------------------------------------
+#
+  def get_all_assessment_tests(self):
+    return AssessmentTest._get_all_assessment_tests(connection=self)
+  def get_assessment_test(self, Name=None):
+    return AssessmentTest._get_assessment_test(connection=self, Name=Name)
+  def create_assessment_test(self, Name=None, Description=None,
+                                        Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None, RecommendedFix=None,
+                                        TestScript=None, AdditionalScript=None, ResultsLayout=[]):
+    return AssessmentTest._create_assessment_test(connection=self, Name=Name, Description=Description,
+                                                    Severity=Severity, Category=Category, ScriptType=ScriptType, OsType=OsType, DbType=DbType, RecommendedFix=RecommendedFix,
+                                                    TestScript=TestScript, AdditionalScript=AdditionalScript, ResultsLayout=ResultsLayout)
 # DB connection
 # -----------------------------------------------------------------------------
 #
@@ -1112,7 +1126,6 @@ class MxConnection(object):
                               TnsAdmin=TnsAdmin, HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName)
   def delete_db_connection(self):
     return DBConnection._delete_db_connection(connection=self, siteName=None, serverGroupName=None, serviceName=None, connectionName=None)
-
 
   def get_all_parameter_type_global_objects(self):
     '''
