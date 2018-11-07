@@ -16,7 +16,7 @@ class AgentMonitoringRule(MxObject):
   >>> # Create user defined copy of policy
   >>> rule_dict = dict(rule)
   >>> rule_dict['Name'] = 'user defined - %s' % rule_dict['Name']
-  >>> mx.create_agent_monitoring_rules_global_object(**rule_dict)
+  >>> mx.create_agent_monitoring_rules_dam_global_object(**rule_dict)
   <imperva_sdk 'AgentMonitoringRule' Object - 'user defined - testRuleFromSDK'>
 
   '''
@@ -38,12 +38,14 @@ class AgentMonitoringRule(MxObject):
           return cur_obj
     return None
 
-  def __init__(self, connection=None, Name=None, PolicyType=None, Action=None, CustomPredicates=[]):
+  def __init__(self, connection=None, Name=None, PolicyType=None, Action=None, CustomPredicates=[], ApplyToAgent=[], ApplyToTag=[]):
     super(AgentMonitoringRule, self).__init__(connection=connection, Name=Name)
     validate_string(Name=Name, PolicyType=PolicyType, Action=Action)
     self._PolicyType = PolicyType
     self._Action = Action
     self._CustomPredicates = MxList(CustomPredicates)
+    self._ApplyToAgent = MxList(ApplyToAgent)
+    self._ApplyToTag = MxList(ApplyToTag)
 
 
   #
@@ -79,6 +81,22 @@ class AgentMonitoringRule(MxObject):
     '''
     return self._CustomPredicates
 
+  @property
+  def ApplyToAgent(self):
+     '''
+     Agents that rule is applied to (list of Strings).
+     '''
+     return self._ApplyToAgent
+
+  @property
+  def ApplyToTag(self):
+     '''
+     Agents Tags that rule is applied to (list of Strings).
+     '''
+     return self._ApplyToTag
+
+
+
   @Action.setter
   def Action(self, Action):
     if Action != self._Action:
@@ -105,6 +123,38 @@ class AgentMonitoringRule(MxObject):
     if tmp1 != tmp2:
       self._connection._update_agent_monitoring_rule(Name=self._Name, Parameter='CustomPredicates', Value=CustomPredicates)
       self._CustomPredicates = CustomPredicates
+
+
+  @ApplyToAgent.setter
+  def ApplyToAgent(self, ApplyToAgent):
+    tmp1 = []
+    for cur_item in ApplyToAgent:
+        tmp1.append(''.join(sorted(str(cur_item))))
+    tmp1 = sorted(tmp1)
+    tmp2 = []
+    for cur_item in self._ApplyToAgent:
+        tmp2 = sorted(tmp2)
+        tmp2.append(''.join(sorted(str(cur_item))))
+    tmp2 = sorted(tmp2)
+    if tmp1 != tmp2:
+        self._connection._update_agent_monitoring_rule(Name=self._Name, Parameter='ApplyToAgent', Value=ApplyToAgent)
+        self._ApplyToAgent = ApplyToAgent
+
+
+  @ApplyToTag.setter
+  def ApplyToTag(self, ApplyToTag):
+      tmp1 = []
+      for cur_item in ApplyToTag:
+          tmp1.append(''.join(sorted(str(cur_item).replace('u', ''))))
+      tmp1 = sorted(tmp1)
+      tmp2 = []
+      for cur_item in self._ApplyToTag:
+          tmp2 = sorted(tmp2)
+          tmp2.append(''.join(sorted(str(cur_item).replace('u', ''))))
+      tmp2 = sorted(tmp2)
+      if tmp1 != tmp2:
+          self._connection._update_agent_monitoring_rule(Name=self._Name, Parameter='ApplyToTag', Value=ApplyToTag)
+          self._ApplyToTag = ApplyToTag
 
 
   #
@@ -139,10 +189,12 @@ class AgentMonitoringRule(MxObject):
     except:
       return None
     return AgentMonitoringRule(connection=connection, Name=Name, PolicyType=res['policy-type'], Action=res['action'],
-                               CustomPredicates=res['custom-predicates'])
+                               CustomPredicates=res['custom-predicates'],
+                               ApplyToAgent=res['apply-to-agent'], ApplyToTag=res['apply-to-tag'])
 
   @staticmethod
-  def _create_agent_monitoring_rule(connection, Name=None, PolicyType=None, Action=None, CustomPredicates=[], update=False):
+  def _create_agent_monitoring_rule(connection, Name=None, PolicyType=None, Action=None, CustomPredicates=[],
+                                    ApplyToAgent=[], ApplyToTag=[], update=False):
     validate_string(Name=Name)
     obj = connection.get_agent_monitoring_rule(Name=Name)
     if obj:
@@ -150,7 +202,7 @@ class AgentMonitoringRule(MxObject):
         raise MxException("Rule '%s' already exists" % Name)
       else:
         # Update existing policy
-        parameters = locals()
+        parameters = dict(locals())
         for cur_key in list(parameters):
           if is_parameter.match(cur_key) and cur_key != 'Name' and parameters[cur_key] != None:
             setattr(obj, cur_key, parameters[cur_key])
@@ -161,13 +213,16 @@ class AgentMonitoringRule(MxObject):
     if PolicyType: body['policy-type'] = PolicyType
     body['custom-predicates'] = CustomPredicates
     body['total-num-of-predicates'] = len(CustomPredicates)
+    body['apply-to-agent'] = ApplyToAgent
+    body['apply-to-tag'] = ApplyToTag
 
     try:
       res = connection._mx_api('POST', '/conf/agentsMonitoringRules/%s' % Name, data=json.dumps(body))
     except Exception as e:
       raise MxException("Failed creating agent monitoring rule: %s" % e)
 
-    return AgentMonitoringRule(connection=connection, Name=Name, PolicyType=PolicyType, Action=Action, CustomPredicates=CustomPredicates)
+    return AgentMonitoringRule(connection=connection, Name=Name, PolicyType=PolicyType, Action=Action,
+                               CustomPredicates=CustomPredicates, ApplyToAgent=ApplyToAgent, ApplyToTag=ApplyToTag)
 
   @staticmethod
   def _update_agent_monitoring_rule(connection, Name=None, Parameter=None, Value=None):
@@ -188,8 +243,8 @@ class AgentMonitoringRule(MxObject):
                        'z-os-agents-monitoring-rules']:
         raise MxException("Parameter '%s' must be 'db-agents-monitoring-rule', 'file-agents-monitoring-rule', "
                           "'ds-agents-monitoring-rules' or 'z-os-agents-monitoring-rules'" % Parameter)
-    elif Parameter != 'CustomPredicates':
-      raise MxException("Parameter '%s' must be 'Action', 'PolicyType' or 'CustomPredicates'" % Name)
+    elif Parameter != 'CustomPredicates' and Parameter != 'ApplyToAgent' and Parameter != 'ApplyToTag':
+      raise MxException("Parameter '%s' must be 'Action', 'PolicyType', 'CustomPredicates', 'ApplyToAgent' or 'ApplyToTag'" % Name)
 
     # uses intern __iter__
     objDict = dict(obj)
@@ -202,6 +257,8 @@ class AgentMonitoringRule(MxObject):
     jsonObj['policy-type'] = objDict['PolicyType']
     jsonObj['custom-predicates'] = objDict['CustomPredicates']
     jsonObj['total-num-of-predicates'] = len(objDict['CustomPredicates'])
+    jsonObj['apply-to-agent'] = objDict['ApplyToAgent']
+    jsonObj['apply-to-tag'] = objDict['ApplyToTag']
 
     try:
       connection._mx_api('PUT', '/conf/agentsMonitoringRules/%s' % Name, data=json.dumps(jsonObj))

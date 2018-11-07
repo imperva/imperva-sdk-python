@@ -161,7 +161,7 @@ class DataType(MxObject):
         raise MxException("Data type '%s' already exists" % Name)
       else:
         # Update existing data type
-        parameters = locals()
+        parameters = dict(locals())
         for cur_key in list(parameters):
           if is_parameter.match(cur_key) and cur_key != 'Name' and parameters[cur_key] != None:
             setattr(obj, cur_key, parameters[cur_key])

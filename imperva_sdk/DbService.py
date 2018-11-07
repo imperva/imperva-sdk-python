@@ -259,3 +259,28 @@ class DbService(MxObject):
   def delete_db_application(self, Name=None):
     return self._connection.delete_db_application(DbService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, Name=Name)
 
+
+  #
+  # DB connection child functions
+  #
+  def get_db_connection(self, Name=None):
+    return self._connection.get_db_connection(ServiceName=self.Name, SiteName=self._Site, ServerGroupName=self._ServerGroup, Name=Name)
+
+  def get_all_db_connections(self):
+    return self._connection.get_all_db_connections(SiteName=self._Site, ServerGroupName=self._ServerGroup, ServiceName=self.Name)
+
+  def create_db_connection(self, ConnectionName=None, UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
+                              ServerName=None, UserMapping=None, ConnectionString=None, ServiceDirectory=None,
+                              TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None, update=False):
+    return self._connection.create_db_connection(ServiceName=self.Name, SiteName=self._Site, ServerGroupName=self._ServerGroup,
+                                                 ConnectionName=ConnectionName, UserName=UserName, Password=Password,
+                                                 Port=Port, IpAddress=IpAddress, DbName=DbName, ServerName=ServerName,
+                                                 UserMapping=UserMapping, ConnectionString=ConnectionString,
+                                                 ServiceDirectory=ServiceDirectory, TnsAdmin=TnsAdmin,
+                                                 HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName, update=update)
+
+  def delete_db_connection(self, Name=None):
+    return self._connection.delete_db_connection(ServiceName=self.Name, SiteName=self._Site, ServerGroupName=self._ServerGroup, Name=Name)
+
+
+

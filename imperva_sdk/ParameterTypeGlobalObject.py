@@ -86,7 +86,7 @@ class ParameterTypeGlobalObject(MxObject):
         raise MxException("Parameter Type Configuration '%s' already exists" % Name)
       else:
         # Update existing global object
-        parameters = locals()
+        parameters = dict(locals())
         for cur_key in parameters:
           if is_parameter.match(cur_key) and cur_key != 'Name' and parameters[cur_key] != None:
             setattr(obj, cur_key, parameters[cur_key])

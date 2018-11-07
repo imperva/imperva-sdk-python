@@ -25,7 +25,7 @@ class LookupDataSet(MxObject):
   >>> dataset_dict = dict(dataSet)
   >>> dataset_dict['Name'] = 'user defined - %s' % dataset_dict['Name']
   >>> dataset_dict['update'] = True
-  >>> mx._create_lookup_data_set(**dataset_dict)
+  >>> mx._create_lookup_dam_data_set(**dataset_dict)
   <imperva_sdk 'LookupDataSet' Object - 'user defined - testDataSet'>
 
   '''
@@ -193,7 +193,7 @@ class LookupDataSet(MxObject):
         raise MxException("lookup data set '%s' already exists" % Name)
       else:
         # Update existing data set
-        parameters = locals()
+        parameters = dict(locals())
         for cur_key in list(parameters):
           if is_parameter.match(cur_key) and cur_key != 'Name' and parameters[cur_key] != None:
             setattr(obj, cur_key, parameters[cur_key])

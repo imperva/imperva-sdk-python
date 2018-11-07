@@ -37,19 +37,6 @@ class DataEnrichmentPolicy(MxObject):
         self._MatchCriteria = MxList(MatchCriteria)
         self._ApplyTo = MxList(ApplyTo)
 
-    # Method: __iter__
-    #-----------------------------------------------------------------------------------------------------
-    # Description: Override the MxObject __iter__ function to print ApplyTo objects as dictionaries
-    #-----------------------------------------------------------------------------------------------------
-    #
-    def __iter__(self):
-        iters = {}
-        for field in dir(self):
-            if is_parameter.match(field):
-                variable_function = getattr(self, field)
-                iters[field] = variable_function
-        for x, y in iters.items():
-            yield x, y
 
     # Policy Parameter getters
     #-----------------------------------------------------------------------------------------------------
@@ -107,7 +94,7 @@ class DataEnrichmentPolicy(MxObject):
 
 
     @staticmethod
-    def _create_data_enrichment_policy(connection, Name=None, PolicyType=None, Rules=[], MatchCriteria=[], ApplyTo=[]):
+    def _create_data_enrichment_policy(connection, Name=None, PolicyType=None, Rules=[], MatchCriteria=[], ApplyTo=[], update=False):
         validate_string(Name=Name)
         body = {}
         body['policy-name'] = Name
@@ -116,9 +103,7 @@ class DataEnrichmentPolicy(MxObject):
         body['rules'] = Rules
         body['match-criteria'] = MatchCriteria
 
-        # print(json.dumps(body))
-
-        connection._mx_api('POST', '/conf/dataEnrichmentPolicies/%s' % slash(Name), data=json.dumps(body))
+        connection._mx_api('POST', '/conf/dataEnrichmentPolicies/%s' % Name, data=json.dumps(body))
         return DataEnrichmentPolicy(connection=connection, Name=Name, PolicyType=PolicyType, ApplyTo=ApplyTo, Rules=Rules, MatchCriteria=MatchCriteria)
 
 

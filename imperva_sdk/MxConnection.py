@@ -31,11 +31,13 @@ from imperva_sdk.LookupDataSet                  import *
 from imperva_sdk.DataType                       import *
 from imperva_sdk.DBConnection                   import *
 from imperva_sdk.TableGroup                     import *
+from imperva_sdk.AssessmentPolicy               import *
+from imperva_sdk.AssessmentTest                 import *
 from imperva_sdk.DbSecurityPolicy               import *
 from imperva_sdk.ClassificationScan             import *
 from imperva_sdk.ClassificationProfile          import *
-
-
+from imperva_sdk.AgentConfiguration             import *
+from imperva_sdk.Tag                            import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -419,7 +421,7 @@ class MxConnection(object):
 
   def get_db_service(self, Name=None, ServerGroup=None, Site=None):
     return DbService._get_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
-    
+
   def create_db_service(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
     return DbService._create_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbConnections=DbConnections, DbServiceType=DbServiceType, update=update)
 
@@ -432,10 +434,10 @@ class MxConnection(object):
 
   def get_all_db_applications(self, ServerGroup=None, Site=None, DbService=None):
     return DbApplication._get_all_db_applications(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService)
-    
+
   def get_db_application(self, Name=None, ServerGroup=None, Site=None, DbService=None):
     return DbApplication._get_db_application(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService, Name=Name)
-    
+
   def create_db_application(self, Name=None, DbService=None, ServerGroup=None, Site=None, TableGroupValues=None, update=False):
     return DbApplication._create_db_application(connection=self, ServerGroup=ServerGroup, Site=Site, DbService=DbService, Name=Name, TableGroupValues=TableGroupValues, update=update)
 
@@ -752,7 +754,14 @@ class MxConnection(object):
     :param ListenerPorts: See :py:attr:`imperva_sdk.TrpRule.TrpRule.ListenerPorts`. Can be only one of the ports but needs to be a list type `[]`.
     '''
     return TrpRule._delete_trp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, ServerIp=ServerIp, ListenerPorts=ListenerPorts)
-    
+
+
+  # ====================================== DAM action sets ===============================================
+  #
+  #-----------------------------------------------------------------------------
+  # Action set
+  #-----------------------------------------------------------------------------
+  #
   def get_all_action_sets(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.ActionSet.ActionSet`
@@ -791,6 +800,61 @@ class MxConnection(object):
     :return: ActionSet instance of created action set.
     '''
     return ActionSet._create_action_set(connection=self, Name=Name, AsType=AsType, update=update)
+
+
+  def _export_action_sets(self):
+    actionSetDict = {
+      'metadata': {
+        'Host': self.Host,
+        'Version': self.Version,
+        'Challenge': self.Challenge,
+        'SdkVersion': imperva_sdk_version(),
+        'ExportTime': time.strftime("%Y-%m-%d %H:%M:%S")
+      }
+    }
+
+    actionSetDict['action_sets'] = []
+    try:
+      action_sets = self.get_all_action_sets()
+      for action_set in action_sets:
+        as_dict = dict(action_set)
+        actionSetDict['action_sets'].append(as_dict)
+    except:
+      # Previous versions didn't have action set APIs
+      pass
+
+    return actionSetDict
+
+  def export_action_sets(self):
+    """
+    Export all the action sets in the MX
+
+    >>> specificExport = srcMx.export_action_sets()
+    >>> pSpecificExport = json.loads(specificExport)
+
+    :return json object
+    """
+    return json.dumps(self._export_action_sets())
+
+  def import_action_sets(self, Json=None, update=True):
+    """
+    Import only the dam action sets from valid JSON string.
+
+    >>> targetMx.import_action_sets(specificExport)
+
+    :param Json (string): valid imperva_sdk JSON export
+    :param update (boolean): Set to `True` to update existing resources (default in import function).
+                             If set to `False`, existing resources will cause import operations to fail.
+    :return: (list of dict) Log with details of all import events and their outcome.
+    """
+    try:
+      json_config = json.loads(Json)
+    except:
+      raise MxException("Invalid JSON configuration")
+
+    return self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
+
+  # ===================================== END DAM action sets ============================================
 
   def get_all_actions(self, ActionSet=None):
     '''
@@ -966,22 +1030,6 @@ class MxConnection(object):
   def _update_web_application_custom_policy(self, Name=None, Parameter=None, Value=None):
     return WebApplicationCustomPolicy._update_web_application_custom_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
-  #
-  #-----------------------------------------------------------------------------
-  # DB Audit Policies
-  #-----------------------------------------------------------------------------
-  #
-  def get_all_db_audit_policies(self):
-    return DbAuditPolicy._get_all_db_audit_policies(connection=self)
-  def get_db_audit_policy(self, Name=None):
-    return DbAuditPolicy._get_db_audit_policy(connection=self, Name=Name)
-  def create_db_audit_policy(self, Name=None, Parameters=[], update=False):
-    return DbAuditPolicy._create_db_audit_policy(connection=self, Name=Name, Parameters=Parameters, update=update)
-  def delete_db_audit_policy(self, Name=None):
-    return DbAuditPolicy._delete_db_audit_policy(connection=self, Name=Name)
-  def _update_db_audit_policy(self, Name=None, Parameter=None, Value=None):
-    return DbAuditPolicy._update_db_audit_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
-
 
   def get_all_web_profile_policies(self):
     '''
@@ -1041,23 +1089,25 @@ class MxConnection(object):
   def _update_web_profile_policy(self, Name=None, Parameter=None, Value=None):
     return WebProfilePolicy._update_web_profile_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
+
+  # ====================================== DAM policies ===============================================
   #
   #-----------------------------------------------------------------------------
   # DB Security Policies
   #-----------------------------------------------------------------------------
   #
-  def get_all_db_security_policies(self):
+  def get_all_db_security_dam_policies(self):
     return DbSecurityPolicy._get_all_db_security_policies(connection=self)
 
   def get_db_security_policy(self, Name=None):
     return DbSecurityPolicy._get_db_security_policy(connection=self, Name=Name)
 
-  def create_db_security_policy(self, Name=None, PolicyType=None, Enabled=None, Severity=None, Action=None, FollowedAction=None,
-                                   ApplyTo=None, AutoApply=None, MatchCriteria=None, update=False):
+  def create_db_security_dam_policy(self, Name=None, PolicyType=None, Enabled=None, Severity=None, Action=None,
+                                    FollowedAction=None, ApplyTo=None, AutoApply=None, MatchCriteria=None, update=False):
 
     return DbSecurityPolicy._create_db_security_policy(connection=self, Name=Name, PolicyType=PolicyType, Enabled=Enabled,
-                                                             Severity=Severity, Action=Action, FollowedAction=FollowedAction,
-                                                             ApplyTo=ApplyTo, AutoApply=AutoApply, MatchCriteria=MatchCriteria, update=update)
+                                                       Severity=Severity, Action=Action, FollowedAction=FollowedAction,
+                                                       ApplyTo=ApplyTo, AutoApply=AutoApply, MatchCriteria=MatchCriteria, update=update)
 
   def delete_db_security_policy(self, Name=None):
     return DbSecurityPolicy._delete_db_security_policy(connection=self, Name=Name)
@@ -1065,28 +1115,119 @@ class MxConnection(object):
   def _update_db_security_policy(self, Name=None, Parameter=None, Value=None):
     return DbSecurityPolicy._update_db_security_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
-
-#
-# -----------------------------------------------------------------------------
-# Data Enrichment Policies
-# -----------------------------------------------------------------------------
-#
-  def get_all_data_enrichment_policies(self):
+  #
+  # -----------------------------------------------------------------------------
+  # Data Enrichment Policies
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_data_enrichment_dam_policies(self):
     return DataEnrichmentPolicy._get_all_data_enrichment_policies(connection=self)
   def get_data_enrichment_policy(self, Name=None):
     return DataEnrichmentPolicy._get_data_enrichment_policy(connection=self, Name=Name)
-  def create_data_enrichment_policy(self, Name=None, Type=None,Rules=[], MatchCriteria=[], ApplyTo=[]):
-    return DataEnrichmentPolicy._create_data_enrichment_policy(connection=self, Name=Name, Type=Type, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
+  def create_data_enrichment_dam_policy(self, Name=None, PolicyType=None,Rules=[], MatchCriteria=[], ApplyTo=[], update=False):
+    return DataEnrichmentPolicy._create_data_enrichment_policy(connection=self, Name=Name, PolicyType=PolicyType, Rules=Rules,
+                                                               MatchCriteria=MatchCriteria, ApplyTo=ApplyTo, update=update)
   def update_data_enrichment_policy(self, Name=None, Rules=[], MatchCriteria=[], ApplyTo=[]):
-    return DataEnrichmentPolicy._update_data_enrichment_policy(connection=self, Name=Name, Rules=Rules, MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
+    return DataEnrichmentPolicy._update_data_enrichment_policy(connection=self, Name=Name, Rules=Rules,
+                                                               MatchCriteria=MatchCriteria, ApplyTo=ApplyTo)
   def delete_data_enrichment_policy(self, Name=None):
     return DataEnrichmentPolicy._delete_data_enrichment_policy(connection=self, Name=Name)
 
-#
-# -----------------------------------------------------------------------------
-# DB connection
-# -----------------------------------------------------------------------------
-#
+  #
+  #-----------------------------------------------------------------------------
+  # DB Audit Policies
+  #-----------------------------------------------------------------------------
+  #
+  def get_all_db_audit_dam_policies(self):
+    return DbAuditPolicy._get_all_db_audit_policies(connection=self)
+  def get_db_audit_policy(self, Name=None):
+    return DbAuditPolicy._get_db_audit_policy(connection=self, Name=Name)
+  def create_db_audit_dam_policy(self, Name=None, Parameters=[], update=False):
+    return DbAuditPolicy._create_db_audit_policy(connection=self, Name=Name, Parameters=Parameters, update=update)
+  def delete_db_audit_policy(self, Name=None):
+    return DbAuditPolicy._delete_db_audit_policy(connection=self, Name=Name)
+  def _update_db_audit_policy(self, Name=None, Parameter=None, Value=None):
+    return DbAuditPolicy._update_db_audit_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+
+  def export_dam_policies(self):
+    """
+    Export all the dam policies in the MX
+
+    >>> specificExport = srcMx.export_dam_policies()
+    >>> pSpecificExport = json.loads(specificExport)
+
+    :return a dictionary in a json like format
+    """
+    policiesDict = {
+      'metadata': {
+        'Host': self.Host,
+        'Version': self.Version,
+        'Challenge': self.Challenge,
+        'SdkVersion': imperva_sdk_version(),
+        'ExportTime': time.strftime("%Y-%m-%d %H:%M:%S")
+      }
+    }
+    policiesDict.update(self._export_objects_to_dict('policies', 'dam'))
+    return json.dumps(policiesDict)
+
+  def import_dam_policies(self, Json=None, update=True):
+    """
+    Import only the dam policies from valid JSON string.
+
+    >>> targetMx.import_dam_policies(specificExport)
+
+    :param Json (string): valid imperva_sdk JSON export
+    :param update (boolean): Set to `True` to update existing resources (default in import function).
+                             If set to `False`, existing resources will cause import operations to fail.
+    :return: (list of dict) Log with details of all import events and their outcome.
+    """
+    return self._import_object_from_json(Json, 'policies', 'dam', 'policy', update)
+
+  # ==================================== END DAM policies =============================================
+
+  #
+  # -----------------------------------------------------------------------------
+  # Assessment Policies
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_assessment_policies(self):
+    return AssessmentPolicy._get_all_assessment_policies(connection=self)
+
+  def get_assessment_policy(self, Name=None):
+    return AssessmentPolicy._get_assessment_policy(connection=self, Name=Name)
+
+  def create_assessment_policy(self, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[],
+                               TestNames=[]):
+    return AssessmentPolicy._create_assessment_policy(connection=self, Name=Name, Description=Description,
+                                                      DbType=DbType,
+                                                      PolicyTags=PolicyTags, AdcKeywords=AdcKeywords,
+                                                      TestNames=TestNames)
+
+  # Assessment Tests
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_assessment_tests(self):
+    return AssessmentTest._get_all_assessment_tests(connection=self)
+
+  def get_assessment_test(self, Name=None):
+    return AssessmentTest._get_assessment_test(connection=self, Name=Name)
+
+  def create_assessment_test(self, Name=None, Description=None,
+                             Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None,
+                             RecommendedFix=None,
+                             TestScript=None, AdditionalScript=None, ResultsLayout=[]):
+    return AssessmentTest._create_assessment_test(connection=self, Name=Name, Description=Description,
+                                                  Severity=Severity, Category=Category, ScriptType=ScriptType,
+                                                  OsType=OsType, DbType=DbType, RecommendedFix=RecommendedFix,
+                                                  TestScript=TestScript, AdditionalScript=AdditionalScript,
+                                                  ResultsLayout=ResultsLayout)
+
+  #
+  # -----------------------------------------------------------------------------
+  # DB connection
+  # -----------------------------------------------------------------------------
+  #
   def get_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None):
     return DBConnection._get_db_connection(connection=self, SiteName=SiteName,
                                            ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName)
@@ -1111,8 +1252,7 @@ class MxConnection(object):
                               ServerName=ServerName, UserMapping=UserMapping, ConnectionString=ConnectionString, ServiceDirectory=ServiceDirectory,
                               TnsAdmin=TnsAdmin, HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName)
   def delete_db_connection(self):
-    return DBConnection_delete_db_connection(connection=self, siteName=None, serverGroupName=None, serviceName=None, connectionName=None)
-
+    return DBConnection._delete_db_connection(connection=self, siteName=None, serverGroupName=None, serviceName=None, connectionName=None)
 
   def get_all_parameter_type_global_objects(self):
     '''
@@ -1211,6 +1351,8 @@ class MxConnection(object):
   def _update_http_protocol_signatures_policy(self, Name=None, Parameter=None, Value=None):
     return HttpProtocolSignaturesPolicy._update_http_protocol_signatures_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
+  # ====================================== DAS Objects ==================================================
+
   #
   #-----------------------------------------------------------------------------
   # DB Assessment Scans
@@ -1219,10 +1361,10 @@ class MxConnection(object):
   def get_assessment_scan(self, Name=None):
     return AssessmentScan._get_assessment_scan(connection=self, Name=Name)
 
-  def get_all_assessment_scans(self):
+  def get_all_assessment_scan_das_objects(self):
     return AssessmentScan._get_all_assessment_scans(connection=self)
 
-  def create_assessment_scan(self, Name=None, Type=None, PreTest=None, PolicyTags=[], DbConnectionTags=[],
+  def create_assessment_scan_das_object(self, Name=None, Type=None, PreTest=None, PolicyTags=[], DbConnectionTags=[],
     ApplyTo=[], Scheduling=None, update=False):
     return AssessmentScan._create_assessment_scan(connection=self,Name=Name,Type=Type, PreTest=PreTest, PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
                                                   ApplyTo=ApplyTo, Scheduling=Scheduling, update=update)
@@ -1233,7 +1375,6 @@ class MxConnection(object):
   def delete_assessment_scan(self, Name=None):
     return AssessmentScan._delete_assessment_scan(connection=self,Name=Name)
 
-  ##################################################################################
 
   #
   #-----------------------------------------------------------------------------
@@ -1243,10 +1384,10 @@ class MxConnection(object):
   def get_classification_scan(self, Name=None):
     return ClassificationScan._get_classification_scan(connection=self, Name=Name)
 
-  def get_all_classification_scans(self):
+  def get_all_classification_scan_das_objects(self):
     return ClassificationScan._get_all_classification_scans(connection=self)
 
-  def create_classification_scan(self, Name=None, ProfileName=None, ApplyTo=[], Scheduling=None, update=False):
+  def create_classification_scan_das_object(self, Name=None, ProfileName=None, ApplyTo=[], Scheduling=None, update=False):
     return ClassificationScan._create_classification_scan(connection=self,Name=Name, ProfileName=ProfileName,
                                                   ApplyTo=ApplyTo, Scheduling=Scheduling, update=update)
 
@@ -1265,10 +1406,10 @@ class MxConnection(object):
   def get_classification_profile(self, Name=None):
     return ClassificationProfile._get_classification_profile(connection=self, Name=Name)
 
-  def get_all_classification_profiles(self):
+  def get_all_classification_profile_das_objects(self):
     return ClassificationProfile._get_all_classification_profiles(connection=self)
 
-  def create_classification_profile(self, Name=None, SiteName=None, DataTypes=[], AutoAcceptResults=None,
+  def create_classification_profile_das_object(self, Name=None, SiteName=None, DataTypes=[], AutoAcceptResults=None,
                                     ScanViewsAndSynonyms=None, SaveSampleData=None, DataSampleAccuracy=None,
                                          ScanSystemSchemas=None, DbsAndSchemasUsage=None, DbsAndSchemas=[],
                                           ExcludeTablesAndColumns=[], DelayBetweenQueries=None,
@@ -1290,6 +1431,45 @@ class MxConnection(object):
     return ClassificationProfile._delete_classification_profile(connection=self, Name=Name)
 
 
+  def export_das_objects(self):
+    """
+    Export all the das objects in the MX
+
+    :return a dictionary in a json like format
+    """
+    dasObjectsDict = {
+      'metadata': {
+        'Host': self.Host,
+        'Version': self.Version,
+        'Challenge': self.Challenge,
+        'SdkVersion': imperva_sdk_version(),
+        'ExportTime': time.strftime("%Y-%m-%d %H:%M:%S")
+      }
+    }
+    dasObjectsDict.update(self._export_objects_to_dict('objects', 'das'))
+    return json.dumps(dasObjectsDict)
+
+  def import_das_objects(self, Json=None, update=True):
+    """
+    Import only the das objects from valid JSON string.
+    :param Json (string): valid imperva_sdk JSON export
+    :param update (boolean): Set to `True` to update existing resources (default in import function).
+                             If set to `False`, existing resources will cause import operations to fail.
+    :return: (list of dict) Log with details of all import events and their outcome.
+    """
+    return self._import_object_from_json(Json=Json, ObjectType='objects', Context='das', Type='object', update=update)
+
+  # ====================================== END DAS Objects ==============================================
+
+  #-----------------------------------------------------------------------------
+  # Tags
+  #-----------------------------------------------------------------------------
+
+  def get_all_tags(self):
+    return Tag._get_all_tags(connection=self)
+
+  def create_tag(self, Name=None, update=False):
+    return Tag._create_tag(connection=self, Name=Name)
 
 
   def _upload_adc_content(self, path):
@@ -1301,15 +1481,132 @@ class MxConnection(object):
   def _get_mx_swagger(self):
     return self._mx_api('GET', '/internal/swagger', ApiVersion="experimental")
 
-  def get_all_report_types(self):
-    ''' Returns all available report types '''
-    types = []
-    for cur_item in dir(self):
-      if cur_item.startswith('get_all_') and cur_item.endswith('_reports') and cur_item != 'get_all_report_types':
-        types.append(cur_item.replace('get_all_','').replace('_reports',''))
-    return types
 
-  def get_all_db_audit_reports(self):
+  # ====================================== DAM reports ==================================================
+
+  #
+  # -----------------------------------------------------------------------------
+  # Agent configuration
+  # -----------------------------------------------------------------------------
+
+  def get_all_agent_configurations(self):
+    '''
+    :rtype: `list` of :obj:`imperva_sdk.AgentConfiguration.AgentConfiguration`
+    :return: List of all agent configurations.
+    '''
+    return AgentConfiguration._get_all_agent_configurations(connection=self)
+
+  def get_agent_configuration(self, Name, Ip=None):
+    '''
+    :type Name: string
+    :param Name: Agent Name
+    :rtype: imperva_sdk.AgentConfiguration.AgentConfiguration
+    :return: AgentConfiguration instance.
+    '''
+    return AgentConfiguration._get_agent_configuration_by_name(connection=self, Name=Name, Ip=Ip)
+
+
+  def create_agent_configuration(self, Name=None, Ip=None, DataInterfaces=[], Tags=[], AdvancedConfig={},
+                                 DiscoverySettings={}, CpuUsageRestraining={}, GeneralDetails={}, update=False):
+    """
+
+    :param Name (string): agent's name
+    :param Ip (string): agent's IP
+    :param DataInterfaces (list): agent's data interfaces
+    :param Tags (list): agent's tags
+    :param AdvancedConfig (dict): agent's advanced configuration
+    :param DiscoverySettings (dict): agent's discovery settings
+    :param CpuUsageRestraining (dict): agent's cpu usage restraining
+    :param GeneralDetails (dict): agent's additional general details
+    :param update: If `update=True` and the data set already exists, update and return the existing data set.
+                  If `update=False` (default) and the data set exists, an exception will be raised.
+    :return: AgentConfiguration instance
+    """
+    return AgentConfiguration._create_agent_configuration(connection=self,
+                                                          Name=Name,
+                                                          Ip=Ip,
+                                                          DataInterfaces=DataInterfaces,
+                                                          Tags=Tags,
+                                                          AdvancedConfig=AdvancedConfig,
+                                                          DiscoverySettings=DiscoverySettings,
+                                                          CpuUsageRestraining=CpuUsageRestraining,
+                                                          GeneralDetails=GeneralDetails,
+                                                          update=update)
+
+
+  def _update_agent_configuration(self, Name=None, Parameter=None, Value=None):
+    """
+
+    :param Name: Agent name (string)
+    :param Parameter: The parameter in the agent configuration need to be updated (string)
+    :param Value: The value of the parameter
+    :return: True on success or exception on failure
+    """
+    return AgentConfiguration._update_agent_configuration(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+
+  def _export_agents_configuration(self):
+    actionSetDict = {
+      'metadata': {
+        'Host': self.Host,
+        'Version': self.Version,
+        'Challenge': self.Challenge,
+        'SdkVersion': imperva_sdk_version(),
+        'ExportTime': time.strftime("%Y-%m-%d %H:%M:%S")
+      }
+    }
+
+    actionSetDict['agent_configurations'] = []
+    try:
+      agents_config = self.get_all_agent_configurations()
+      for agent in agents_config:
+        as_dict = dict(agent)
+        actionSetDict['agent_configurations'].append(as_dict)
+    except:
+      # Previous versions didn't have action set APIs
+      pass
+
+    return actionSetDict
+
+
+  def export_agent_configurations(self):
+    """
+    Export all agents configurations in the MX
+
+    >>> specificExport = srcMx.export_agents_configuration()
+    >>> pSpecificExport = json.loads(specificExport)
+
+    :return json object
+    """
+    return json.dumps(self._export_agents_configuration())
+
+
+  def import_agent_configurations(self, Json=None, update=True):
+    """
+    Import all the agent configuration from valid JSON string.
+
+    >>> targetMx.import_agent_configurations(specificExport)
+
+    :param Json (string): valid imperva_sdk JSON export
+    :param update (boolean): Set to `True` to update existing resources (default in import function).
+                             If set to `False`, existing resources will cause import operations to fail.
+    :return: (list of dict) Log with details of all import events and their outcome.
+    """
+    try:
+      json_config = json.loads(Json)
+    except:
+      raise MxException("Invalid JSON configuration")
+
+    return self._create_tree_from_json(Dict={'agent_configurations': json_config['agent_configurations']},
+                                       ParentObject=self, update=update)
+
+  # ====================================== DAM reports ==================================================
+
+  #-----------------------------------------------------------------------------
+  # DB audit report
+  #-----------------------------------------------------------------------------
+
+  def get_all_db_audit_dam_reports(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.DBAuditReport.DBAuditReport`
     :return: List of all db audit reports.
@@ -1335,8 +1632,8 @@ class MxConnection(object):
     """
     return DBAuditReport._update_db_audit_report(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
-  def create_db_audit_report(self, Name=None, ReportFormat=None, ReportId = None, Columns=[],
-                              Filters=[], Policies=[],  Sorting=[], TimeFrame={}, Scheduling=[], update=False):
+  def create_db_audit_dam_report(self, Name=None, ReportFormat=None, ReportId = None, Columns=[],
+                                 Filters=[], Policies=[],  Sorting=[], TimeFrame={}, Scheduling=[], update=False):
     """
 
     :param Name: The report name (string)
@@ -1364,67 +1661,93 @@ class MxConnection(object):
                                                  Scheduling=Scheduling,
                                                  update=update)
 
-  def get_all_global_object_types(self):
-    ''' Returns all available global_object types '''
-    types = []
-    for cur_item in dir(self):
-      if cur_item.startswith('get_all_') and cur_item.endswith('_global_objects') and cur_item != 'get_all_global_objects':
-        types.append(cur_item.replace('get_all_','').replace('_global_objects',''))
-    return types
+  def export_dam_reports(self):
+    """
+    Export all the dam reports in the MX
+
+    :return a dictionary in a json like format
+    """
+    globalObjectsDict = {
+      'metadata': {
+        'Host': self.Host,
+        'Version': self.Version,
+        'Challenge': self.Challenge,
+        'SdkVersion': imperva_sdk_version(),
+        'ExportTime': time.strftime("%Y-%m-%d %H:%M:%S")
+      }
+    }
+    globalObjectsDict.update(self._export_objects_to_dict('reports', 'dam'))
+    return json.dumps(globalObjectsDict)
+
+  def import_dam_reports(self, Json=None, update=True):
+    """
+    Import only the dam reports from valid JSON string.
+    :param Json (string): valid imperva_sdk JSON export
+    :param update (boolean): Set to `True` to update existing resources (default in import function).
+                             If set to `False`, existing resources will cause import operations to fail.
+    :return: (list of dict) Log with details of all import events and their outcome.
+    """
+    return self._import_object_from_json(Json, 'reports', 'dam', 'report', update)
+
+  # ====================================== END DAM reports ==================================================
+
+  # ====================================== DAM GLOBAL OBJECTS ===============================================
 
   #
-  #-----------------------------------------------------------------------------
-  #           Data type
-  #-----------------------------------------------------------------------------
+  # -----------------------------------------------------------------------------
+  # Table Groups
+  # -----------------------------------------------------------------------------
+  #
 
-  def get_all_data_type_global_objects(self):
+  def get_all_table_group_dam_global_objects(self):
     '''
-    :rtype: `list` of :obj:`imperva_sdk.DataType.DataType`
-    :return: List of all data types.
+    :rtype: `list` of :obj:`imperva_sdk.TableGroup.TableGroup`
+    :return: List of all table groups.
     '''
-    return DataType._get_all_data_type(connection=self)
+    return TableGroup._get_all_table_groups(connection=self)
 
-  def get_data_type(self, Name):
-    '''
-    :type Name: string
-    :param Name: data type Name
-    :rtype: imperva_sdk.DataType.DataType
-    :return: DataType instance of specified data type.
-    '''
-    return DataType._get_data_type_by_name(connection=self, Name=Name)
 
-  def create_data_type_global_object(self, Name=None, IsSensitive=True, Rules=[], TargetTableGroupName=None,
-                                     update=False):
+  def get_table_group(self, Name, IsSensitive=None, ServiceTypes=[]):
     """
-    :param Name: Data type name (string)
-    :param IsSensitive: True if data type is sensitive (boolean)
-    :param Rules: the rules of the data type (list)
-    :param TargetTableGroupName: The name of the target table group (string)
-    :param update: If `update=True` and the data type already exists, update and return the existing data type.
-                  If `update=False` (default) and the data type exists, an exception will be raised.
-    :return:  DataType instance
+    :param Name: Table group name (string)
+    :param IsSensitive: Is the table group sesitive (boolean)
+    :param ServiceTypes: a list of the servie types (list)
+    :return: TableGroup instance of specified table group.
     """
-    return DataType._create_data_type(connection=self, Name=Name, IsSensitive=IsSensitive, Rules=Rules,
-                                      TargetTableGroupName=TargetTableGroupName, update=update)
+    return TableGroup._get_table_group_by_name(connection=self, Name=Name, IsSensitive=IsSensitive,
+                                               ServiceTypes=ServiceTypes)
 
-  def _update_data_type(self, Name=None, Parameter=None, Value=None):
+  def create_table_group_dam_global_object(self, Name=None, IsSensitive=None, DataType=None, ServiceTypes=[], Records=[],
+                                            update=False):
     """
+    :param Name: Table group name (string)
+    :param IsSensitive: Is the table group sesitive (boolean)
+    :param DataType: the data type of the table group (string)
+    :param ServiceTypes: a list of the servie types (list)
+    :param Records: a list of records (list)
+    :param update: update: If `update=True` and the resource already exists, update and return the existing resource.
+                  If `update=False` (default) and the resource exists, an exception will be raised.
+    :return: TableGroup instance
+    """
+    return TableGroup._create_table_group(connection=self, Name=Name, IsSensitive=IsSensitive, DataType=DataType,
+                                          ServiceTypes=ServiceTypes, Records=Records, update=update)
 
-    :param Name: Data type name (string)
-    :param Parameter: The parameter to update (string)
-    :param Value: The value of the parameter to update
+  def _update_table_group(self, Name=None, Parameter=None, Value=None):
+    """
+    :param Name: Table group name (string)
+    :param Parameter: The parameter in the table needed to be updated (string)
+    :param Value: The value of the parameter
     :return: True on success or exception on failure
     """
-    return DataType._update_data_type(connection=self, Name=Name, Parameter=Parameter, Value=Value)
-
+    return TableGroup._update_table_group(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
   #
-  #-----------------------------------------------------------------------------
-  #           Lookup data set
-  #-----------------------------------------------------------------------------
+  # -----------------------------------------------------------------------------
+  # Lookup data sets
+  # -----------------------------------------------------------------------------
+  #
 
-
-  def get_all_lookup_data_set_global_objects(self):
+  def get_all_lookup_data_set_dam_global_objects(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.LookupDataSet.LookupDataSet`
     :return: List of all lookup data sets.
@@ -1450,7 +1773,7 @@ class MxConnection(object):
     """
     return LookupDataSet._update_lookup_data_set(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
-  def create_lookup_data_set_global_object(self, Name=None, Records=[], Columns=[], update=False):
+  def create_lookup_data_set_dam_global_object(self, Name=None, Records=[], Columns=[], update=False):
     """
 
     :param Name: Data set name (string)
@@ -1464,59 +1787,11 @@ class MxConnection(object):
 
   #
   # -----------------------------------------------------------------------------
-  # Table Groups
-  # -----------------------------------------------------------------------------
-  #
-
-  def get_all_table_groups_global_objects(self):
-    '''
-    :rtype: `list` of :obj:`imperva_sdk.TableGroup.TableGroup`
-    :return: List of all table groups.
-    '''
-    return TableGroup._get_all_table_groups(connection=self)
-
-
-  def get_table_group(self, Name, IsSensitive=None, ServiceTypes=[]):
-    """
-    :param Name: Table group name (string)
-    :param IsSensitive: Is the table group sesitive (boolean)
-    :param ServiceTypes: a list of the servie types (list)
-    :return: TableGroup instance of specified table group.
-    """
-    return TableGroup._get_table_group_by_name(connection=self, Name=Name, IsSensitive=IsSensitive,
-                                               ServiceTypes=ServiceTypes)
-
-  def create_table_groups_global_object(self, Name=None, IsSensitive=None, DataType=None, ServiceTypes=[], Records=[],
-                                       update=False):
-    """
-    :param Name: Table group name (string)
-    :param IsSensitive: Is the table group sesitive (boolean)
-    :param DataType: the data type of the table group (string)
-    :param ServiceTypes: a list of the servie types (list)
-    :param Records: a list of records (list)
-    :param update: update: If `update=True` and the resource already exists, update and return the existing resource.
-                  If `update=False` (default) and the resource exists, an exception will be raised.
-    :return: TableGroup instance
-    """
-    return TableGroup._create_table_group(connection=self, Name=Name, IsSensitive=IsSensitive, DataType=DataType,
-                                          ServiceTypes=ServiceTypes, Records=Records, update=update)
-
-  def _update_table_group(self, Name=None, Parameter=None, Value=None):
-    """
-    :param Name: Table group name (string)
-    :param Parameter: The parameter in the table needed to be updated (string)
-    :param Value: The value of the parameter
-    :return: True on success or exception on failure
-    """
-    return TableGroup._update_table_group(connection=self, Name=Name, Parameter=Parameter, Value=Value)
-
-  #
-  # -----------------------------------------------------------------------------
   # Agent Monitoring Rules
   # -----------------------------------------------------------------------------
   #
 
-  def get_all_agent_monitoring_rules_global_objects(self):
+  def get_all_agent_monitoring_rule_dam_global_objects(self):
     '''
     :rtype: `list` of :obj:`imperva_sdk.AgentMonitoringRule.AgentMonitoringRule`
     :return: List of all agent monitoring rules.
@@ -1534,7 +1809,6 @@ class MxConnection(object):
 
   def _update_agent_monitoring_rule(self, Name=None, Parameter=None, Value=None):
     """
-
     :param Name: Rule name (string)
     :param Parameter: The parameter in the rule need to update (string)
     :param Value: The value of the parameter
@@ -1542,13 +1816,15 @@ class MxConnection(object):
     """
     return AgentMonitoringRule._update_agent_monitoring_rule(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
-  def create_agent_monitoring_rules_global_object(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[], update=False):
+  def create_agent_monitoring_rule_dam_global_object(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[],
+                                                     ApplyToAgent=[], ApplyToTag=[], update=False):
     """
-
     :param Name: Rule name (string)
     :param PolicyType: The type of the policy (string)
     :param Action: The followed action of the rule (string)
     :param CustomPredicates: Policy Match Criteria in API JSON format
+    :param ApplyToAgent: Agents that rule is applied to, in API JSON format
+    :param ApplyToTag: Tags that rule is applied to, in API JSON format
     :param update: If `update=True` and the resource already exists, update and return the existing resource.
                   If `update=False` (default) and the resource exists, an exception will be raised.
     :return:  AgentMonitoringRule instance
@@ -1558,7 +1834,125 @@ class MxConnection(object):
                                                              PolicyType=PolicyType,
                                                              Action=Action,
                                                              CustomPredicates=CustomPredicates,
+                                                             ApplyToAgent=ApplyToAgent,
+                                                             ApplyToTag=ApplyToTag,
                                                              update=update)
+
+  #
+  #-----------------------------------------------------------------------------
+  #           Data type
+  #-----------------------------------------------------------------------------
+
+  def get_all_data_type_dam_global_objects(self):
+    '''
+    :rtype: `list` of :obj:`imperva_sdk.DataType.DataType`
+    :return: List of all data types.
+    '''
+    return DataType._get_all_data_type(connection=self)
+
+  def get_data_type(self, Name):
+    '''
+    :type Name: string
+    :param Name: data type Name
+    :rtype: imperva_sdk.DataType.DataType
+    :return: DataType instance of specified data type.
+    '''
+    return DataType._get_data_type_by_name(connection=self, Name=Name)
+
+  def create_data_type_dam_global_object(self, Name=None, IsSensitive=True, Rules=[], TargetTableGroupName=None,
+                                         update=False):
+    """
+    :param Name: Data type name (string)
+    :param IsSensitive: True if data type is sensitive (boolean)
+    :param Rules: the rules of the data type (list)
+    :param TargetTableGroupName: The name of the target table group (string)
+    :param update: If `update=True` and the data type already exists, update and return the existing data type.
+                  If `update=False` (default) and the data type exists, an exception will be raised.
+    :return:  DataType instance
+    """
+    return DataType._create_data_type(connection=self, Name=Name, IsSensitive=IsSensitive, Rules=Rules,
+                                      TargetTableGroupName=TargetTableGroupName, update=update)
+
+  def _update_data_type(self, Name=None, Parameter=None, Value=None):
+    """
+
+    :param Name: Data type name (string)
+    :param Parameter: The parameter to update (string)
+    :param Value: The value of the parameter to update
+    :return: True on success or exception on failure
+    """
+    return DataType._update_data_type(connection=self, Name=Name, Parameter=Parameter, Value=Value)
+
+
+
+  def export_dam_global_object(self):
+    """
+    Export all the dam global objects in the MX
+    :return a dictionary in a json like format
+    """
+    globalObjectsDict = {
+      'metadata': {
+        'Host': self.Host,
+        'Version': self.Version,
+        'Challenge': self.Challenge,
+        'SdkVersion': imperva_sdk_version(),
+        'ExportTime': time.strftime("%Y-%m-%d %H:%M:%S")
+      }
+    }
+    globalObjectsDict.update(self._export_objects_to_dict('global_objects', 'dam'))
+    return json.dumps(globalObjectsDict)
+
+  def import_dam_global_object(self, Json=None, update=True):
+    """
+    Import only the dam global objects configuration from valid JSON string.
+    :param Json (string): valid imperva_sdk JSON export
+    :param update (boolean): Set to `True` to update existing resources (default in import function).
+                             If set to `False`, existing resources will cause import operations to fail.
+    :return: (list of dict) Log with details of all import events and their outcome.
+    """
+    return self._import_object_from_json(Json, 'global_objects', 'dam', 'global_object', update)
+
+  # ==================================== END DAM GLOBAL OBJECTS ================================================
+
+  def get_all_dam_policies_types(self):
+    ''' Returns all DAM available policies types '''
+    types = []
+    for cur_item in dir(self):
+      if cur_item.startswith('get_all') and cur_item.endswith('_dam_policies'):
+        types.append(cur_item.replace('get_all_','').replace('_dam_policies',''))
+    return types
+
+  def get_all_dam_reports_types(self):
+    ''' Returns all available DAM report types '''
+    types = []
+    for cur_item in dir(self):
+      if cur_item.startswith('get_all_') and cur_item.endswith('_dam_reports'):
+        types.append(cur_item.replace('get_all_','').replace('_dam_reports',''))
+    return types
+
+  def get_all_dam_global_objects_types(self):
+    ''' Returns all DAM available global_object types '''
+    types = []
+    for cur_item in dir(self):
+      if cur_item.startswith('get_all') and cur_item.endswith('_dam_global_objects') and cur_item != 'get_all_global_objects':
+        types.append(cur_item.replace('get_all_','').replace('_dam_global_objects',''))
+    return types
+
+  def get_all_das_objects_types(self):
+    ''' Returns all available DAS object types '''
+    types = []
+    for cur_item in dir(self):
+      if cur_item.startswith('get_all_') and cur_item.endswith('_das_objects') and cur_item != 'get_all_das_objects_types':
+        types.append(cur_item.replace('get_all_','').replace('_das_objects',''))
+    return types
+
+  def get_all_global_object_types(self):
+    ''' Returns all available global_object types '''
+    types = []
+    for cur_item in dir(self):
+      if cur_item.startswith('get_all_') and cur_item.endswith('_global_objects') and cur_item != 'get_all_global_objects':
+        types.append(cur_item.replace('get_all_','').replace('_global_objects',''))
+    return types
 
   def get_all_global_objects(self):
     ''' Returns all global objects by type '''
@@ -1622,6 +2016,37 @@ class MxConnection(object):
     body = { 'licenseContent': LicenseContent }
     self._mx_api('POST', '/administration/license', timeout=1800, data=json.dumps(body))
     return True
+
+  def _export_objects_to_dict(self, object_type, context):
+    """
+    Export all the objects from type 'object_type' in the correct context within the MX
+
+    :param object_type (string)- the object types name we want to export. For example, 'global_objects'
+    :param context (string)- the context of the objects. For example, 'dam', 'waf' etc.
+    :return a dictionary in a json like format
+    """
+    json_like_obj = {}
+    full_object_name = context + '_' + object_type
+    json_like_obj[full_object_name] = {}
+    try:
+      object_types_fun = getattr(self, 'get_all_' + context + '_' + object_type + '_' + 'types')
+      inner_object_types = object_types_fun()
+    except:
+      return
+    for type in inner_object_types:
+      json_like_obj[full_object_name][type] = []
+      try:
+        get_pol_func = getattr(self, 'get_all_' + type + '_' + full_object_name)
+        objects = get_pol_func()
+        for cur_object in objects:
+          obj_dict = dict(cur_object)
+          json_like_obj[full_object_name][type].append(obj_dict)
+      except Exception as e:
+        # Some versions don't have all Object APIs
+        pass
+
+    return json_like_obj
+
 
   def export_to_json(self, Discard=[]):
     '''
@@ -1724,17 +2149,12 @@ class MxConnection(object):
         site_dict = dict(site)
         dict_discard(site_dict, Discard)
         tmp_json['sites'].append(site_dict)
-    tmp_json['action_sets'] = []
+
+    tmp_json['action_sets'] = {}
     if 'action_sets' not in Discard:
-      try:
-        action_sets = self.get_all_action_sets()
-        for action_set in action_sets:
-          as_dict = dict(action_set)
-          dict_discard(as_dict, Discard)
-          tmp_json['action_sets'].append(as_dict)
-      except:
-        # Previous versions didn't have action set APIs
-        pass
+      res = self._export_action_sets()
+      tmp_json['action_sets'] = res['action_sets']
+
     tmp_json['policies'] = {}
     if 'policies' not in Discard:
       policy_types = self.get_all_policy_types()
@@ -1767,23 +2187,36 @@ class MxConnection(object):
           except:
             # Some versions don't have all Global Object APIs
             pass
-    tmp_json['reports'] = {}
+
+    tmp_json['agent_configurations'] = []
+    if 'agent_configurations' not in Discard:
+      res = self._export_agents_configuration()
+      tmp_json['agent_configurations'] += res['agent_configurations']
+
+    tmp_json['dam_reports'] = {}
     if 'reports' not in Discard:
-      object_types = self.get_all_report_types()
-      for object_type in object_types:
-        tmp_json['reports'][object_type] = []
-        if object_type not in Discard:
-          try:
-            get_pol_func = getattr(self, 'get_all_' + object_type + '_reports')
-            objects = get_pol_func()
-            for cur_object in objects:
-              obj_dict = dict(cur_object)
-              dict_discard(obj_dict, Discard)
-              tmp_json['reports'][object_type].append(obj_dict)
-          except:
-            # Some versions don't have all Global Object APIs
-            pass
+      res = self._export_objects_to_dict('reports', 'dam')
+      tmp_json['dam_reports'].update(res['dam_reports'])
+
+    tmp_json['das_objects'] = {}
+    if 'das' not in Discard:
+      res = self._export_objects_to_dict('objects', 'das')
+      tmp_json['das_objects'].update(res['das_objects'])
+
     return json.dumps(tmp_json)
+
+  def _import_object_from_json(self, Json=None, ObjectType=None, Context=None, Type=None, update=True):
+    """
+    Import a specific MX object type configuration from valid JSON string.
+    note: The function only imports objects that are implemented in imperva_sdk. It is not the entire MX configuration.
+    """
+    try:
+      json_config = json.loads(Json)
+    except:
+      raise MxException("Invalid JSON configuration")
+
+    full_object_name = Context + '_' + ObjectType
+    return self._create_objects_from_json(Objects=json_config[full_object_name], Type= Context+'_'+Type, update=update)
 
   def import_from_json(self, Json=None, update=True):
     '''
@@ -1817,14 +2250,20 @@ class MxConnection(object):
     log += self._create_tree_from_json(Dict={'sites': json_config['sites']}, ParentObject=self, update=update)
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
-    log += self._create_objects_from_json(Objects=json_config['reports'], Type="report", update=update)
+    log += self._create_tree_from_json(Dict={'agent_configurations': json_config['agent_configurations']},
+                                       ParentObject=self, update=update)
+    log += self.import_dam_reports(Json)
+    log += self.import_das_objects(Json)
 
     return log
 
   def _create_objects_from_json(self, Objects=None, Type=None, update=True):
     log = []
     for object_type in Objects:
-      create_name = 'create_' + object_type + '_' + Type
+      create_name = 'create_' + object_type
+      if Type:
+        create_name += '_' + Type
+
       create_function = getattr(self, create_name)
       for cur_object in Objects[object_type]:
         log_entry = {
@@ -1840,7 +2279,7 @@ class MxConnection(object):
           log_entry['Error Message'] = str(e)
         log.append(log_entry)
     return log
-  
+
   def _create_tree_from_json(self, Dict=None, ParentObject=None, update=True):
     log = []
     for object_type in Dict:
@@ -1867,7 +2306,7 @@ class MxConnection(object):
           log_entry['Result'] = "ERROR"
           log_entry['Error Message'] = str(e)
         log.append(log_entry)
-          
+
         log += self._create_tree_from_json(child_objects, parent_object)
 
         #-----------------------------------------------------------------------

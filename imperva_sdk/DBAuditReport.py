@@ -15,7 +15,7 @@ class DBAuditReport(MxObject):
    >>> # Create user defined copy of report
    >>> report_dict = dict(report)
    >>> report_dict['Name'] = 'user defined - %s' % report_dict['Name']
-   >>> mx.create_db_audit_report(**report_dict)
+   >>> mx.create_db_audit_dam_report(**report_dict)
    <imperva_sdk 'DBAuditReport' Object - 'user defined - testReport'>
 
    '''
@@ -307,7 +307,7 @@ class DBAuditReport(MxObject):
         raise MxException("report '%s' already exists" % Name)
       else:
         # Update existing report
-        parameters = locals()
+        parameters = dict(locals())
         for cur_key in list(parameters):
           if is_parameter.match(cur_key) and cur_key != 'Name' and parameters[cur_key] != None:
             setattr(obj, cur_key, parameters[cur_key])

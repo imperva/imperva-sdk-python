@@ -312,7 +312,7 @@ class ClassificationProfile(MxObject):
                 raise MxException("Profile '%s' already exists" % Name)
             else:
                 # Update existing profile
-                parameters = locals()
+                parameters = dict(locals())
                 for cur_key in parameters:
                     if is_parameter.match(cur_key) and cur_key != 'Name' and parameters[cur_key] != None:
                         setattr(profile, cur_key, parameters[cur_key])
