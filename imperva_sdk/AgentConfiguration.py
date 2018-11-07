@@ -291,17 +291,23 @@ class AgentConfiguration(MxObject):
       return obj_exists
     try:
       resTags = connection._mx_api('GET', '/conf/agents/%s/tags' % Name)
-      resDataInterfaces = connection._mx_api('GET', '/conf/agents/%s/dataInterfaces' % Name)
       resAdvancedConfig = connection._mx_api('GET', '/conf/agents/%s/Settings/AdvancedConfiguration' % Name)
       resDiscovery = connection._mx_api('GET', '/conf/agents/%s/Settings/DiscoverySettings' % Name)
       resCPU = connection._mx_api('GET', '/conf/agents/%s/Settings/CPUUsageRestraining' % Name)
       resGeneral = connection._mx_api('GET', '/conf/agents/%s/GeneralDetails' % Name)
+      try:
+        resDataInterfaces = connection._mx_api('GET', '/conf/agents/%s/dataInterfaces' % Name)
+        resDataInterfaces = resDataInterfaces['data-interfaces']
+      except:
+        # in case there is no data interfaces
+        resDataInterfaces = []
+        pass
     except:
       return None
     return AgentConfiguration(connection=connection,
                               Name=Name,
                               Ip=Ip,
-                              DataInterfaces=resDataInterfaces['data-interfaces'],
+                              DataInterfaces=resDataInterfaces,
                               Tags=resTags['tags'],
                               AdvancedConfig=resAdvancedConfig,
                               DiscoverySettings=resDiscovery,

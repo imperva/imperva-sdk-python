@@ -81,7 +81,7 @@ class AssessmentPolicy(MxObject):
         assessmentPolicies = []
         for assessmentPolicyName in assessmentPolicyNames:
             if '/' in assessmentPolicyName:
-                print("%s cannot be used by the API. Skipping..." % assessmentPolicyName)
+                # Bug - we have policies with '/' character that don't work with the API...
                 continue
             try:
                 assessmentPolicy = connection._mx_api('GET', '/conf/assessment/policies/' + assessmentPolicyName)
@@ -112,7 +112,8 @@ class AssessmentPolicy(MxObject):
 
 
     @staticmethod
-    def _create_assessment_policy(connection, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[], TestNames=[]):
+    def _create_assessment_policy(connection, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[],
+                                  TestNames=[], update=False):
         validate_string(Name=Name)
         body = {}
         body['name'] = Name

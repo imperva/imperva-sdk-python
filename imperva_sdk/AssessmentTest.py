@@ -90,7 +90,7 @@ class AssessmentTest(MxObject):
         assessmentTests = []
         for assessmentTestName in assessmentTestNames:
             if '/' in assessmentTestName or r'"' in assessmentTestName or '$' in assessmentTestName:
-                print("%s cannot be used by the API. Skipping..." % assessmentTestName)
+                # Bug - we have tests with '/','$' character that don't work with the API...
                 continue
             try:
                 assessmentTest = connection._mx_api('GET', '/conf/assessment/tests/' + assessmentTestName)
@@ -122,7 +122,7 @@ class AssessmentTest(MxObject):
     @staticmethod
     def _create_assessment_test(connection, Name=None, Description=None,
                                 Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None, RecommendedFix=None,
-                                TestScript=None, AdditionalScript=None, ResultsLayout=[]):
+                                TestScript=None, AdditionalScript=None, ResultsLayout=[], update=False):
         validate_string(Name=Name)
         body = {}
         body['name'] = Name
@@ -136,8 +136,6 @@ class AssessmentTest(MxObject):
         body['test-script'] = TestScript
         body['additional-script'] = AdditionalScript
         body['result-layout'] = ResultsLayout
-
-        print(json.dumps(body))
 
         try:
             connection._mx_api('POST', '/conf/assessment/tests/%s' % Name, data=json.dumps(body))
