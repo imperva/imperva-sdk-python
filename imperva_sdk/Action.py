@@ -194,13 +194,13 @@ class Action(MxObject):
         raise MxException("Action '%s' already exists" % Name)
       else:
         # Update existing
-        parameters = locals()
+        parameters = dict(locals())
         for cur_key in parameters:
             if is_parameter.match(cur_key) and cur_key not in ['Name', 'ActionSet', 'ActionType', 'ActionInterface'] and parameters[cur_key] != None:
                 setattr(action, cur_key, parameters[cur_key])
       return action
     body = {'type': ActionType}
-    parameters = locals()
+    parameters = dict(locals())
     for cur_key in parameters:
       if is_parameter.match(cur_key) and cur_key not in ['Name', 'ActionSet', 'ActionType'] and parameters[cur_key] != None:
         body[cur_key[0].lower() + cur_key[1:]] = parameters[cur_key]

@@ -120,7 +120,7 @@ class DbApplication(MxObject):
     dba = connection.get_db_application(Site=Site, ServerGroup=ServerGroup, DbService=DbService, Name=Name)
     if dba:
       if update:
-        parameters = locals()
+        parameters = dict(locals())
         for cur_key in parameters:
           if is_parameter.match(cur_key) and cur_key not in ['Name', 'Site', 'ServerGroup', 'DbService', 'Profile'] and parameters[cur_key] != None:
             setattr(dba, cur_key, parameters[cur_key])

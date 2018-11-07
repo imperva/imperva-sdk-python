@@ -2,7 +2,7 @@
 
 import re
 import os
-valid_string_pattern = re.compile(r'^[a-zA-Z0-9 _\.\'\-\[\]\,\(\)\:\+]*$')
+valid_string_pattern = re.compile(r'^[a-zA-Z0-9 _\.\'\-\[\]\,\(\)\:\+\/]*$')
 
 #
 # In "imperva_sdk", all Class parameters start with a capital letter.
