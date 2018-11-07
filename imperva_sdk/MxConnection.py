@@ -1816,7 +1816,8 @@ class MxConnection(object):
     """
     return AgentMonitoringRule._update_agent_monitoring_rule(connection=self, Name=Name, Parameter=Parameter, Value=Value)
 
-  def create_agent_monitoring_rule_dam_global_object(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[], update=False):
+  def create_agent_monitoring_rule_dam_global_object(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[],
+                                                     ApplyToAgent=[], ApplyToTag=[], update=False):
     """
     :param Name: Rule name (string)
     :param PolicyType: The type of the policy (string)
