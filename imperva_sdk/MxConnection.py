@@ -1364,9 +1364,10 @@ class MxConnection(object):
   def get_all_assessment_scan_das_objects(self):
     return AssessmentScan._get_all_assessment_scans(connection=self)
 
-  def create_assessment_scan_das_object(self, Name=None, Type=None, PreTest=None, PolicyTags=[], DbConnectionTags=[],
+  def create_assessment_scan_das_object(self, Name=None, Type=None, PolicyName=None, PreTest=None, PolicyTags=[], DbConnectionTags=[],
     ApplyTo=[], Scheduling=None, update=False):
-    return AssessmentScan._create_assessment_scan(connection=self,Name=Name,Type=Type, PreTest=PreTest, PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
+    return AssessmentScan._create_assessment_scan(connection=self, Name=Name, Type=Type, PolicyName=PolicyName, PreTest=PreTest,
+                                                  PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
                                                   ApplyTo=ApplyTo, Scheduling=Scheduling, update=update)
 
   def update_assessment_scan(self, Name=None, Parameter=None, Value=None):
