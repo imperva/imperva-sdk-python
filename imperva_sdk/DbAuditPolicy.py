@@ -123,9 +123,6 @@ class DbAuditPolicy(MxObject):
             name = policy['policy-name']
             # Bug - we have policies with '/' character that don't work with the API...
             if '/' in name:
-                # We need to print something to log to tell the user that this was not sent. We need a log mechanism
-########
-                print("%s cannot be used by the API. Skipping..." % name)
                 continue
             pol_obj = connection.get_db_audit_policy(Name=name)
             if pol_obj:

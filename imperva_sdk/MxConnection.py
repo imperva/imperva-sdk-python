@@ -38,6 +38,7 @@ from imperva_sdk.ClassificationScan             import *
 from imperva_sdk.ClassificationProfile          import *
 from imperva_sdk.AgentConfiguration             import *
 from imperva_sdk.Tag                            import *
+from imperva_sdk.DiscoveryScan					import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1188,40 +1189,29 @@ class MxConnection(object):
 
   #
   # -----------------------------------------------------------------------------
-  # Assessment Policies
+  # Discovery Scans
   # -----------------------------------------------------------------------------
   #
-  def get_all_assessment_policies(self):
-    return AssessmentPolicy._get_all_assessment_policies(connection=self)
+  def get_all_discovery_scans(self):
+    return DiscoveryScan._get_all_discovery_scans(connection=self)
 
-  def get_assessment_policy(self, Name=None):
-    return AssessmentPolicy._get_assessment_policy(connection=self, Name=Name)
+  def get_discovery_scan(self, Name=None):
+    return DiscoveryScan._get_discovery_scan(connection=self, Name=Name)
 
-  def create_assessment_policy(self, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[],
-                               TestNames=[]):
-    return AssessmentPolicy._create_assessment_policy(connection=self, Name=Name, Description=Description,
-                                                      DbType=DbType,
-                                                      PolicyTags=PolicyTags, AdcKeywords=AdcKeywords,
-                                                      TestNames=TestNames)
+  def create_discovery_scan(self, Name=None, ExistingSiteName=None, AutoAccept=None,
+  			 		ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
+  					CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
+  					DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
+  					ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
+  					Scheduling=None):
+    return DiscoveryScan._create_discovery_scan(connection=self, Name=Name, ExistingSiteName=ExistingSiteName, AutoAccept=AutoAccept,
+                            ScanExistingServerGroups=ScanExistingServerGroups, ScanIpGroup=ScanIpGroup, IpGroups=IpGroups, ScanCloudAccount=ScanCloudAccount,
+                            CloudAccounts=CloudAccounts, ServiceTypes=ServiceTypes, ResolveDns=ResolveDns, ResolveVersions=ResolveVersions,
+                            EnhancedScanning=EnhancedScanning,DiscoveryTimeout=DiscoveryTimeout,
+                            GlobalPortConfiguration=GlobalPortConfiguration, ServerGroupNamingTemplate=ServerGroupNamingTemplate,
+                            ServiceNamingTemplate=ServiceNamingTemplate, CredentialsEnabled=CredentialsEnabled, OsCredentials=OsCredentials,
+                            DbCredentials=DbCredentials, Scheduling=Scheduling)
 
-  # Assessment Tests
-  # -----------------------------------------------------------------------------
-  #
-  def get_all_assessment_tests(self):
-    return AssessmentTest._get_all_assessment_tests(connection=self)
-
-  def get_assessment_test(self, Name=None):
-    return AssessmentTest._get_assessment_test(connection=self, Name=Name)
-
-  def create_assessment_test(self, Name=None, Description=None,
-                             Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None,
-                             RecommendedFix=None,
-                             TestScript=None, AdditionalScript=None, ResultsLayout=[]):
-    return AssessmentTest._create_assessment_test(connection=self, Name=Name, Description=Description,
-                                                  Severity=Severity, Category=Category, ScriptType=ScriptType,
-                                                  OsType=OsType, DbType=DbType, RecommendedFix=RecommendedFix,
-                                                  TestScript=TestScript, AdditionalScript=AdditionalScript,
-                                                  ResultsLayout=ResultsLayout)
 
   #
   # -----------------------------------------------------------------------------
@@ -1364,9 +1354,10 @@ class MxConnection(object):
   def get_all_assessment_scan_das_objects(self):
     return AssessmentScan._get_all_assessment_scans(connection=self)
 
-  def create_assessment_scan_das_object(self, Name=None, Type=None, PreTest=None, PolicyTags=[], DbConnectionTags=[],
+  def create_assessment_scan_das_object(self, Name=None, Type=None, PolicyName=None, PreTest=None, PolicyTags=[], DbConnectionTags=[],
     ApplyTo=[], Scheduling=None, update=False):
-    return AssessmentScan._create_assessment_scan(connection=self,Name=Name,Type=Type, PreTest=PreTest, PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
+    return AssessmentScan._create_assessment_scan(connection=self, Name=Name, Type=Type, PolicyName=PolicyName, PreTest=PreTest,
+                                                  PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
                                                   ApplyTo=ApplyTo, Scheduling=Scheduling, update=update)
 
   def update_assessment_scan(self, Name=None, Parameter=None, Value=None):
@@ -1430,6 +1421,42 @@ class MxConnection(object):
   def delete_classification_profile(self, Name=None):
     return ClassificationProfile._delete_classification_profile(connection=self, Name=Name)
 
+  #
+  # -----------------------------------------------------------------------------
+  # Assessment Policies
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_assessment_policy_das_objects(self):
+    return AssessmentPolicy._get_all_assessment_policies(connection=self)
+
+  def get_assessment_policy(self, Name=None):
+    return AssessmentPolicy._get_assessment_policy(connection=self, Name=Name)
+
+  def create_assessment_policy_das_object(self, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[],
+                               TestNames=[], update=False):
+    return AssessmentPolicy._create_assessment_policy(connection=self, Name=Name, Description=Description,
+                                                      DbType=DbType,
+                                                      PolicyTags=PolicyTags, AdcKeywords=AdcKeywords,
+                                                      TestNames=TestNames, update=update)
+
+  # Assessment Tests
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_assessment_test_das_objects(self):
+    return AssessmentTest._get_all_assessment_tests(connection=self)
+
+  def get_assessment_test(self, Name=None):
+    return AssessmentTest._get_assessment_test(connection=self, Name=Name)
+
+  def create_assessment_test_das_object(self, Name=None, Description=None,
+                                       Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None,
+                                       RecommendedFix=None,
+                                       TestScript=None, AdditionalScript=None, ResultsLayout=[], update=False):
+    return AssessmentTest._create_assessment_test(connection=self, Name=Name, Description=Description,
+                                                  Severity=Severity, Category=Category, ScriptType=ScriptType,
+                                                  OsType=OsType, DbType=DbType, RecommendedFix=RecommendedFix,
+                                                  TestScript=TestScript, AdditionalScript=AdditionalScript,
+                                                  ResultsLayout=ResultsLayout, update=update)
 
   def export_das_objects(self):
     """
@@ -1546,7 +1573,7 @@ class MxConnection(object):
 
 
   def _export_agents_configuration(self):
-    actionSetDict = {
+    agentConfigDict = {
       'metadata': {
         'Host': self.Host,
         'Version': self.Version,
@@ -1556,17 +1583,17 @@ class MxConnection(object):
       }
     }
 
-    actionSetDict['agent_configurations'] = []
+    agentConfigDict['agent_configurations'] = []
     try:
       agents_config = self.get_all_agent_configurations()
       for agent in agents_config:
         as_dict = dict(agent)
-        actionSetDict['agent_configurations'].append(as_dict)
+        agentConfigDict['agent_configurations'].append(as_dict)
     except:
       # Previous versions didn't have action set APIs
       pass
 
-    return actionSetDict
+    return agentConfigDict
 
 
   def export_agent_configurations(self):
@@ -1798,6 +1825,15 @@ class MxConnection(object):
     '''
     return AgentMonitoringRule._get_all_agent_monitoring_rules(connection=self)
 
+  def get_all_agent_monitoring_rules_by_agent(self, AgentName=None, AgentTags=[]):
+    '''
+
+    :param AgentName: Agent name
+    :param AgentTags: list of all the agent's tags
+    :return: List of AgentMonitoringRule objects that belong to the agent
+    '''
+    return AgentMonitoringRule._get_all_agent_monitoring_rules_by_agent(connection=self, AgentName=AgentName, AgentTags=AgentTags)
+
   def get_agent_monitoring_rule(self, Name):
     '''
     :type Name: string
@@ -1885,7 +1921,7 @@ class MxConnection(object):
 
 
 
-  def export_dam_global_object(self):
+  def export_dam_global_objects(self):
     """
     Export all the dam global objects in the MX
     :return a dictionary in a json like format
@@ -1902,7 +1938,7 @@ class MxConnection(object):
     globalObjectsDict.update(self._export_objects_to_dict('global_objects', 'dam'))
     return json.dumps(globalObjectsDict)
 
-  def import_dam_global_object(self, Json=None, update=True):
+  def import_dam_global_objects(self, Json=None, update=True):
     """
     Import only the dam global objects configuration from valid JSON string.
     :param Json (string): valid imperva_sdk JSON export
@@ -2188,11 +2224,6 @@ class MxConnection(object):
             # Some versions don't have all Global Object APIs
             pass
 
-    tmp_json['agent_configurations'] = []
-    if 'agent_configurations' not in Discard:
-      res = self._export_agents_configuration()
-      tmp_json['agent_configurations'] += res['agent_configurations']
-
     tmp_json['dam_reports'] = {}
     if 'reports' not in Discard:
       res = self._export_objects_to_dict('reports', 'dam')
@@ -2250,8 +2281,6 @@ class MxConnection(object):
     log += self._create_tree_from_json(Dict={'sites': json_config['sites']}, ParentObject=self, update=update)
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
-    log += self._create_tree_from_json(Dict={'agent_configurations': json_config['agent_configurations']},
-                                       ParentObject=self, update=update)
     log += self.import_dam_reports(Json)
     log += self.import_das_objects(Json)
 

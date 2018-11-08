@@ -291,17 +291,23 @@ class AgentConfiguration(MxObject):
       return obj_exists
     try:
       resTags = connection._mx_api('GET', '/conf/agents/%s/tags' % Name)
-      resDataInterfaces = connection._mx_api('GET', '/conf/agents/%s/dataInterfaces' % Name)
       resAdvancedConfig = connection._mx_api('GET', '/conf/agents/%s/Settings/AdvancedConfiguration' % Name)
       resDiscovery = connection._mx_api('GET', '/conf/agents/%s/Settings/DiscoverySettings' % Name)
       resCPU = connection._mx_api('GET', '/conf/agents/%s/Settings/CPUUsageRestraining' % Name)
       resGeneral = connection._mx_api('GET', '/conf/agents/%s/GeneralDetails' % Name)
+      try:
+        resDataInterfaces = connection._mx_api('GET', '/conf/agents/%s/dataInterfaces' % Name)
+        resDataInterfaces = resDataInterfaces['data-interfaces']
+      except:
+        # in case there is no data interfaces
+        resDataInterfaces = []
+        pass
     except:
       return None
     return AgentConfiguration(connection=connection,
                               Name=Name,
                               Ip=Ip,
-                              DataInterfaces=resDataInterfaces['data-interfaces'],
+                              DataInterfaces=resDataInterfaces,
                               Tags=resTags['tags'],
                               AdvancedConfig=resAdvancedConfig,
                               DiscoverySettings=resDiscovery,
@@ -319,7 +325,7 @@ class AgentConfiguration(MxObject):
         raise MxException("Agent configuration '%s' already exists" % Name)
       else:
         # Update existing agent configuration
-        parameters = locals()
+        parameters = dict(locals())
         for cur_key in list(parameters):
           if is_parameter.match(cur_key) and cur_key != 'Name' and parameters[cur_key] != None:
             setattr(obj, cur_key, parameters[cur_key])
@@ -341,7 +347,10 @@ class AgentConfiguration(MxObject):
         for tag in missing_tags:
           connection.create_tag(tag)
         # Second, replace the existing tags with the new ones
-        connection._mx_api('POST', '/conf/agents/%s/tags' % Name, data=json.dumps({'tags': Value}))
+        try:
+          connection._mx_api('POST', '/conf/agents/%s/tags' % Name, data=json.dumps({'tags': Value}))
+        except Exception as e:
+          pass
       elif isinstance(Value, dict):
         if Parameter == 'AdvancedConfiguration':
           connection._mx_api('PUT', '/conf/agents/%s/Settings/AdvancedConfiguration' % Name, data=json.dumps(Value))
@@ -353,3 +362,20 @@ class AgentConfiguration(MxObject):
         raise MxException("Value of parameter '%s' must be from type dictionary" % Parameter)
 
     return True
+
+  #
+  # Agent monitoring rule child functions
+  #
+  def get_agent_monitoring_rule(self, Name=None):
+    return self._connection.get_agent_monitoring_rule(Name=Name)
+  def get_all_agent_monitoring_rules(self):
+    return self._connection.get_all_agent_monitoring_rules_by_agent(AgentName=self.Name, AgentTags=self.Tags)
+  def create_agent_monitoring_rule(self, Name=None, PolicyType=None, Action=None, CustomPredicates=[],
+                                    ApplyToAgent=[], ApplyToTag=[], update=False):
+    return self._connection.create_agent_monitoring_rule_dam_global_object(Name=Name,
+                                                                           PolicyType=PolicyType,
+                                                                           Action=Action,
+                                                                           CustomPredicates=CustomPredicates,
+                                                                           ApplyToAgent=ApplyToAgent,
+                                                                           ApplyToTag=ApplyToTag,
+                                                                           update=update)
