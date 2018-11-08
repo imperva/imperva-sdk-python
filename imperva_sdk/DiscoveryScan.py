@@ -132,7 +132,7 @@ class DiscoveryScan(MxObject):
             continue
         try:
             discoveryScan = connection._mx_api('GET', '/conf/discovery/scans/' + discoveryScanName)
-    	except:
+        except:
             raise MxException("Failed getting Discovery scan '%s'" % discoveryScanName)
     
         discoveryScan = DiscoveryScan.validateEmptyIndices(discoveryScan)
