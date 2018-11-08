@@ -1188,43 +1188,6 @@ class MxConnection(object):
 
   #
   # -----------------------------------------------------------------------------
-  # Assessment Policies
-  # -----------------------------------------------------------------------------
-  #
-  def get_all_assessment_policies(self):
-    return AssessmentPolicy._get_all_assessment_policies(connection=self)
-
-  def get_assessment_policy(self, Name=None):
-    return AssessmentPolicy._get_assessment_policy(connection=self, Name=Name)
-
-  def create_assessment_policy(self, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[],
-                               TestNames=[]):
-    return AssessmentPolicy._create_assessment_policy(connection=self, Name=Name, Description=Description,
-                                                      DbType=DbType,
-                                                      PolicyTags=PolicyTags, AdcKeywords=AdcKeywords,
-                                                      TestNames=TestNames)
-
-  # Assessment Tests
-  # -----------------------------------------------------------------------------
-  #
-  def get_all_assessment_tests(self):
-    return AssessmentTest._get_all_assessment_tests(connection=self)
-
-  def get_assessment_test(self, Name=None):
-    return AssessmentTest._get_assessment_test(connection=self, Name=Name)
-
-  def create_assessment_test(self, Name=None, Description=None,
-                             Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None,
-                             RecommendedFix=None,
-                             TestScript=None, AdditionalScript=None, ResultsLayout=[]):
-    return AssessmentTest._create_assessment_test(connection=self, Name=Name, Description=Description,
-                                                  Severity=Severity, Category=Category, ScriptType=ScriptType,
-                                                  OsType=OsType, DbType=DbType, RecommendedFix=RecommendedFix,
-                                                  TestScript=TestScript, AdditionalScript=AdditionalScript,
-                                                  ResultsLayout=ResultsLayout)
-
-  #
-  # -----------------------------------------------------------------------------
   # DB connection
   # -----------------------------------------------------------------------------
   #
@@ -1431,6 +1394,42 @@ class MxConnection(object):
   def delete_classification_profile(self, Name=None):
     return ClassificationProfile._delete_classification_profile(connection=self, Name=Name)
 
+  #
+  # -----------------------------------------------------------------------------
+  # Assessment Policies
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_assessment_policy_das_objects(self):
+    return AssessmentPolicy._get_all_assessment_policies(connection=self)
+
+  def get_assessment_policy(self, Name=None):
+    return AssessmentPolicy._get_assessment_policy(connection=self, Name=Name)
+
+  def create_assessment_policy_das_object(self, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[],
+                               TestNames=[], update=False):
+    return AssessmentPolicy._create_assessment_policy(connection=self, Name=Name, Description=Description,
+                                                      DbType=DbType,
+                                                      PolicyTags=PolicyTags, AdcKeywords=AdcKeywords,
+                                                      TestNames=TestNames, update=update)
+
+  # Assessment Tests
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_assessment_test_das_objects(self):
+    return AssessmentTest._get_all_assessment_tests(connection=self)
+
+  def get_assessment_test(self, Name=None):
+    return AssessmentTest._get_assessment_test(connection=self, Name=Name)
+
+  def create_assessment_test_das_object(self, Name=None, Description=None,
+                                       Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None,
+                                       RecommendedFix=None,
+                                       TestScript=None, AdditionalScript=None, ResultsLayout=[], update=False):
+    return AssessmentTest._create_assessment_test(connection=self, Name=Name, Description=Description,
+                                                  Severity=Severity, Category=Category, ScriptType=ScriptType,
+                                                  OsType=OsType, DbType=DbType, RecommendedFix=RecommendedFix,
+                                                  TestScript=TestScript, AdditionalScript=AdditionalScript,
+                                                  ResultsLayout=ResultsLayout, update=update)
 
   def export_das_objects(self):
     """
@@ -1547,7 +1546,7 @@ class MxConnection(object):
 
 
   def _export_agents_configuration(self):
-    actionSetDict = {
+    agentConfigDict = {
       'metadata': {
         'Host': self.Host,
         'Version': self.Version,
@@ -1557,17 +1556,17 @@ class MxConnection(object):
       }
     }
 
-    actionSetDict['agent_configurations'] = []
+    agentConfigDict['agent_configurations'] = []
     try:
       agents_config = self.get_all_agent_configurations()
       for agent in agents_config:
         as_dict = dict(agent)
-        actionSetDict['agent_configurations'].append(as_dict)
+        agentConfigDict['agent_configurations'].append(as_dict)
     except:
       # Previous versions didn't have action set APIs
       pass
 
-    return actionSetDict
+    return agentConfigDict
 
 
   def export_agent_configurations(self):
@@ -1886,7 +1885,7 @@ class MxConnection(object):
 
 
 
-  def export_dam_global_object(self):
+  def export_dam_global_objects(self):
     """
     Export all the dam global objects in the MX
     :return a dictionary in a json like format
@@ -1903,7 +1902,7 @@ class MxConnection(object):
     globalObjectsDict.update(self._export_objects_to_dict('global_objects', 'dam'))
     return json.dumps(globalObjectsDict)
 
-  def import_dam_global_object(self, Json=None, update=True):
+  def import_dam_global_objects(self, Json=None, update=True):
     """
     Import only the dam global objects configuration from valid JSON string.
     :param Json (string): valid imperva_sdk JSON export
