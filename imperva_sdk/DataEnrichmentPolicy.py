@@ -25,7 +25,7 @@ class DataEnrichmentPolicy(MxObject):
                 if curr_obj.Name == Name:
                     return curr_obj
         return None
-    #
+    
     def __init__(self, connection=None, Name=None, PolicyType=None,
         Rules = [],
         MatchCriteria=[], ApplyTo=[]):

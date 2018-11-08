@@ -38,6 +38,7 @@ from imperva_sdk.ClassificationScan             import *
 from imperva_sdk.ClassificationProfile          import *
 from imperva_sdk.AgentConfiguration             import *
 from imperva_sdk.Tag                            import *
+from imperva_sdk.DiscoveryScan					import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1185,6 +1186,32 @@ class MxConnection(object):
     return self._import_object_from_json(Json, 'policies', 'dam', 'policy', update)
 
   # ==================================== END DAM policies =============================================
+
+  #
+  # -----------------------------------------------------------------------------
+  # Discovery Scans
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_discovery_scans(self):
+    return DiscoveryScan._get_all_discovery_scans(connection=self)
+
+  def get_discovery_scan(self, Name=None):
+    return DiscoveryScan._get_discovery_scan(connection=self, Name=Name)
+
+  def create_discovery_scan(self, Name=None, ExistingSiteName=None, AutoAccept=None,
+  			 		ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
+  					CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
+  					DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
+  					ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
+  					Scheduling=None):
+    return DiscoveryScan._create_discovery_scan(connection=self, Name=Name, ExistingSiteName=ExistingSiteName, AutoAccept=AutoAccept,
+                            ScanExistingServerGroups=ScanExistingServerGroups, ScanIpGroup=ScanIpGroup, IpGroups=IpGroups, ScanCloudAccount=ScanCloudAccount,
+                            CloudAccounts=CloudAccounts, ServiceTypes=ServiceTypes, ResolveDns=ResolveDns, ResolveVersions=ResolveVersions,
+                            EnhancedScanning=EnhancedScanning,DiscoveryTimeout=DiscoveryTimeout,
+                            GlobalPortConfiguration=GlobalPortConfiguration, ServerGroupNamingTemplate=ServerGroupNamingTemplate,
+                            ServiceNamingTemplate=ServiceNamingTemplate, CredentialsEnabled=CredentialsEnabled, OsCredentials=OsCredentials,
+                            DbCredentials=DbCredentials, Scheduling=Scheduling)
+
 
   #
   # -----------------------------------------------------------------------------
