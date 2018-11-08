@@ -132,6 +132,9 @@ class DataType(MxObject):
     rules_objects = []
     for name in res:
       try:
+        # Bug - we have data types with '/' character that don't work with the API...
+        if '/' in name:
+          continue
         obj = connection.get_data_type(Name=name)
       except:
         raise MxException("Failed getting all data types")
