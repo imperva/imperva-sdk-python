@@ -29,10 +29,11 @@ class AssessmentScan(MxObject):
           return cur_obj
     return None
 
-  def __init__(self, connection=None, Name=None, Type=None, PreTest=None, PolicyTags=[],DbConnectionTags=[],ApplyTo=[], Scheduling=None):
+  def __init__(self, connection=None, Name=None, Type=None, PolicyName=None, PreTest=None, PolicyTags=[],DbConnectionTags=[],ApplyTo=[], Scheduling=None):
     super(AssessmentScan, self).__init__(connection=connection, Name=Name)
     validate_string(Name=Name, Type=Type)
     self._Type = Type
+    self._PolicyName = PolicyName
     self._PreTest = PreTest
     self._PolicyTags = MxList(PolicyTags)
     self._DbConnectionTags = MxList(DbConnectionTags)
@@ -52,6 +53,11 @@ class AssessmentScan(MxObject):
   def Type(self):
     ''' Type of scan - policy based or tag based (string) '''
     return self._Type
+
+  @property
+  def PolicyName(self):
+    ''' Policy name in case it's a policy-based scan (string) '''
+    return self._PolicyName
 
   @property
   def PreTest(self):
@@ -91,6 +97,13 @@ class AssessmentScan(MxObject):
     if Type != self._Type:
       self._connection._update_assessment_scan(Name=self._Name, Parameter='type', Value=Type)
       self._Type = Type
+
+
+  @PolicyName.setter
+  def PolicyName(self, PolicyName):
+    if PolicyName != self._PolicyName:
+      self._connection._update_assessment_scan(Name=self._Name, Parameter='policyName', Value=PolicyName)
+
 
   @PreTest.setter
   def PreTest(self, PreTest):
@@ -194,6 +207,7 @@ class AssessmentScan(MxObject):
       return None
 
     if 'type' not in res: res['type'] = ''
+    if 'policy-name' not in res: res['policy-name'] = None
     if 'pre-test' not in res: res['pre-test'] = None
     if 'policy-tags' not in res: res['policy-tags'] = []
     if 'db-connection-tags' not in res: res['db-connection-tags'] = []
@@ -203,13 +217,13 @@ class AssessmentScan(MxObject):
     for cur_apply in res['apply-to']:
       ApplyToObjects.append(cur_apply)
 
-    return AssessmentScan(connection=connection, Name=Name, Type=res['type'], PreTest=res['pre-test'],
-                          PolicyTags=res['policy-tags'], DbConnectionTags=res['db-connection-tags'],
+    return AssessmentScan(connection=connection, Name=Name, Type=res['type'], PolicyName=res['policy-name'],
+                          PreTest=res['pre-test'], PolicyTags=res['policy-tags'], DbConnectionTags=res['db-connection-tags'],
                           ApplyTo=ApplyToObjects, Scheduling=res['scheduling'])
 
 
   @staticmethod
-  def _create_assessment_scan(connection, Name=None, Type=None, PreTest=None, PolicyTags=None,
+  def _create_assessment_scan(connection, Name=None, Type=None, PolicyName=None, PreTest=None, PolicyTags=None,
                               DbConnectionTags=None, ApplyTo=None, Scheduling=None, update=False):
     validate_string(Name=Name)
     scan = connection.get_assessment_scan(Name=Name)
@@ -229,6 +243,7 @@ class AssessmentScan(MxObject):
         'pre-test': PreTest,
       }
       if Type: body['type'] = Type
+      if PolicyName: body['policy-name'] = PolicyName
       if PolicyTags: body['policy-tags'] = PolicyTags
       if DbConnectionTags: body['db-connection-tags'] = DbConnectionTags
       if Scheduling: body['scheduling'] = Scheduling
@@ -245,7 +260,7 @@ class AssessmentScan(MxObject):
             raise MxException("Bad 'ApplyTo' parameter")
       if ApplyToNames: body['apply-to'] = ApplyToNames
       connection._mx_api('POST', '/conf/assessment/scans/%s' % Name, data=json.dumps(body))
-      return AssessmentScan(connection=connection, Name=Name, Type=Type, PreTest=PreTest,
+      return AssessmentScan(connection=connection, Name=Name, Type=Type, PolicyName=PolicyName, PreTest=PreTest,
                             PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
                             ApplyTo=ApplyToObjects, Scheduling=Scheduling)
 
