@@ -221,12 +221,17 @@ class DiscoveryScan(MxObject):
                             DbCredentials=DbCredentials, Scheduling=Scheduling)
   
   @staticmethod
-  def _update_discovery_scan(connection, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[], TestNames=[]):
-    raise MxException("Assessment Update API currently not supported")
+  def _update_discovery_scan(connection, Name=None, ExistingSiteName=None, AutoAccept=None,
+  			 		ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
+  					CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
+  					DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
+  					ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
+  					Scheduling=None):
+    raise MxException("Discovery scan Update API currently not supported")
   
   @staticmethod
   def _delete_discovery_scan(connection, Name=None):
-    raise MxException("Assessment Delete API currently not supported")
+    raise MxException("Discovery scan API currently not supported")
   
   @staticmethod
   def validateEmptyIndices(discoveryScan):
