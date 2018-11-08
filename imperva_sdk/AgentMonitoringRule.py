@@ -265,3 +265,14 @@ class AgentMonitoringRule(MxObject):
     except:
       raise MxException("Failed updating agent monitoring rule %s" % Name)
     return True
+
+  @staticmethod
+  def _get_all_agent_monitoring_rules_by_agent(connection, AgentName=None, AgentTags=[]):
+    '''
+    return a list of all the agent monitoring rules that connected to a given agent
+    '''
+    validate_string(Name=AgentName)
+    allRules = connection.get_all_agent_monitoring_rule_dam_global_objects()
+    agentRules = list(filter(lambda rule:((set(AgentTags) & set(rule.ApplyToTag))
+                                                or AgentName in rule.ApplyToAgent), allRules))
+    return agentRules

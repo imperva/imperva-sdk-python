@@ -1797,6 +1797,15 @@ class MxConnection(object):
     '''
     return AgentMonitoringRule._get_all_agent_monitoring_rules(connection=self)
 
+  def get_all_agent_monitoring_rules_by_agent(self, AgentName=None, AgentTags=[]):
+    '''
+
+    :param AgentName: Agent name
+    :param AgentTags: list of all the agent's tags
+    :return: List of AgentMonitoringRule objects that belong to the agent
+    '''
+    return AgentMonitoringRule._get_all_agent_monitoring_rules_by_agent(connection=self, AgentName=AgentName, AgentTags=AgentTags)
+
   def get_agent_monitoring_rule(self, Name):
     '''
     :type Name: string
@@ -2187,11 +2196,6 @@ class MxConnection(object):
             # Some versions don't have all Global Object APIs
             pass
 
-    tmp_json['agent_configurations'] = []
-    if 'agent_configurations' not in Discard:
-      res = self._export_agents_configuration()
-      tmp_json['agent_configurations'] += res['agent_configurations']
-
     tmp_json['dam_reports'] = {}
     if 'reports' not in Discard:
       res = self._export_objects_to_dict('reports', 'dam')
@@ -2249,8 +2253,6 @@ class MxConnection(object):
     log += self._create_tree_from_json(Dict={'sites': json_config['sites']}, ParentObject=self, update=update)
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
-    log += self._create_tree_from_json(Dict={'agent_configurations': json_config['agent_configurations']},
-                                       ParentObject=self, update=update)
     log += self.import_dam_reports(Json)
     log += self.import_das_objects(Json)
 
