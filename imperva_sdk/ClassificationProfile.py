@@ -328,7 +328,9 @@ class ClassificationProfile(MxObject):
             if SaveSampleData: body['save-sample-data'] = SaveSampleData
             if DataSampleAccuracy: body['data-sample-accuracy'] = DataSampleAccuracy
             if ScanSystemSchemas: body['scan-system-schemas'] = ScanSystemSchemas
-            if DbsAndSchemasUsage: body['dbs-and-schemas-usage'] = DbsAndSchemasUsage
+            # the value is saved with capital letter (Exclude/Include) but the MX condition check is expecting lower case so we workaround it here.
+            # It's better to fix in MX API : ClassificationProfileServiceImpl.java in setProfileDataBaseAndSchemas(), validateUpdateParameters()
+            if DbsAndSchemasUsage: body['dbs-and-schemas-usage'] = DbsAndSchemasUsage.lower()
             if DbsAndSchemas: body['dbs-and-schemas'] = DbsAndSchemas
             if ExcludeTablesAndColumns: body['exclude-tables-and-columns'] = ExcludeTablesAndColumns
             if DelayBetweenQueries: body['delay-between-queries'] = DelayBetweenQueries
