@@ -149,6 +149,9 @@ class TableGroup(MxObject):
     res = connection._mx_api('GET', '/conf/tableGroups')
     tg_objects = []
     for tg in res:
+      # Bug - we have data types with '/' character that don't work with the API...
+      if '/' in tg['displayName']:
+        continue
       obj = connection.get_table_group(Name=tg['displayName'], IsSensitive=tg['isSensitive'],
                                        ServiceTypes=tg['serviceTypes'])
       if obj:
