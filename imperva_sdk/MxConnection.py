@@ -39,6 +39,7 @@ from imperva_sdk.ClassificationProfile          import *
 from imperva_sdk.AgentConfiguration             import *
 from imperva_sdk.Tag                            import *
 from imperva_sdk.DiscoveryScan					import *
+from imperva_sdk.CloudAccount					import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1186,6 +1187,20 @@ class MxConnection(object):
     return self._import_object_from_json(Json, 'policies', 'dam', 'policy', update)
 
   # ==================================== END DAM policies =============================================
+
+  #
+  # -----------------------------------------------------------------------------
+  # Cloud Accounts
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_cloud_accounts(self):
+    return CloudAccount._get_all_cloud_accounts(connection=self)
+
+  def get_cloud_account(self, Name=None):
+    return CloudAccount._get_cloud_account(connection=self, Name=Name)
+
+  def create_cloud_account(self, Name=None, PrivateKey=None, AccessKey=None, AwsRegion=None, AzureTenant=None, CloudProvider=None, update=False):
+    return CloudAccount._create_cloud_account(connection=self, Name=Name, PrivateKey=PrivateKey, AccessKey=AccessKey, AwsRegion=AwsRegion, AzureTenant=AzureTenant, CloudProvider=CloudProvider)
 
   #
   # -----------------------------------------------------------------------------
