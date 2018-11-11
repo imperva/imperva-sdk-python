@@ -39,6 +39,7 @@ from imperva_sdk.ClassificationProfile          import *
 from imperva_sdk.AgentConfiguration             import *
 from imperva_sdk.Tag                            import *
 from imperva_sdk.DiscoveryScan					import *
+from imperva_sdk.IpGroup    					import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1186,6 +1187,21 @@ class MxConnection(object):
     return self._import_object_from_json(Json, 'policies', 'dam', 'policy', update)
 
   # ==================================== END DAM policies =============================================
+
+  #
+  # -----------------------------------------------------------------------------
+  # Ip Group
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_ip_groups(self):
+    return IpGroup._get_all_ip_groups(connection=self)
+
+  def get_ip_group(self, Name=None):
+    return IpGroup._get_ip_group(connection=self, Name=Name)
+
+  def create_ip_group(self, Name=None, Entries=[], update=False):
+    return IpGroup._create_ip_group(connection=self, Name=Name, Entries=Entries, update=False)
+
 
   #
   # -----------------------------------------------------------------------------
