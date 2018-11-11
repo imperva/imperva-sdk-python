@@ -38,8 +38,9 @@ from imperva_sdk.ClassificationScan             import *
 from imperva_sdk.ClassificationProfile          import *
 from imperva_sdk.AgentConfiguration             import *
 from imperva_sdk.Tag                            import *
-from imperva_sdk.DiscoveryScan					import *
-from imperva_sdk.CloudAccount					import *
+from imperva_sdk.DiscoveryScan					        import *
+from imperva_sdk.CloudAccount					          import *
+from imperva_sdk.IpGroup    					          import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
@@ -1201,6 +1202,20 @@ class MxConnection(object):
 
   def create_cloud_account(self, Name=None, PrivateKey=None, AccessKey=None, AwsRegion=None, AzureTenant=None, CloudProvider=None, update=False):
     return CloudAccount._create_cloud_account(connection=self, Name=Name, PrivateKey=PrivateKey, AccessKey=AccessKey, AwsRegion=AwsRegion, AzureTenant=AzureTenant, CloudProvider=CloudProvider)
+  #
+  # -----------------------------------------------------------------------------
+  # Ip Group
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_ip_groups(self):
+    return IpGroup._get_all_ip_groups(connection=self)
+
+  def get_ip_group(self, Name=None):
+    return IpGroup._get_ip_group(connection=self, Name=Name)
+
+  def create_ip_group(self, Name=None, Entries=[], update=False):
+    return IpGroup._create_ip_group(connection=self, Name=Name, Entries=Entries, update=False)
+
 
   #
   # -----------------------------------------------------------------------------
