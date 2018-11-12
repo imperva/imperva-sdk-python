@@ -46,32 +46,18 @@ class IpGroup(MxObject):
   #
   @staticmethod
   def _get_all_ip_groups(connection):
-    try:
-      ipGroupsObj = connection._mx_api('GET', '/conf/ipGroups')
-    except:
-      raise MxException("Failed getting ip groups")
+    ipGroupsObj = connection._mx_api('GET', '/conf/ipGroups')
     if 'names' in ipGroupsObj:
       ipGroupsObjs = []
       for ipGroupName in ipGroupsObj['names']:
         # Bug - we have accounts with '/' character that don't work with the API...
         if '/' in ipGroupName:
-          print("%s cannot be used by the API. Skipping..." % ipGroupName)
           continue
         try:
-          ipGroup = connection._mx_api('GET', '/conf/ipGroups/' + ipGroupName)
+          obj = connection.get_ip_group(Name=ipGroupName)
         except:
           raise MxException("Failed getting ip group '%s'" % ipGroupName)
-        ipEntries = []
-        if 'entries' in ipGroup:
-          for ipEntry in ipGroup['entries']:
-            ipEntry = IpEntry.validateEmptyIndices(ipEntry)
-            ipEntry = IpEntry(connection=connection, Name="entry", EntryType=ipEntry['type'],
-                             IpAddressFrom=ipEntry['ipAddressFrom'], IpAddressTo=ipEntry['ipAddressTo'],
-                             NetworkAddress=ipEntry['networkAddress'], CidrMask=ipEntry['cidrMask'],
-                             Operation=ipEntry['operation'])
-            ipEntries.append(ipEntry)
-        ipGroupObj = IpGroup(connection=connection, Name=ipGroupName, Entries=ipEntries)
-        ipGroupsObjs.append(ipGroupObj)
+        ipGroupsObjs.append(obj)
       return ipGroupsObjs
   
   @staticmethod
@@ -83,30 +69,16 @@ class IpGroup(MxObject):
     try:
       ipGroup = connection._mx_api('GET', '/conf/ipGroups/' + Name)
     except:
-      raise MxException("Failed getting ip group '%s'" % Name)
+      return None
 
-    ipEntries=[]
-    for ipEntry in ipGroup['entries']:
-      ipEntry = IpEntry.validateEmptyIndices(ipEntry)
-      ipEntry = IpEntry(connection=connection, Name="entry", EntryType=ipEntry['type'],
-                        IpAddressFrom=ipEntry['ipAddressFrom'], IpAddressTo=ipEntry['ipAddressTo'],
-                        NetworkAddress=ipEntry['networkAddress'], CidrMask=ipEntry['cidrMask'],
-                        Operation=ipEntry['operation'])
-      ipEntries.append(ipEntry)
-    return IpGroup(connection=connection, Name=Name, Entries=ipEntries)
+    return IpGroup(connection=connection, Name=Name, Entries=ipGroup['entries'])
     
     
   @staticmethod
   def _create_ip_group(connection, Name=None, Entries=[], update=False):
     validate_string(Name=Name)
     body = {}
-
-    entryDicts = []
-    for entryObj in Entries:
-      if entryObj.__class__.__name__ == 'IpEntry':
-        entryDict = IpEntry.toDict(entryObj)
-        entryDicts.append(entryDict)
-    body['entries'] = entryDicts
+    body['entries'] = Entries
 
     connection._mx_api('POST', '/conf/ipGroups/%s' % Name, data=json.dumps(body))
     return IpGroup(connection=connection, Name=Name, Entries=Entries)
