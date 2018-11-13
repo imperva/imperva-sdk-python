@@ -28,12 +28,13 @@ class ServerGroup(MxObject):
           return cur_obj
     return None
     
-  def __init__(self, connection=None, Name=None, Site=None, OperationMode=None, ProtectedIps=[]):
+  def __init__(self, connection=None, Name=None, Site=None, OperationMode=None, ProtectedIps=[], ServerIps=[]):
     super(ServerGroup, self).__init__(connection=connection, Name=Name)
     validate_string(Name=Name, Site=Site)
     self._Site = Site
     self._OperationMode = OperationMode
     self._ProtectedIps = ProtectedIps
+    self._ServerIps = MxList(ServerIps)
 
   #
   # Server Group Parameters
@@ -71,6 +72,24 @@ class ServerGroup(MxObject):
         self._connection._mx_api('POST', '/conf/serverGroups/%s/%s/protectedIPs/%s?gatewayGroup=%s' % (self._Site, self._Name, new_ip['ip'], new_ip['gateway-group']), data=json.dumps({}))
     self._ProtectedIps = ProtectedIps
 
+  @property
+  def ServerIps(self):
+    ''' Server IPs - e.g. ["192.168.1.1","192.168.1.2"] '''
+    return self._ServerIps
+
+  @ServerIps.setter
+  def ServerIps(self, ServerIps):
+    for old_ip in self._ServerIps:
+      if old_ip not in ServerIps:
+        # Delete previous server IP
+        self._connection._mx_api('DELETE', '/conf/services/%s/%s/servers/%s' % (self._Site, self._Name, old_ip))
+    for new_ip in ServerIps:
+      if new_ip not in self._ServerIps:
+        # Create new server IP
+        self._connection._mx_api('POST', '/conf/serverGroups/%s/%s/servers/%s' % (self._Site, self._Name, new_ip), data=json.dumps({}))
+    self._ServerIps = ServerIps
+
+
   @OperationMode.setter
   def OperationMode(self, OperationMode):
     valid_modes = ['simulation', 'active', 'disabled']
@@ -103,11 +122,15 @@ class ServerGroup(MxObject):
     try:
       res = connection._mx_api('GET', '/conf/serverGroups/%s/%s' % (Site, Name))
       protected_ips = connection._mx_api('GET', '/conf/serverGroups/%s/%s/protectedIPs' % (Site, Name))
-      return ServerGroup(connection=connection, Name=res['name'], Site=Site, OperationMode=res['operationMode'], ProtectedIps=protected_ips['protected-ips'])
+      # get IPs for this server group for the OS connections
+      os_conns = connection._mx_api('GET', '/conf/serverGroups/%s/%s/servers' % (Site, Name))
+      serverIps = [con["ip"] for con in os_conns.get("connections")]
+      return ServerGroup(connection=connection, Name=res['name'], Site=Site, OperationMode=res['operationMode'],
+                         ProtectedIps=protected_ips['protected-ips'], ServerIps=serverIps)
     except:
       return None
   @staticmethod
-  def _create_server_group(connection, Name=None, Site=None, OperationMode=None, ProtectedIps=[], update=False):
+  def _create_server_group(connection, Name=None, Site=None, OperationMode=None, ProtectedIps=[], ServerIps=[], update=False):
     validate_string(Name=Name, Site=Site)
     sg = connection.get_server_group(Name=Name, Site=Site)
     if sg:
@@ -116,6 +139,8 @@ class ServerGroup(MxObject):
           sg.OperationMode = OperationMode
         if ProtectedIps:
           sg.ProtectedIps = ProtectedIps
+        if ServerIps:
+          sg.ServerIps = ServerIps
         return sg
       else:
         raise MxException("Server Group already exists")
@@ -125,6 +150,8 @@ class ServerGroup(MxObject):
       sg.OperationMode = OperationMode
     if ProtectedIps:
       sg.ProtectedIps = ProtectedIps
+    if ServerIps:
+      sg.ServerIps = ServerIps
     return sg
   @staticmethod
   def _delete_server_group(connection, Name=None, Site=None):

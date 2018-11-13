@@ -317,7 +317,7 @@ class MxConnection(object):
     '''
     return ServerGroup._get_server_group(connection=self, Name=Name, Site=Site)
       
-  def create_server_group(self, Name=None, Site=None, OperationMode=None, ProtectedIps=[], update=False):
+  def create_server_group(self, Name=None, Site=None, OperationMode=None, ProtectedIps=[], ServerIps=[], update=False):
     '''
     :type Name: string
     :param Name: Server group name
@@ -326,12 +326,13 @@ class MxConnection(object):
     :type OperationMode: 'active', 'simulation' or 'disabled'
     :param OperationMode: See :py:attr:`imperva_sdk.Servergroup.ServerGroup.OperationMode`
     :param ProtectedIps: See :py:attr:`imperva_sdk.Servergroup.ServerGroup.ProtectedIps`
+    :param ServerIps: IPs String list`
     :type update: boolean
     :param update: If `update=True` and the resource already exists, update and return the existing resource. If `update=False` (default) and the resource exists, an exception will be raised.
     :rtype: imperva_sdk.Servergroup.ServerGroup
     :return: Created ServerGroup instance.
     '''
-    return ServerGroup._create_server_group(connection=self, Name=Name, Site=Site, OperationMode=OperationMode, ProtectedIps=ProtectedIps, update=update)
+    return ServerGroup._create_server_group(connection=self, Name=Name, Site=Site, OperationMode=OperationMode, ProtectedIps=ProtectedIps, ServerIps=ServerIps, update=update)
 
   def delete_server_group(self, Name=None, Site=None):
     '''
