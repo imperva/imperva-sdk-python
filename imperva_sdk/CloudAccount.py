@@ -65,24 +65,18 @@ class CloudAccount(MxObject):
   #
   @staticmethod
   def _get_all_cloud_accounts(connection):
-    try:
-      accountNamesObj = connection._mx_api('GET', '/conf/cloudAccounts')
-    except:
-      raise MxException("Failed getting Cloud accounts")
+    accountNamesObj = connection._mx_api('GET', '/conf/cloudAccounts')
     if 'names' in accountNamesObj:
       accountObjects = []
       for accountName in accountNamesObj['names']:
         # Bug - we have accounts with '/' character that don't work with the API...
         if '/' in accountName:
-          print("%s cannot be used by the API. Skipping..." % accountName)
           continue
         try:
-          account = connection._mx_api('GET', '/conf/cloudAccounts/' + accountName)
+          obj = connection.get_cloud_account(accountName)
         except:
           raise MxException("Failed getting cloud account '%s'" % accountName)
-        account = CloudAccount.validateEmptyIndices(account)
-        accountObj = CloudAccount(connection=connection, Name=accountName, PrivateKey=account['privateKey'], AccessKey=account['accessKey'], AwsRegion=account['awsRegion'], AzureTenant=account['azureTenant'], CloudProvider=account['cloudProvider'])
-        accountObjects.append(accountObj)
+        accountObjects.append(obj)
       return accountObjects
   
   @staticmethod
@@ -94,7 +88,7 @@ class CloudAccount(MxObject):
     try:
       account = connection._mx_api('GET', '/conf/cloudAccounts/' + Name)
     except:
-      raise MxException("Failed getting cloud account '%s'" % Name)
+      return None
     account = CloudAccount.validateEmptyIndices(account)
     return CloudAccount(connection=connection, Name=Name, PrivateKey=account['privateKey'], AccessKey=account['accessKey'],
                         AwsRegion=account['awsRegion'], AzureTenant=account['azureTenant'],
@@ -111,7 +105,10 @@ class CloudAccount(MxObject):
     body['azureTenant'] = AzureTenant
     body['cloudProvider'] = CloudProvider
 
-    connection._mx_api('POST', '/conf/cloudAccounts/%s' % Name, data=json.dumps(body))
+    try:
+      connection._mx_api('POST', '/conf/cloudAccounts/%s' % Name, data=json.dumps(body))
+    except Exception as e:
+      raise MxException("Failed creating cloud account: %s" % e)
     return CloudAccount(connection=connection, Name=Name, PrivateKey=PrivateKey, AccessKey=AccessKey,
                         AwsRegion=AwsRegion, AzureTenant=AzureTenant, CloudProvider=CloudProvider)
   
@@ -132,7 +129,7 @@ class CloudAccount(MxObject):
     if 'name' not in account:
       account['name'] = None
     if 'privateKey' not in account:
-      account['privateKey'] = None
+      account['privateKey'] = 'defaultPassword'
     if 'accessKey' not in account:
       account['accessKey'] = None
     if 'awsRegion' not in account:
