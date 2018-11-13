@@ -30,8 +30,8 @@ class DBConnection(MxObject):
 
         super(DBConnection, self).__init__(connection=connection, Name=Name)
         self._Name = Name
-        self._SiteName = SiteName
-        self._ServerGroupName = ServerGroupName
+        self._Site = SiteName
+        self._ServerGroup = ServerGroupName
         self._ServiceName = ServiceName
         self._UserName = UserName
         self._Password = Password
@@ -68,15 +68,6 @@ class DBConnection(MxObject):
     #
     @property
     def Name(self):    return self._Name
-
-    @property
-    def SiteName(self):     return self._SiteName
-
-    @property
-    def ServerGroupName(self):  return self._ServerGroupName
-
-    @property
-    def ServiceName(self):    return self._ServiceName
 
     @property
     def UserName(self):    return self._UserName
@@ -168,7 +159,7 @@ class DBConnection(MxObject):
     def _create_db_connection(connection, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None,
                               UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
                               ServerName=None, UserMapping=None, ConnectionString=None, ServiceDirectory=None,
-                              TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None):
+                              TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None, update=False):
         if SiteName is None or ServerGroupName is None or ServiceName is None or ConnectionName is None:
             raise MxException("missing DB connection path")
 
@@ -195,8 +186,8 @@ class DBConnection(MxObject):
 
         try:
             connection._mx_api('POST', '/conf/dbServices/%s' % fullPath, data=json.dumps(body))
-        except:
-            raise MxException("Failed creating DB connection")
+        except Exception, e:
+            raise MxException("Failed creating DB connection - " + str(e))
 
         return DBConnection(connection=connection, Name=ConnectionName, SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName,
                             UserName=UserName, Password=Password, Port=Port, IpAddress=IpAddress,
@@ -308,7 +299,7 @@ class DBConnection(MxObject):
         if 'user-name' not in dbConnection:
             dbConnection['user-name'] = None
         if 'password' not in dbConnection:
-            dbConnection['password'] = None
+            dbConnection['password'] = 'changeMe'
         if 'port' not in dbConnection:
             dbConnection['port'] = None
         if 'ip-address' not in dbConnection:
@@ -338,5 +329,5 @@ class DBConnection(MxObject):
         return dbConnection
 
     @staticmethod
-    def _delete_db_connection(connection, siteName=None, serverGroupName=None, serviceName=None, connectionName=None):
+    def _delete_db_connection(connection, site=None, serverGroup=None, serviceName=None, connectionName=None):
         raise MxException("DB Connection Delete API currently not supported")
