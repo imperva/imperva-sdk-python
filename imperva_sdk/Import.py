@@ -3,6 +3,15 @@ import json
 import getopt, sys
 import io
 
+
+def dict_discard(d, Discard=[]):
+    if not isinstance(d, (dict, list)):
+        return d
+    if isinstance(d, list):
+        return [dict_discard(v,Discard) for v in d]
+    return {k: dict_discard(v,Discard) for k, v in d.items()
+            if k not in Discard}
+
 # read commandline arguments, first
 fullCmdArguments = sys.argv
 # - further arguments
@@ -39,16 +48,27 @@ try :
 except:
     print (("Error opening connection to (%s)") % (server))
 
+
 try:
     with io.open(inputFile, 'r', encoding='utf-8') as f:
         loaded_data = json.load(f)
-except:
-    print (("Error loading from file (%s)") % (inputFile))
+        loaded_data_2 = dict_discard(loaded_data,['ProtectedIps'])
+        json_string = json.dumps(loaded_data_2, indent=4, sort_keys=True, separators=(',', ': '))
 
-print(loaded_data)
-#log = target_mx.import_from_json(Json=loaded_data,update=False)
-#print(log)
+except RuntimeError as err:
+    print ("Error loading from file {0}: {1}", inputFile, err)
 
-#with io.open(logFile, 'r', encoding='utf-8') as logf:
-#    logf.write(log)
+try:
+    log = target_mx.import_from_json(Json=json_string,update=False)
+except RuntimeError as err:
+    print("Error in import: {0}", err)
 
+for log_entry in log:
+    print(log_entry)
+
+with io.open(logFile, 'w', encoding='utf-8') as logf:
+    logs = json.dumps(log,indent=4, separators=(',', ': '))
+    logf.write(logs)
+    logf.close()
+
+target_mx.logout()
