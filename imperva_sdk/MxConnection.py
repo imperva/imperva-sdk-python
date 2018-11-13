@@ -2267,7 +2267,8 @@ class MxConnection(object):
       res = self._export_objects_to_dict('objects', 'das')
       tmp_json['das_objects'].update(res['das_objects'])
 
-    return json.dumps(tmp_json)
+    # format and sort output json to allow easy comparison
+    return json.dumps(tmp_json, indent=4, sort_keys=True, separators=(',', ': '))
 
   def _import_object_from_json(self, Json=None, ObjectType=None, Context=None, Type=None, update=True):
     """
