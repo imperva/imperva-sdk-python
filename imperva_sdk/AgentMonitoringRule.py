@@ -216,6 +216,12 @@ class AgentMonitoringRule(MxObject):
     body['apply-to-agent'] = ApplyToAgent
     body['apply-to-tag'] = ApplyToTag
 
+    # Check if tags exist. If not, create them
+    known_tags = set([tag.Name for tag in connection.get_all_tags()])
+    missing_tags = list(set(ApplyToTag) - known_tags)
+    for tag in missing_tags:
+      connection.create_tag(tag)
+
     try:
       res = connection._mx_api('POST', '/conf/agentsMonitoringRules/%s' % Name, data=json.dumps(body))
     except Exception as e:
@@ -243,6 +249,12 @@ class AgentMonitoringRule(MxObject):
                        'z-os-agents-monitoring-rules']:
         raise MxException("Parameter '%s' must be 'db-agents-monitoring-rule', 'file-agents-monitoring-rule', "
                           "'ds-agents-monitoring-rules' or 'z-os-agents-monitoring-rules'" % Parameter)
+    elif Parameter == 'ApplyToTag':
+      # Check if tags exist. If not, create them
+      known_tags = set([tag.Name for tag in connection.get_all_tags()])
+      missing_tags = list(set(Value) - known_tags)
+      for tag in missing_tags:
+        connection.create_tag(tag)
     elif Parameter != 'CustomPredicates' and Parameter != 'ApplyToAgent' and Parameter != 'ApplyToTag':
       raise MxException("Parameter '%s' must be 'Action', 'PolicyType', 'CustomPredicates', 'ApplyToAgent' or 'ApplyToTag'" % Name)
 
@@ -262,8 +274,8 @@ class AgentMonitoringRule(MxObject):
 
     try:
       connection._mx_api('PUT', '/conf/agentsMonitoringRules/%s' % Name, data=json.dumps(jsonObj))
-    except:
-      raise MxException("Failed updating agent monitoring rule %s" % Name)
+    except Exception as e:
+      raise MxException("Failed updating agent monitoring rule %s: %s" % (Name, e))
     return True
 
   @staticmethod

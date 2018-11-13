@@ -7,7 +7,7 @@ class DiscoveryScan(MxObject):
   '''
   MX Discovery Scan Class
   '''
-  
+
   # Store created Discovery Scan objects in _instances to prevent duplicate instances and redundant API calls
   def __new__(Type, *args, **kwargs):
     obj_exists = DiscoveryScan._exists(connection=kwargs['connection'], Name=kwargs['Name'])
@@ -17,24 +17,24 @@ class DiscoveryScan(MxObject):
       obj = super(MxObject, Type).__new__(Type)
       kwargs['connection']._instances.append(obj)
       return obj
-  
+
   @staticmethod
   def _exists(connection=None, Name=None):
     for curr_obj in connection._instances:
-        if type(curr_obj).__name__ == 'DiscoveryScan':
-            if curr_obj.Name == Name:
-                return curr_obj
+      if type(curr_obj).__name__ == 'DiscoveryScan':
+        if curr_obj.Name == Name:
+          return curr_obj
     return None
-  
+
   def __init__(self, connection=None, Name=None, ExistingSiteName=None, AutoAccept=None,
-  			 		ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
-  					CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
-  					DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
-  					ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[], 
-  					Scheduling=None):
-  
+               ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
+               CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
+               DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
+               ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
+               Scheduling=None):
+
     super(DiscoveryScan, self).__init__(connection=connection, Name=Name)
-  
+
     self._Name = Name
     self._ExistingSiteName = ExistingSiteName
     self._AutoAccept = AutoAccept
@@ -55,7 +55,7 @@ class DiscoveryScan(MxObject):
     self._OsCredentials = OsCredentials
     self._DbCredentials = DbCredentials
     self._Scheduling = Scheduling
-  
+
   # Method: __iter__
   #-----------------------------------------------------------------------------------------------------
   # Description: Override the MxObject __iter__ function to print ApplyTo objects as dictionaries
@@ -69,7 +69,7 @@ class DiscoveryScan(MxObject):
         iters[field] = variable_function
     for x, y in iters.items():
       yield x, y
-  
+
   # Discovery Scan Parameter getters
   #-----------------------------------------------------------------------------------------------------
   # Description: properties for all scan parameters
@@ -115,72 +115,68 @@ class DiscoveryScan(MxObject):
   def DbCredentials(self):				return self._DbCredentials
   @property
   def Scheduling(self):					return self._Scheduling
-  
+
   #
   # Discovery Scan internal functions
   #
   @staticmethod
   def _get_all_discovery_scans(connection):
-    try:
-        discoveryScanNames = connection._mx_api('GET', '/conf/discovery/scans/')
-    except:
-        raise MxException("Failed getting Discovery scans")
+    discoveryScanNames = connection._mx_api('GET', '/conf/discovery/scans/')
     discoveryScans = []
     for discoveryScanName in discoveryScanNames:
-        if '/' in discoveryScanName:
-            print("%s cannot be used by the API. Skipping..." % discoveryScanName)
-            continue
-        try:
-            discoveryScan = connection._mx_api('GET', '/conf/discovery/scans/' + discoveryScanName)
-        except:
-            raise MxException("Failed getting Discovery scan '%s'" % discoveryScanName)
-    
-        discoveryScan = DiscoveryScan.validateEmptyIndices(discoveryScan)
-        discoveryScanObj = DiscoveryScan(connection=connection, Name=discoveryScan['name'], ExistingSiteName=discoveryScan['existing-site-name'], 
-    														AutoAccept=discoveryScan['auto-accept'], ScanExistingServerGroups=discoveryScan['scan-existing-server-groups'], 
-    														ScanIpGroup=discoveryScan['scan-ip-group'], IpGroups=discoveryScan['ip-groups'], 
-    														ScanCloudAccount=discoveryScan['scan-cloud-account'], CloudAccounts=discoveryScan['cloud-accounts'], 
-    														ServiceTypes=discoveryScan['service-types'], ResolveDns=discoveryScan['resolve-dns'], 
-    														ResolveVersions=discoveryScan['resolve-versions'], EnhancedScanning=discoveryScan['enhanced-scanning'], 
-    														DiscoveryTimeout=discoveryScan['discovery-timeout'], GlobalPortConfiguration=discoveryScan['global-port-configuration'], 
-    														ServerGroupNamingTemplate=discoveryScan['server-group-naming-template'], 
-    														ServiceNamingTemplate=discoveryScan['service-naming-template'], CredentialsEnabled=discoveryScan['credentials-enabled'], 
-    														OsCredentials=discoveryScan['os-credentials'], DbCredentials=discoveryScan['db-credentials'], 
-    														Scheduling=discoveryScan['scheduling'])
-        discoveryScans.append(discoveryScanObj)
+      if '/' in discoveryScanName:
+        continue
+      try:
+        discoveryScan = connection._mx_api('GET', '/conf/discovery/scans/' + discoveryScanName)
+      except:
+        raise MxException("Failed getting Discovery scan '%s'" % discoveryScanName)
+
+      discoveryScan = DiscoveryScan.validateEmptyIndices(discoveryScan)
+      discoveryScanObj = DiscoveryScan(connection=connection, Name=discoveryScan['name'], ExistingSiteName=discoveryScan['existing-site-name'],
+                                       AutoAccept=discoveryScan['auto-accept'], ScanExistingServerGroups=discoveryScan['scan-existing-server-groups'],
+                                       ScanIpGroup=discoveryScan['scan-ip-group'], IpGroups=discoveryScan['ip-groups'],
+                                       ScanCloudAccount=discoveryScan['scan-cloud-account'], CloudAccounts=discoveryScan['cloud-accounts'],
+                                       ServiceTypes=discoveryScan['service-types'], ResolveDns=discoveryScan['resolve-dns'],
+                                       ResolveVersions=discoveryScan['resolve-versions'], EnhancedScanning=discoveryScan['enhanced-scanning'],
+                                       DiscoveryTimeout=discoveryScan['discovery-timeout'], GlobalPortConfiguration=discoveryScan['global-port-configuration'],
+                                       ServerGroupNamingTemplate=discoveryScan['server-group-naming-template'],
+                                       ServiceNamingTemplate=discoveryScan['service-naming-template'], CredentialsEnabled=discoveryScan['credentials-enabled'],
+                                       OsCredentials=discoveryScan['os-credentials'], DbCredentials=discoveryScan['db-credentials'],
+                                       Scheduling=discoveryScan['scheduling'])
+      discoveryScans.append(discoveryScanObj)
     return discoveryScans
-  
+
   @staticmethod
   def _get_discovery_scan(connection, Name=None):
     validate_string(Name=Name)
     obj_exists = DiscoveryScan._exists(connection=connection, Name=Name)
     if obj_exists:
-        return obj_exists
+      return obj_exists
     try:
-        discoveryScan = connection._mx_api('GET', '/conf/discovery/scans/' + Name)
+      discoveryScan = connection._mx_api('GET', '/conf/discovery/scans/' + Name)
     except:
-        raise MxException("Failed getting Discovery Scan '%s'" % Name)
-    
+      return None
+
     discoveryScan = DiscoveryScan.validateEmptyIndices(discoveryScan)
-    return DiscoveryScan(connection=connection, Name=discoveryScan['name'], ExistingSiteName=discoveryScan['existing-site-name'], 
-        														AutoAccept=discoveryScan['auto-accept'], ScanExistingServerGroups=discoveryScan['scan-existing-server-groups'], 
-        														ScanIpGroup=discoveryScan['scan-ip-group'], IpGroups=discoveryScan['ip-groups'], 
-        														ScanCloudAccount=discoveryScan['scan-cloud-account'], CloudAccounts=discoveryScan['cloud-accounts'], 
-        														ServiceTypes=discoveryScan['service-types'], ResolveDns=discoveryScan['resolve-dns'], 
-        														ResolveVersions=discoveryScan['resolve-versions'], EnhancedScanning=discoveryScan['enhanced-scanning'], 
-        														DiscoveryTimeout=discoveryScan['discovery-timeout'], GlobalPortConfiguration=discoveryScan['global-port-configuration'], 
-        														ServerGroupNamingTemplate=discoveryScan['server-group-naming-template'], 
-        														ServiceNamingTemplate=discoveryScan['service-naming-template'], CredentialsEnabled=discoveryScan['credentials-enabled'], 
-        														OsCredentials=discoveryScan['os-credentials'], DbCredentials=discoveryScan['db-credentials'], 
-        														Scheduling=discoveryScan['scheduling'])
-        
+    return DiscoveryScan(connection=connection, Name=discoveryScan['name'], ExistingSiteName=discoveryScan['existing-site-name'],
+                         AutoAccept=discoveryScan['auto-accept'], ScanExistingServerGroups=discoveryScan['scan-existing-server-groups'],
+                         ScanIpGroup=discoveryScan['scan-ip-group'], IpGroups=discoveryScan['ip-groups'],
+                         ScanCloudAccount=discoveryScan['scan-cloud-account'], CloudAccounts=discoveryScan['cloud-accounts'],
+                         ServiceTypes=discoveryScan['service-types'], ResolveDns=discoveryScan['resolve-dns'],
+                         ResolveVersions=discoveryScan['resolve-versions'], EnhancedScanning=discoveryScan['enhanced-scanning'],
+                         DiscoveryTimeout=discoveryScan['discovery-timeout'], GlobalPortConfiguration=discoveryScan['global-port-configuration'],
+                         ServerGroupNamingTemplate=discoveryScan['server-group-naming-template'],
+                         ServiceNamingTemplate=discoveryScan['service-naming-template'], CredentialsEnabled=discoveryScan['credentials-enabled'],
+                         OsCredentials=discoveryScan['os-credentials'], DbCredentials=discoveryScan['db-credentials'],
+                         Scheduling=discoveryScan['scheduling'])
+
   @staticmethod
   def _create_discovery_scan(connection,Name=None, ExistingSiteName=None, AutoAccept=None,
-  			 		ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
-  					CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
-  					DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
-  					ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
-  					Scheduling=None, update=False):
+                             ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
+                             CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
+                             DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
+                             ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
+                             Scheduling=None, update=False):
     validate_string(Name=Name)
     body = {}
     body['name'] =Name
@@ -211,33 +207,33 @@ class DiscoveryScan(MxObject):
     except Exception as e:
       print (e)
       raise MxException("Failed creating Discovery scan '%s'" % Name)
-    
+
     return DiscoveryScan(connection=connection, Name=Name, ExistingSiteName=ExistingSiteName, AutoAccept=AutoAccept,
-                            ScanExistingServerGroups=ScanExistingServerGroups, ScanIpGroup=ScanIpGroup, IpGroups=IpGroups, ScanCloudAccount=ScanCloudAccount,
-                            CloudAccounts=CloudAccounts, ServiceTypes=ServiceTypes, ResolveDns=ResolveDns, ResolveVersions=ResolveVersions,
-                            EnhancedScanning=EnhancedScanning,DiscoveryTimeout=DiscoveryTimeout,
-                            GlobalPortConfiguration=GlobalPortConfiguration, ServerGroupNamingTemplate=ServerGroupNamingTemplate,
-                            ServiceNamingTemplate=ServiceNamingTemplate, CredentialsEnabled=CredentialsEnabled, OsCredentials=OsCredentials,
-                            DbCredentials=DbCredentials, Scheduling=Scheduling)
-  
+                         ScanExistingServerGroups=ScanExistingServerGroups, ScanIpGroup=ScanIpGroup, IpGroups=IpGroups, ScanCloudAccount=ScanCloudAccount,
+                         CloudAccounts=CloudAccounts, ServiceTypes=ServiceTypes, ResolveDns=ResolveDns, ResolveVersions=ResolveVersions,
+                         EnhancedScanning=EnhancedScanning,DiscoveryTimeout=DiscoveryTimeout,
+                         GlobalPortConfiguration=GlobalPortConfiguration, ServerGroupNamingTemplate=ServerGroupNamingTemplate,
+                         ServiceNamingTemplate=ServiceNamingTemplate, CredentialsEnabled=CredentialsEnabled, OsCredentials=OsCredentials,
+                         DbCredentials=DbCredentials, Scheduling=Scheduling)
+
   @staticmethod
   def _update_discovery_scan(connection, Name=None, ExistingSiteName=None, AutoAccept=None,
-  			 		ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
-  					CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
-  					DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
-  					ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
-  					Scheduling=None):
+                             ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
+                             CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
+                             DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
+                             ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
+                             Scheduling=None):
     raise MxException("Discovery scan Update API currently not supported")
-  
+
   @staticmethod
   def _delete_discovery_scan(connection, Name=None):
     raise MxException("Discovery scan API currently not supported")
-  
+
   @staticmethod
   def validateEmptyIndices(discoveryScan):
     if type(discoveryScan) is not dict:
       return discoveryScan
-     
+
     if 'name' not in discoveryScan:
       discoveryScan['name'] = None
     if 'existing-site-name' not in discoveryScan:
@@ -278,6 +274,6 @@ class DiscoveryScan(MxObject):
       discoveryScan['db-credentials'] = []
     if 'scheduling' not in discoveryScan:
       discoveryScan['scheduling'] = None
-      
+
     return discoveryScan
   
