@@ -186,7 +186,7 @@ class DBConnection(MxObject):
 
         try:
             connection._mx_api('POST', '/conf/dbServices/%s' % fullPath, data=json.dumps(body))
-        except Exception, e:
+        except Exception as e:
             raise MxException("Failed creating DB connection - " + str(e))
 
         return DBConnection(connection=connection, Name=ConnectionName, SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName,
