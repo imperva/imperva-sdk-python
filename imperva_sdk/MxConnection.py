@@ -426,8 +426,8 @@ class MxConnection(object):
   def get_db_service(self, Name=None, ServerGroup=None, Site=None):
     return DbService._get_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
 
-  def create_db_service(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
-    return DbService._create_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbConnections=DbConnections, DbServiceType=DbServiceType, update=update)
+  def create_db_service(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbServiceType=None, update=False):
+    return DbService._create_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbServiceType=DbServiceType, update=update)
 
   # Create - the part of post children. It's only needed to create the db mappings, but I leave the parameters the same for simplicity
   def create_db_service_pc(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
@@ -1190,7 +1190,6 @@ class MxConnection(object):
 
   # ==================================== END DAM policies =============================================
 
-
   #
   # -----------------------------------------------------------------------------
   # DB connection
@@ -1199,18 +1198,18 @@ class MxConnection(object):
   def get_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None):
     return DBConnection._get_db_connection(connection=self, SiteName=SiteName,
                                            ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName)
-  def get_all_db_connections(self, SiteName=None, ServerGroupName=None, ServiceName=None):
-    return DBConnection._get_all_db_connections(Connection=self, SiteName=SiteName,
-                                             ServerGroupName=ServerGroupName, ServiceName=ServiceName)
+  def get_all_db_connections(self, Site=None, ServerGroup=None, ServiceName=None):
+    return DBConnection._get_all_db_connections(Connection=self, SiteName=Site,
+                                                ServerGroupName=ServerGroup, ServiceName=ServiceName)
 
   def create_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None,
                               UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
                               ServerName=None, UserMapping=None, ConnectionString=None, ServiceDirectory=None,
-                              TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None):
+                              TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None, update=False):
     return DBConnection._create_db_connection(connection=self, SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName,
                               UserName=UserName, Password=Password, Port=Port, IpAddress=IpAddress, DbName=DbName,
                               ServerName=ServerName, UserMapping=UserMapping, ConnectionString=ConnectionString, ServiceDirectory=ServiceDirectory,
-                              TnsAdmin=TnsAdmin, HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName)
+                              TnsAdmin=TnsAdmin, HomeDirectory=HomeDirectory, Instance=Instance, HostName=HostName, update=update)
   def update_db_connection(self, SiteName=None, ServerGroupName=None, ServiceName=None, ConnectionName=None,
                               UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
                               ServerName=None, UserMapping=None, ConnectionString=None, ServiceDirectory=None,
@@ -1417,8 +1416,6 @@ class MxConnection(object):
                                                       PolicyTags=PolicyTags, AdcKeywords=AdcKeywords,
                                                       TestNames=TestNames, update=update)
 
-  #
-  # -----------------------------------------------------------------------------
   # Assessment Tests
   # -----------------------------------------------------------------------------
   #
@@ -1450,18 +1447,29 @@ class MxConnection(object):
     return DiscoveryScan._get_discovery_scan(connection=self, Name=Name)
 
   def create_discovery_scan_das_object(self, Name=None, ExistingSiteName=None, AutoAccept=None,
-                            ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
-                            CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
-                            DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
-                            ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
-                            Scheduling=None, update=False):
-    return DiscoveryScan._create_discovery_scan(connection=self, Name=Name, ExistingSiteName=ExistingSiteName, AutoAccept=AutoAccept,
-                                                ScanExistingServerGroups=ScanExistingServerGroups, ScanIpGroup=ScanIpGroup, IpGroups=IpGroups, ScanCloudAccount=ScanCloudAccount,
-                                                CloudAccounts=CloudAccounts, ServiceTypes=ServiceTypes, ResolveDns=ResolveDns, ResolveVersions=ResolveVersions,
-                                                EnhancedScanning=EnhancedScanning,DiscoveryTimeout=DiscoveryTimeout,
-                                                GlobalPortConfiguration=GlobalPortConfiguration, ServerGroupNamingTemplate=ServerGroupNamingTemplate,
-                                                ServiceNamingTemplate=ServiceNamingTemplate, CredentialsEnabled=CredentialsEnabled, OsCredentials=OsCredentials,
-                                                DbCredentials=DbCredentials, Scheduling=Scheduling, update=update)
+                                         ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[],
+                                         ScanCloudAccount=None,
+                                         CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None,
+                                         EnhancedScanning=None,
+                                         DiscoveryTimeout=None, GlobalPortConfiguration=None,
+                                         ServerGroupNamingTemplate=None,
+                                         ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[],
+                                         DbCredentials=[],
+                                         Scheduling=None, update=False):
+    return DiscoveryScan._create_discovery_scan(connection=self, Name=Name, ExistingSiteName=ExistingSiteName,
+                                                    AutoAccept=AutoAccept,
+                                                    ScanExistingServerGroups=ScanExistingServerGroups,
+                                                    ScanIpGroup=ScanIpGroup, IpGroups=IpGroups,
+                                                    ScanCloudAccount=ScanCloudAccount,
+                                                    CloudAccounts=CloudAccounts, ServiceTypes=ServiceTypes,
+                                                    ResolveDns=ResolveDns, ResolveVersions=ResolveVersions,
+                                                    EnhancedScanning=EnhancedScanning,
+                                                    DiscoveryTimeout=DiscoveryTimeout,
+                                                    GlobalPortConfiguration=GlobalPortConfiguration,
+                                                    ServerGroupNamingTemplate=ServerGroupNamingTemplate,
+                                                    ServiceNamingTemplate=ServiceNamingTemplate,
+                                                    CredentialsEnabled=CredentialsEnabled, OsCredentials=OsCredentials,
+                                                    DbCredentials=DbCredentials, Scheduling=Scheduling, update=update)
 
   def export_das_objects(self):
     """
@@ -1736,10 +1744,14 @@ class MxConnection(object):
   def get_cloud_account(self, Name=None):
     return CloudAccount._get_cloud_account(connection=self, Name=Name)
 
-  def create_cloud_account_dam_global_object(self, Name=None, PrivateKey=None, AccessKey=None, AwsRegion=None, AzureTenant=None, CloudProvider=None, update=False):
-    return CloudAccount._create_cloud_account(connection=self, Name=Name, PrivateKey=PrivateKey, AccessKey=AccessKey,
-                                              AwsRegion=AwsRegion, AzureTenant=AzureTenant, CloudProvider=CloudProvider,
-                                              update=update)
+  def create_cloud_account_dam_global_object(self, Name=None, PrivateKey=None, AccessKey=None, AwsRegion=None,
+                                               AzureTenant=None, CloudProvider=None, update=False):
+    return CloudAccount._create_cloud_account(connection=self, Name=Name, PrivateKey=PrivateKey,
+                                                  AccessKey=AccessKey,
+                                                  AwsRegion=AwsRegion, AzureTenant=AzureTenant,
+                                                  CloudProvider=CloudProvider,
+                                                  update=update)
+
   #
   # -----------------------------------------------------------------------------
   # Ip Group
@@ -2364,6 +2376,7 @@ class MxConnection(object):
         try:
           create_function = getattr(ParentObject, "create_" + object_type[:-1])
           parent_object_parameters['update'] = update
+
           parent_object = create_function(**parent_object_parameters)
           log_entry['Result'] = "SUCCESS"
         except Exception as e:

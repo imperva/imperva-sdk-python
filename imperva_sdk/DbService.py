@@ -38,7 +38,7 @@ class DbService(MxObject):
           return cur_obj
     return None
 
-  def __init__(self, connection=None, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None):
+  def __init__(self, connection=None, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbServiceType=None):
     super(DbService, self).__init__(connection=connection, Name=Name)
     validate_string(Site=Site, ServerGroup=ServerGroup)
     self._Site = Site
@@ -46,7 +46,6 @@ class DbService(MxObject):
     self._Ports = Ports
     self._DbServiceType = DbServiceType
     self._LogCollectors = LogCollectors
-    self._DbConnections = DbConnections
     self._DefaultApp = DefaultApp
     self._DbMappings = DbMappings
     self._TextReplacement = TextReplacement
@@ -72,10 +71,6 @@ class DbService(MxObject):
   @property
   def LogCollectors(self):
     return self._LogCollectors
-
-  @property
-  def DbConnections(self):
-    return self._DbConnections
 
   @property
   def DefaultApp(self):
@@ -137,8 +132,6 @@ class DbService(MxObject):
       # Get DB service Log Collectors and DB Connections
       LogCollectors = connection._mx_api('GET', '/conf/dbServices/%s/%s/%s/logCollectors' % (Site, ServerGroup, Name))
       LogCollectors = LogCollectors['connectors']
-      DbConnections = connection._mx_api('GET', '/conf/dbServices/%s/%s/%s/dbConnections' % (Site, ServerGroup, Name))
-      DbConnections = DbConnections['connections']
 
       # Do not get all security policies and audit policies attached to this service - they will be handled by the policies
       # sps = connection._mx_api('GET', '/conf/dbServices/%s/%s/%s/dbSecurityPolicies' % (Site, ServerGroup, Name))
@@ -149,13 +142,12 @@ class DbService(MxObject):
       return DbService(
           connection=connection, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, 
           DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement,
-          LogCollectors=LogCollectors, DbConnections=DbConnections,
-          DbServiceType=DbServiceType)
+          LogCollectors=LogCollectors, DbServiceType=DbServiceType)
     else:
       return None
 
   @staticmethod    
-  def _create_db_service(connection, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
+  def _create_db_service(connection, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbServiceType=None, update=False):
     validate_string(Name=Name, Site=Site, ServerGroup=ServerGroup)
     dbs = connection.get_db_service(Name=Name, Site=Site, ServerGroup=ServerGroup)
     if dbs:
@@ -163,8 +155,6 @@ class DbService(MxObject):
         if Ports:
           pass
         if LogCollectors:
-          pass
-        if DbConnections:
           pass
         if DefaultApp:
           pass
@@ -203,20 +193,7 @@ class DbService(MxObject):
         logColl['secret-key'] = 'ChangeMe'
       connection._mx_api('POST', '/conf/dbServices/%s/%s/%s/logCollectors' % (Site, ServerGroup, Name), data=json.dumps(logColl))
 
-    # Store the DB Connections
-    for dbC in DbConnections:
-      # We need the display name in the URL and not in the JSON body, so we use a copy
-      dbConn = copy.deepcopy(dbC)
-      # Take the name for the URL
-      connName = dbConn['display-name']
-      # And remove it from the JSON
-      del dbConn['display-name']
-      # Add dummy password:
-      if 'user-name' in dbConn:
-        dbConn['password'] = 'ChangeMe'
-      connection._mx_api('POST', '/conf/dbServices/%s/%s/%s/dbConnections/%s' % (Site, ServerGroup, Name, connName), data=json.dumps(dbConn))
-
-    return DbService(connection=connection, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, LogCollectors=LogCollectors, DbConnections=DbConnections, DbServiceType=DbServiceType)
+    return DbService(connection=connection, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, LogCollectors=LogCollectors, DbServiceType=DbServiceType)
 
   # Function: _create_db_service_pc
   #-----------------------------------------------------------------------------
@@ -227,13 +204,13 @@ class DbService(MxObject):
   #-----------------------------------------------------------------------------
 
   @staticmethod
-  def _create_db_service_pc(connection, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
+  def _create_db_service_pc(connection, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbServiceType=None, update=False):
     validate_string(Name=Name, Site=Site, ServerGroup=ServerGroup)
     if DbMappings:
       body = {}
       body['db-mappings'] = DbMappings
       connection._mx_api('PUT', '/conf/dbServices/%s/%s/%s' % (Site, ServerGroup, Name), data=json.dumps(body))
-    return DbService(connection=connection, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, LogCollectors=LogCollectors, DbConnections=DbConnections, DbServiceType=DbServiceType)
+    return DbService(connection=connection, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, LogCollectors=LogCollectors, DbServiceType=DbServiceType)
 
   @staticmethod
   def _delete_db_service(connection, Name=None, ServerGroup=None, Site=None):
@@ -259,7 +236,6 @@ class DbService(MxObject):
   def delete_db_application(self, Name=None):
     return self._connection.delete_db_application(DbService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, Name=Name)
 
-
   #
   # DB connection child functions
   #
@@ -267,13 +243,13 @@ class DbService(MxObject):
     return self._connection.get_db_connection(ServiceName=self.Name, SiteName=self._Site, ServerGroupName=self._ServerGroup, Name=Name)
 
   def get_all_db_connections(self):
-    return self._connection.get_all_db_connections(SiteName=self._Site, ServerGroupName=self._ServerGroup, ServiceName=self.Name)
+    return self._connection.get_all_db_connections(Site=self._Site, ServerGroup=self._ServerGroup, ServiceName=self.Name)
 
-  def create_db_connection(self, ConnectionName=None, UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
+  def create_db_connection(self, Name=None, UserName=None, Password=None, Port=None, IpAddress=None, DbName=None,
                               ServerName=None, UserMapping=None, ConnectionString=None, ServiceDirectory=None,
                               TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None, update=False):
     return self._connection.create_db_connection(ServiceName=self.Name, SiteName=self._Site, ServerGroupName=self._ServerGroup,
-                                                 ConnectionName=ConnectionName, UserName=UserName, Password=Password,
+                                                 ConnectionName=Name, UserName=UserName, Password=Password,
                                                  Port=Port, IpAddress=IpAddress, DbName=DbName, ServerName=ServerName,
                                                  UserMapping=UserMapping, ConnectionString=ConnectionString,
                                                  ServiceDirectory=ServiceDirectory, TnsAdmin=TnsAdmin,
