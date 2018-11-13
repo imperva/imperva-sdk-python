@@ -1191,60 +1191,6 @@ class MxConnection(object):
 
   #
   # -----------------------------------------------------------------------------
-  # Cloud Accounts
-  # -----------------------------------------------------------------------------
-  #
-  def get_all_cloud_accounts(self):
-    return CloudAccount._get_all_cloud_accounts(connection=self)
-
-  def get_cloud_account(self, Name=None):
-    return CloudAccount._get_cloud_account(connection=self, Name=Name)
-
-  def create_cloud_account(self, Name=None, PrivateKey=None, AccessKey=None, AwsRegion=None, AzureTenant=None, CloudProvider=None, update=False):
-    return CloudAccount._create_cloud_account(connection=self, Name=Name, PrivateKey=PrivateKey, AccessKey=AccessKey, AwsRegion=AwsRegion, AzureTenant=AzureTenant, CloudProvider=CloudProvider)
-  #
-  # -----------------------------------------------------------------------------
-  # Ip Group
-  # -----------------------------------------------------------------------------
-  #
-  def get_all_ip_groups(self):
-    return IpGroup._get_all_ip_groups(connection=self)
-
-  def get_ip_group(self, Name=None):
-    return IpGroup._get_ip_group(connection=self, Name=Name)
-
-  def create_ip_group(self, Name=None, Entries=[], update=False):
-    return IpGroup._create_ip_group(connection=self, Name=Name, Entries=Entries, update=False)
-
-
-  #
-  # -----------------------------------------------------------------------------
-  # Discovery Scans
-  # -----------------------------------------------------------------------------
-  #
-  def get_all_discovery_scan_das_objects(self):
-    return DiscoveryScan._get_all_discovery_scans(connection=self)
-
-  def get_discovery_scan(self, Name=None):
-    return DiscoveryScan._get_discovery_scan(connection=self, Name=Name)
-
-  def create_discovery_scan_das_object(self, Name=None, ExistingSiteName=None, AutoAccept=None,
-  			 		ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[], ScanCloudAccount=None,
-  					CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None, EnhancedScanning=None,
-  					DiscoveryTimeout=None, GlobalPortConfiguration=None, ServerGroupNamingTemplate=None,
-  					ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
-  					Scheduling=None):
-    return DiscoveryScan._create_discovery_scan(connection=self, Name=Name, ExistingSiteName=ExistingSiteName, AutoAccept=AutoAccept,
-                            ScanExistingServerGroups=ScanExistingServerGroups, ScanIpGroup=ScanIpGroup, IpGroups=IpGroups, ScanCloudAccount=ScanCloudAccount,
-                            CloudAccounts=CloudAccounts, ServiceTypes=ServiceTypes, ResolveDns=ResolveDns, ResolveVersions=ResolveVersions,
-                            EnhancedScanning=EnhancedScanning,DiscoveryTimeout=DiscoveryTimeout,
-                            GlobalPortConfiguration=GlobalPortConfiguration, ServerGroupNamingTemplate=ServerGroupNamingTemplate,
-                            ServiceNamingTemplate=ServiceNamingTemplate, CredentialsEnabled=CredentialsEnabled, OsCredentials=OsCredentials,
-                            DbCredentials=DbCredentials, Scheduling=Scheduling)
-
-
-  #
-  # -----------------------------------------------------------------------------
   # DB connection
   # -----------------------------------------------------------------------------
   #
@@ -1487,6 +1433,42 @@ class MxConnection(object):
                                                   OsType=OsType, DbType=DbType, RecommendedFix=RecommendedFix,
                                                   TestScript=TestScript, AdditionalScript=AdditionalScript,
                                                   ResultsLayout=ResultsLayout, update=update)
+
+  #
+  # -----------------------------------------------------------------------------
+  # Discovery Scans
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_discovery_scan_das_objects(self):
+    return DiscoveryScan._get_all_discovery_scans(connection=self)
+
+  def get_discovery_scan(self, Name=None):
+    return DiscoveryScan._get_discovery_scan(connection=self, Name=Name)
+
+  def create_discovery_scan_das_object(self, Name=None, ExistingSiteName=None, AutoAccept=None,
+                                         ScanExistingServerGroups=None, ScanIpGroup=None, IpGroups=[],
+                                         ScanCloudAccount=None,
+                                         CloudAccounts=[], ServiceTypes=[], ResolveDns=None, ResolveVersions=None,
+                                         EnhancedScanning=None,
+                                         DiscoveryTimeout=None, GlobalPortConfiguration=None,
+                                         ServerGroupNamingTemplate=None,
+                                         ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[],
+                                         DbCredentials=[],
+                                         Scheduling=None, update=False):
+    return DiscoveryScan._create_discovery_scan(connection=self, Name=Name, ExistingSiteName=ExistingSiteName,
+                                                    AutoAccept=AutoAccept,
+                                                    ScanExistingServerGroups=ScanExistingServerGroups,
+                                                    ScanIpGroup=ScanIpGroup, IpGroups=IpGroups,
+                                                    ScanCloudAccount=ScanCloudAccount,
+                                                    CloudAccounts=CloudAccounts, ServiceTypes=ServiceTypes,
+                                                    ResolveDns=ResolveDns, ResolveVersions=ResolveVersions,
+                                                    EnhancedScanning=EnhancedScanning,
+                                                    DiscoveryTimeout=DiscoveryTimeout,
+                                                    GlobalPortConfiguration=GlobalPortConfiguration,
+                                                    ServerGroupNamingTemplate=ServerGroupNamingTemplate,
+                                                    ServiceNamingTemplate=ServiceNamingTemplate,
+                                                    CredentialsEnabled=CredentialsEnabled, OsCredentials=OsCredentials,
+                                                    DbCredentials=DbCredentials, Scheduling=Scheduling, update=update)
 
   def export_das_objects(self):
     """
@@ -1749,6 +1731,39 @@ class MxConnection(object):
   # ====================================== END DAM reports ==================================================
 
   # ====================================== DAM GLOBAL OBJECTS ===============================================
+
+  #
+  # -----------------------------------------------------------------------------
+  # Cloud Accounts
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_cloud_account_dam_global_objects(self):
+    return CloudAccount._get_all_cloud_accounts(connection=self)
+
+  def get_cloud_account(self, Name=None):
+    return CloudAccount._get_cloud_account(connection=self, Name=Name)
+
+  def create_cloud_account_dam_global_object(self, Name=None, PrivateKey=None, AccessKey=None, AwsRegion=None,
+                                               AzureTenant=None, CloudProvider=None, update=False):
+    return CloudAccount._create_cloud_account(connection=self, Name=Name, PrivateKey=PrivateKey,
+                                                  AccessKey=AccessKey,
+                                                  AwsRegion=AwsRegion, AzureTenant=AzureTenant,
+                                                  CloudProvider=CloudProvider,
+                                                  update=update)
+
+  #
+  # -----------------------------------------------------------------------------
+  # Ip Group
+  # -----------------------------------------------------------------------------
+  #
+  def get_all_ip_group_dam_global_objects(self):
+    return IpGroup._get_all_ip_groups(connection=self)
+
+  def get_ip_group(self, Name=None):
+    return IpGroup._get_ip_group(connection=self, Name=Name)
+
+  def create_ip_group_dam_global_object(self, Name=None, Entries=[], update=False):
+    return IpGroup._create_ip_group(connection=self, Name=Name, Entries=Entries, update=update)
 
   #
   # -----------------------------------------------------------------------------
@@ -2359,11 +2374,6 @@ class MxConnection(object):
         try:
           create_function = getattr(ParentObject, "create_" + object_type[:-1])
           parent_object_parameters['update'] = update
-
-          # if ParentObject.__class__.__name__ == 'DbService' and object_type == 'db_connections':
-          #   del parent_object_parameters['Site']
-          #   del parent_object_parameters['ServerGroup']
-          #   del parent_object_parameters['ServiceName']
 
           parent_object = create_function(**parent_object_parameters)
           log_entry['Result'] = "SUCCESS"
