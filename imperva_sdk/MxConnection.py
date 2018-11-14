@@ -431,7 +431,7 @@ class MxConnection(object):
 
   # Create - the part of post children. It's only needed to create the db mappings, but I leave the parameters the same for simplicity
   def create_db_service_pc(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
-    return DbService._create_db_service_pc(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbConnections=DbConnections, DbServiceType=DbServiceType, update=update)
+    return DbService._create_db_service_pc(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbServiceType=DbServiceType, update=update)
 
   def delete_db_service(self, Name=None, ServerGroup=None, Site=None):
     return DbService._delete_db_service(connection=self, Name=Name, ServerGroup=ServerGroup, Site=Site)
