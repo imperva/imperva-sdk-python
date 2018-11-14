@@ -188,8 +188,8 @@ class ServerGroup(MxObject):
 
   def create_db_service(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbServiceType=None, update=False):
     return self._connection.create_db_service(Name=Name, ServerGroup=self.Name, Site=self._Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbServiceType=DbServiceType, update=update)
-  def create_db_service_pc(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbConnections=[], DbServiceType=None, update=False):
-    return self._connection.create_db_service_pc(Name=Name, ServerGroup=self.Name, Site=self._Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbConnections=DbConnections, DbServiceType=DbServiceType, update=update)
+  def create_db_service_pc(self, Name=None, ServerGroup=None, Site=None, Ports=[], DefaultApp=None, DbMappings=[], TextReplacement=[], LogCollectors=[], DbServiceType=None, update=False):
+    return self._connection.create_db_service_pc(Name=Name, ServerGroup=self.Name, Site=self._Site, Ports=Ports, DefaultApp=DefaultApp, DbMappings=DbMappings, TextReplacement=TextReplacement, LogCollectors=LogCollectors, DbServiceType=DbServiceType, update=update)
   def delete_db_service(self, Name=None):
     return self._connection.delete_db_service(Name=Name, Site=self._Site, ServerGroup=self.Name)
   def get_db_service(self, Name=None):
