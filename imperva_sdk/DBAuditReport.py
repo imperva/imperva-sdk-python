@@ -219,7 +219,7 @@ class DBAuditReport(MxObject):
   @Policies.setter
   def Policies(self, Policies):
     #intersect the lists in order to find a match
-    if list(set(Policies) & set(self._Policies)):
+    if set(Policies) != set(self._Policies):
       self._connection._update_db_audit_report(Name=self._Name, Parameter='Policies', Value=Policies)
       self._Policies = Policies
 
@@ -293,7 +293,7 @@ class DBAuditReport(MxObject):
         DB audit report open API doesn't support update
         Assume that _update will be called ONLY within the class setters
     '''
-    print("WARNING: DB Audit Report doesn't support update %" % Name)
+    # print("WARNING: DB Audit Report doesn't support update %s" % Name)
     return True
 
 

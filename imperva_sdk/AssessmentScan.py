@@ -148,28 +148,18 @@ class AssessmentScan(MxObject):
   @ApplyTo.setter
   def ApplyTo(self, ApplyTo):
 
-    change = []
-
-    # Translate ApplyTo to objects if we need to
-    ApplyToObjects = []
-    for cur_apply in ApplyTo:
-      if type(cur_apply).__name__ == 'DbConnection':
-        ApplyToObjects.append(cur_apply)
-      else:
-        raise MxException("Bad 'ApplyTo' parameter")
-
-    # Check if we need to add anything
-    for cur_apply in ApplyToObjects:
-      if cur_apply not in self._ApplyTo:
-        change.append(cur_apply)
-    # Check if we need to remove anything
-    for cur_apply in self._ApplyTo:
-      if cur_apply not in ApplyToObjects:
-        change.append(cur_apply)
-
-    if change:
-      self._connection._update_assessment_scan(Name=self._Name, Parameter='apply-to', Value=change)
-      self._ApplyTo = MxList(ApplyToObjects)
+    tmp1 = []
+    for cur_item in ApplyTo:
+      tmp1.append(''.join(sorted(str(cur_item))))
+    tmp1 = sorted(tmp1)
+    tmp2 = []
+    for cur_item in self._ApplyTo:
+      tmp2 = sorted(tmp2)
+      tmp2.append(''.join(sorted(str(cur_item))))
+    tmp2 = sorted(tmp2)
+    if tmp1 != tmp2:
+      self._connection._update_assessment_scan(Name=self._Name, Parameter='apply-to', Value=ApplyTo)
+      self._ApplyTo = ApplyTo
 
   @Scheduling.setter
   def Scheduling(self, Scheduling):
