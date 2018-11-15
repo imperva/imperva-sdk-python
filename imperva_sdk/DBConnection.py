@@ -118,7 +118,7 @@ class DBConnection(MxObject):
         try:
             dbConnectionDicts = Connection._mx_api('GET', '/conf/dbServices/%s' % servicePath)
         except:
-            raise MxException("Failed getting Data Enrichment Policies")
+            raise MxException("Failed getting db connections")
         dbConnectionObjects = []
         for dbConnectionDict in dbConnectionDicts['connections']:
             dbConnectionDict = DBConnection.checkDbConnectionEmptyKeys(dbConnectionDict)
