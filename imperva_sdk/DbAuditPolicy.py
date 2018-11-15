@@ -163,10 +163,8 @@ class DbAuditPolicy(MxObject):
             }
             if Parameters: body = Parameters
 
-            try:
-                connection._mx_api('POST', '/conf/auditPolicies/%s' % Name, data=json.dumps(body))
-            except:
-                pass
+            connection._mx_api('POST', '/conf/auditPolicies/%s' % Name, data=json.dumps(body))
+
             return DbAuditPolicy(connection=connection, Name=Name, Parameters=Parameters)
 
     @staticmethod
