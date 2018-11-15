@@ -220,7 +220,7 @@ class TableGroup(MxObject):
 
     # table group doesn't support update IsSensitive/DataType/ServiceTypes
 
-    elif Parameter != 'IsSensitive' or Parameter != 'DataType' or Parameter != 'ServiceTypes':
+    elif Parameter != 'IsSensitive' and Parameter != 'DataType' and Parameter != 'ServiceTypes':
       raise MxException("Parameter '%s' must be 'Records'" % Name)
 
 

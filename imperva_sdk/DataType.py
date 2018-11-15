@@ -107,7 +107,7 @@ class DataType(MxObject):
       tmp1.append(''.join(sorted(str(cur_item))))
     tmp1 = sorted(tmp1)
     tmp2 = []
-    for cur_item in self._Columns:
+    for cur_item in self._Rules:
       tmp2.append(''.join(sorted(str(cur_item))))
     tmp2 = sorted(tmp2)
     if tmp1 != tmp2:
