@@ -125,8 +125,8 @@ class AssessmentPolicy(MxObject):
 
         try:
             connection._mx_api('POST', '/conf/assessment/policies/%s' % Name, data=json.dumps(body))
-        except:
-            raise MxException("Failed creating Assessment Policy '%s'" % Name)
+        except Exception as e:
+            raise MxException("Failed creating Assessment Policy '%s'" % e)
 
         return AssessmentPolicy(connection=connection, Name=Name, Description=Description, DbType=DbType, PolicyTags=PolicyTags, AdcKeywords=AdcKeywords, TestNames=TestNames)
 

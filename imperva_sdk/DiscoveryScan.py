@@ -200,13 +200,10 @@ class DiscoveryScan(MxObject):
     body['db-credentials'] = DbCredentials
     body['scheduling'] = Scheduling
 
-    print(json.dumps(body))
-
     try:
       connection._mx_api('POST', '/conf/discovery/scans/%s' % Name, data=json.dumps(body))
     except Exception as e:
-      print (e)
-      raise MxException("Failed creating Discovery scan '%s'" % Name)
+      raise MxException("Failed creating Discovery scan: '%s'" % e)
 
     return DiscoveryScan(connection=connection, Name=Name, ExistingSiteName=ExistingSiteName, AutoAccept=AutoAccept,
                          ScanExistingServerGroups=ScanExistingServerGroups, ScanIpGroup=ScanIpGroup, IpGroups=IpGroups, ScanCloudAccount=ScanCloudAccount,
