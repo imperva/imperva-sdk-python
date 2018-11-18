@@ -213,12 +213,12 @@ class LookupDataSet(MxObject):
 
     # Second, update the newly created data set
     body = {}
-    if Records: body['records'] = Records
-
-    try:
-      res = connection._mx_api('POST', '/conf/dataSets/%s/data' % Name , data=json.dumps(body))
-    except Exception as e:
-      raise MxException("Failed updating lookup data set: %s" % e)
+    if Records:
+      body['records'] = Records
+      try:
+        res = connection._mx_api('POST', '/conf/dataSets/%s/data' % Name , data=json.dumps(body))
+      except Exception as e:
+        raise MxException("Failed updating lookup data set: %s" % e)
 
     return LookupDataSet(connection=connection, Name=Name, Records=Records, Columns=Columns)
 
