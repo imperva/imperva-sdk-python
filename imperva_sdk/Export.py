@@ -10,10 +10,8 @@ def main():
   # - further arguments
   argumentList = fullCmdArguments[1:]
 
-  print(argumentList)
-
-  unixOptions = "ho:s:u:p:"
-  gnuOptions = ["help", "output", "server", "username", "password"]
+  unixOptions = "ho:s:u:p:a:"
+  gnuOptions = ["help", "output", "server", "username", "password", "agents"]
 
   try:
       arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
@@ -22,6 +20,7 @@ def main():
       print (str(err))
       sys.exit(2)
 
+  agentsOnly = False
   # evaluate given options
   for currentArgument, currentValue in arguments:
       if currentArgument in ("-s", "--server"):
@@ -31,12 +30,21 @@ def main():
       elif currentArgument in ("-p", "--password"):
           password = currentValue
       elif currentArgument in ("-h", "--help"):
-          print ("Please use the following syntax: Export.py [-o <output file>] -s <source mx IP> -u <username> -p <password>")
+          print ("Please use the following syntax: Export.py -o <output file> -s <source mx IP> -u <username> -p <password>")
       elif currentArgument in ("-o", "--output"):
           outputFile = currentValue
+      elif currentArgument in ("-a", "--agents"):
+          agentsOnly=True
+
   try :
       source_mx = imperva_sdk.MxConnection(Host=server, Username=username,Password=password)
-      source_export = source_mx.export_to_json(Discard=['web_application_custom', 'web_service_custom','http_protocol_signatures','web_profile'])
+      if agentsOnly:
+          print(("About to export Agents configuration from (%s)") % (server))
+          source_export = source_mx.export_agent_configurations()
+      else: #default - export all
+          print(("About to export Full configuration from (%s)") % (server))
+          source_export = source_mx.export_to_json(Discard=['web_application_custom', 'web_service_custom','http_protocol_signatures','web_profile'])
+
   except RuntimeError as err:
       print (("Error exporting from (%s)") % (server))
       print (err)

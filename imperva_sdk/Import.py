@@ -24,10 +24,8 @@ def main():
   # - further arguments
   argumentList = fullCmdArguments[1:]
 
-  print(argumentList)
-
-  unixOptions = "hi:l:s:u:p:v:"
-  gnuOptions = ["help", "input", "logfile", "server", "username", "password", "verbose"]
+  unixOptions = "hi:l:s:u:p:v:a:"
+  gnuOptions = ["help", "input", "logfile", "server", "username", "password", "verbose", "agents"]
 
   try:
       arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
@@ -38,6 +36,7 @@ def main():
 
   # default verbose will output only the errors that occure during import
   verbose = VERBOSITY_LEVEL.ERRORS_ONLY
+  agentsOnly = False
 
   # evaluate given options
   for currentArgument, currentValue in arguments:
@@ -55,6 +54,8 @@ def main():
           logFile = currentValue
       elif currentArgument in ("-v", "--verbose"):
           verbose = VERBOSITY_LEVEL.ALL if currentValue == '1' else VERBOSITY_LEVEL.ERRORS_ONLY
+      elif currentArgument in ("-a", "--agents"):
+          agentsOnly = True
   try :
       target_mx = imperva_sdk.MxConnection(Host=server, Username=username, Password=password)
   except Exception as e:
@@ -71,7 +72,13 @@ def main():
       print ("Error loading from file {0}: {1}", inputFile, err)
 
   try:
-      log = target_mx.import_from_json(Json=json_string,update=False)
+      if agentsOnly:
+          print(("About to import Agents configuration to (%s)") % (server))
+          log = target_mx.import_agent_configurations(Json=json_string)
+      else:  # default - export all
+          print(("About to import Full configuration to (%s)") % (server))
+          log = target_mx.import_from_json(Json=json_string)
+
   except RuntimeError as err:
       print("Error in import: {0}", err)
 
