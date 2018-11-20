@@ -60,6 +60,7 @@ def main():
       target_mx = imperva_sdk.MxConnection(Host=server, Username=username, Password=password)
   except Exception as e:
       print (("Error opening connection to (%s): %s") % (server, e))
+      sys.exit(2)
 
 
   try:

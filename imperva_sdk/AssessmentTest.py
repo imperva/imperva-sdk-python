@@ -83,42 +83,36 @@ class AssessmentTest(MxObject):
     #
     @staticmethod
     def _get_all_assessment_tests(connection):
-        try:
-            assessmentTestNames = connection._mx_api('GET', '/conf/assessment/tests')
-        except:
-            raise MxException("Failed getting Assessment Policies")
+        assessmentTestNames = connection._mx_api('GET', '/conf/assessment/tests')
         assessmentTests = []
-        for assessmentTestName in assessmentTestNames:
-            if '/' in assessmentTestName or r'"' in assessmentTestName or '$' in assessmentTestName:
-                # Bug - we have tests with '/','$' character that don't work with the API...
+        for name in assessmentTestNames:
+            if not valid_string_pattern.match(name):
+                # Bug - we have tests with '/' character that don't work with the API...
+                # the name of assessment test can be non-valid string name (can contain: &, *, ', `, etc) and might trigger an exception
                 continue
             try:
-                assessmentTest = connection._mx_api('GET', '/conf/assessment/tests/' + assessmentTestName)
-            except:
-                raise MxException("Failed getting Assessment Test '%s'" % assessmentTestName)
-            assessmentTest = AssessmentTest.validateEmptyIndices(assessmentTest)
-            assessTestObj = AssessmentTest(connection=connection, Name=assessmentTest['name'], Description=assessmentTest['description'],Severity=assessmentTest['severity'],
-                                           Category=assessmentTest['category'], ScriptType=assessmentTest['scriptType'], OsType=assessmentTest['osType'], DbType=assessmentTest['dbType'],
-                                           RecommendedFix=assessmentTest['recommended-fix'], TestScript=assessmentTest['test-script'], AdditionalScript=assessmentTest['additional-script'],
-                                           ResultsLayout=assessmentTest['result-layout'])
-            assessmentTests.append(assessTestObj)
+                obj = connection.get_assessment_test(Name=name)
+            except Exception as e:
+                raise MxException("Failed getting all assessment tests: %s" % e)
+            if obj:
+                assessmentTests.append(obj)
         return assessmentTests
 
     @staticmethod
     def _get_assessment_test(connection, Name=None):
-        validate_string(Name=Name)
         obj_exists = AssessmentTest._exists(connection=connection, Name=Name)
         if obj_exists:
             return obj_exists
         try:
             assessmentTest = connection._mx_api('GET', '/conf/assessment/tests/' + Name)
         except:
-            raise MxException("Failed getting Assessment Test '%s'" % Name)
+            return None
         assessmentTest = AssessmentTest.validateEmptyIndices(assessmentTest)
         return AssessmentTest(connection=connection, Name=assessmentTest['name'], Description=assessmentTest['description'],Severity=assessmentTest['severity'],
                                            Category=assessmentTest['category'], ScriptType=assessmentTest['scriptType'], OsType=assessmentTest['osType'], DbType=assessmentTest['dbType'],
                                            RecommendedFix=assessmentTest['recommended-fix'], TestScript=assessmentTest['test-script'], AdditionalScript=assessmentTest['additional-script'],
                                            ResultsLayout=assessmentTest['result-layout'])
+
     @staticmethod
     def _create_assessment_test(connection, Name=None, Description=None,
                                 Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None, RecommendedFix=None,
@@ -137,10 +131,7 @@ class AssessmentTest(MxObject):
         body['additional-script'] = AdditionalScript
         body['result-layout'] = ResultsLayout
 
-        try:
-            connection._mx_api('POST', '/conf/assessment/tests/%s' % Name, data=json.dumps(body))
-        except:
-            raise MxException("Failed creating Assessment Test '%s'" % Name)
+        connection._mx_api('POST', '/conf/assessment/tests/%s' % Name, data=json.dumps(body))
         return AssessmentTest(connection=connection, Name=Name, Description=Description, Severity=Severity,
                                            Category=Category, ScriptType=ScriptType, OsType=OsType, DbType=DbType,
                                            RecommendedFix=RecommendedFix, TestScript=TestScript, AdditionalScript=AdditionalScript,
