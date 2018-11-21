@@ -1374,10 +1374,10 @@ class MxConnection(object):
   def get_classification_profile(self, Name=None):
     return ClassificationProfile._get_classification_profile(connection=self, Name=Name)
 
-  def get_all_classification_profile_das_objects(self):
+  def get_all_classification_profiles(self):
     return ClassificationProfile._get_all_classification_profiles(connection=self)
 
-  def create_classification_profile_das_object(self, Name=None, SiteName=None, DataTypes=[], AutoAcceptResults=None,
+  def create_classification_profile(self, Name=None, SiteName=None, DataTypes=[], AutoAcceptResults=None,
                                     ScanViewsAndSynonyms=None, SaveSampleData=None, DataSampleAccuracy=None,
                                          ScanSystemSchemas=None, DbsAndSchemasUsage=None, DbsAndSchemas=[],
                                           ExcludeTablesAndColumns=[], DelayBetweenQueries=None,
@@ -2264,6 +2264,18 @@ class MxConnection(object):
           except:
             # Some versions don't have all policy APIs
             pass
+
+    tmp_json['classification_profiles'] = []
+    if 'classification_profiles' not in Discard:
+      try:
+        profiles = self.get_all_classification_profiles()
+        for profile in profiles:
+          profile_dict = dict(profile)
+          tmp_json['classification_profiles'].append(profile_dict)
+      except:
+        # Some versions don't have all assessment_tests APIs
+        pass
+
     tmp_json['global_objects'] = {}
     if 'global_objects' not in Discard:
       object_types = self.get_all_global_object_types()
@@ -2340,6 +2352,7 @@ class MxConnection(object):
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
     log += self._create_tree_from_json(Dict={'assessment_tests': json_config['assessment_tests']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
+    log += self._create_tree_from_json(Dict={'classification_profiles': json_config['classification_profiles']}, ParentObject=self, update=update)
     log += self.import_dam_reports(Json)
     log += self.import_das_objects(Json)
 
