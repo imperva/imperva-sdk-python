@@ -238,21 +238,11 @@ class AssessmentScan(MxObject):
       if DbConnectionTags: body['db-connection-tags'] = DbConnectionTags
       if Scheduling: body['scheduling'] = Scheduling
 
-      # We want to support ApplyTo in dictionary (API) and WebService object formats
-      ApplyToNames = []
-      ApplyToObjects = []
-      if ApplyTo:
-        for cur_apply in ApplyTo:
-          if type(cur_apply).__name__ == 'str':
-            ApplyToNames.append(cur_apply)
-            ApplyToObjects.append(cur_apply)
-          else:
-            raise MxException("Bad 'ApplyTo' parameter")
-      if ApplyToNames: body['apply-to'] = ApplyToNames
+      if ApplyTo: body['apply-to'] = ApplyTo
       connection._mx_api('POST', '/conf/assessment/scans/%s' % Name, data=json.dumps(body))
       return AssessmentScan(connection=connection, Name=Name, Type=Type, PolicyName=PolicyName, PreTest=PreTest,
                             PolicyTags=PolicyTags, DbConnectionTags=DbConnectionTags,
-                            ApplyTo=ApplyToObjects, Scheduling=Scheduling)
+                            ApplyTo=ApplyTo, Scheduling=Scheduling)
 
 
   @staticmethod
