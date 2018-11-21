@@ -1,6 +1,5 @@
 import imperva_sdk
 import getopt, sys
-import io
 
 
 def main():
@@ -51,11 +50,12 @@ def main():
       sys.exit(2)
 
   try:
-      with io.open(outputFile, 'w', encoding='utf-8') as f:
+      # json.dump() return ASCII-only by default so no encoding is needed
+      with open(outputFile, 'w') as f:
           f.write(source_export)
           f.close()
       print(("Export was successfully written to output file (%s)") % (outputFile))
-  except:
+  except Exception as e:
       print (("Error writing export to output file (%s)") % (outputFile))
 
   source_mx.logout()

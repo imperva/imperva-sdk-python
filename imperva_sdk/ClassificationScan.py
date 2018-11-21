@@ -154,18 +154,11 @@ class ClassificationScan(MxObject):
       }
       if Scheduling: body['scheduling'] = Scheduling
 
-      ApplyToNames = []
-      if ApplyTo:
-        for cur_apply in ApplyTo:
-          if type(cur_apply).__name__ == 'str':
-            ApplyToNames.append(cur_apply)
-          else:
-            raise MxException("Bad 'ApplyTo' parameter")
-      if ApplyToNames: body['apply-to'] = ApplyToNames
+      if ApplyTo: body['apply-to'] = ApplyTo
       if Scheduling: body['scheduling'] = Scheduling
       connection._mx_api('POST', '/conf/classification/scans/%s' % Name, data=json.dumps(body))
       return ClassificationScan(connection=connection, Name=Name, ProfileName=ProfileName,
-                                ApplyTo=ApplyToNames, Scheduling=Scheduling)
+                                ApplyTo=ApplyTo, Scheduling=Scheduling)
 
   @staticmethod
   def _delete_classification_scan(connection, Name=None):

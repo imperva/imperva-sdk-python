@@ -1,7 +1,6 @@
 import imperva_sdk
 import json
 import getopt, sys
-import io
 
 
 def dict_discard(d, Discard=[]):
@@ -64,7 +63,8 @@ def main():
 
 
   try:
-      with io.open(inputFile, 'r', encoding='utf-8') as f:
+      # json.dump() return ASCII-only by default so no encoding is needed
+      with open(inputFile, 'r') as f:
           loaded_data = json.load(f)
           loaded_data_2 = dict_discard(loaded_data,['ProtectedIps'])
           json_string = json.dumps(loaded_data_2, indent=4, sort_keys=True, separators=(',', ': '))
@@ -90,7 +90,8 @@ def main():
   for log_entry in log:
       print(log_entry)
 
-  with io.open(logFile, 'w', encoding='utf-8') as logf:
+  # json.dump() return ASCII-only by default so no encoding is needed
+  with open(logFile, 'w') as logf:
       logs = json.dumps(log,indent=4, separators=(',', ': '))
       logf.write(logs)
       if verbose == VERBOSITY_LEVEL.ERRORS_ONLY:
