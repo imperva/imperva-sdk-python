@@ -1403,13 +1403,13 @@ class MxConnection(object):
   # Assessment Policies
   # -----------------------------------------------------------------------------
   #
-  def get_all_assessment_policy_das_objects(self):
+  def get_all_assessment_policies(self):
     return AssessmentPolicy._get_all_assessment_policies(connection=self)
 
   def get_assessment_policy(self, Name=None):
     return AssessmentPolicy._get_assessment_policy(connection=self, Name=Name)
 
-  def create_assessment_policy_das_object(self, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[],
+  def create_assessment_policy(self, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[],
                                TestNames=[], update=False):
     return AssessmentPolicy._create_assessment_policy(connection=self, Name=Name, Description=Description,
                                                       DbType=DbType,
@@ -1419,13 +1419,13 @@ class MxConnection(object):
   # Assessment Tests
   # -----------------------------------------------------------------------------
   #
-  def get_all_assessment_test_das_objects(self):
+  def get_all_assessment_tests(self):
     return AssessmentTest._get_all_assessment_tests(connection=self)
 
   def get_assessment_test(self, Name=None):
     return AssessmentTest._get_assessment_test(connection=self, Name=Name)
 
-  def create_assessment_test_das_object(self, Name=None, Description=None,
+  def create_assessment_test(self, Name=None, Description=None,
                                        Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None,
                                        RecommendedFix=None,
                                        TestScript=None, AdditionalScript=None, ResultsLayout=[], update=False):
@@ -2237,6 +2237,17 @@ class MxConnection(object):
       res = self._export_action_sets()
       tmp_json['action_sets'] = res['action_sets']
 
+    tmp_json['assessment_tests'] = []
+    if 'assessment_tests' not in Discard:
+      try:
+        tests = self.get_all_assessment_tests()
+        for test in tests:
+          test_dict = dict(test)
+          tmp_json['assessment_tests'].append(test_dict)
+      except:
+        # Some versions don't have all assessment_tests APIs
+        pass
+
     tmp_json['policies'] = {}
     if 'policies' not in Discard:
       policy_types = self.get_all_policy_types()
@@ -2276,7 +2287,7 @@ class MxConnection(object):
       tmp_json['dam_reports'].update(res['dam_reports'])
 
     tmp_json['das_objects'] = {}
-    if 'das' not in Discard:
+    if 'das_objects' not in Discard:
       res = self._export_objects_to_dict('objects', 'das')
       tmp_json['das_objects'].update(res['das_objects'])
 
@@ -2327,6 +2338,7 @@ class MxConnection(object):
     log = self._create_objects_from_json(Objects=json_config['global_objects'], Type="global_object", update=update)
     log += self._create_tree_from_json(Dict={'sites': json_config['sites']}, ParentObject=self, update=update)
     log += self._create_tree_from_json(Dict={'action_sets': json_config['action_sets']}, ParentObject=self, update=update)
+    log += self._create_tree_from_json(Dict={'assessment_tests': json_config['assessment_tests']}, ParentObject=self, update=update)
     log += self._create_objects_from_json(Objects=json_config['policies'], Type="policy", update=update)
     log += self.import_dam_reports(Json)
     log += self.import_das_objects(Json)

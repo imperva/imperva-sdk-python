@@ -48,6 +48,7 @@ def main():
   except RuntimeError as err:
       print (("Error exporting from (%s)") % (server))
       print (err)
+      sys.exit(2)
 
   try:
       with io.open(outputFile, 'w', encoding='utf-8') as f:
