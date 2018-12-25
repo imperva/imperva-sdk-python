@@ -66,7 +66,7 @@ def main():
       # json.dump() return ASCII-only by default so no encoding is needed
       with open(inputFile, 'r') as f:
           loaded_data = json.load(f)
-          loaded_data_2 = dict_discard(loaded_data,['ProtectedIps'])
+          loaded_data_2 = dict_discard(loaded_data,['ProtectedIps','ApplyToAgent'])
           json_string = json.dumps(loaded_data_2, indent=4, sort_keys=True, separators=(',', ': '))
 
   except RuntimeError as err:
