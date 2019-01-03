@@ -108,9 +108,9 @@ class Site(MxObject):
   #
   # Site child (server group) functions
   #
-  def create_server_group(self, Name=None, OperationMode=None, ProtectedIps=[], update=False):
+  def create_server_group(self, Name=None, OperationMode=None, ProtectedIps=[], ServerIps=[], update=False):
     ''' See :py:meth:`imperva_sdk.MxConnection.create_server_group`. '''
-    return self._connection.create_server_group(Name=Name, Site=self.Name, OperationMode=OperationMode, ProtectedIps=ProtectedIps, update=update)
+    return self._connection.create_server_group(Name=Name, Site=self.Name, OperationMode=OperationMode, ProtectedIps=ProtectedIps, ServerIps=ServerIps, update=update)
   def delete_server_group(self, Name=None):
     ''' See :py:meth:`imperva_sdk.MxConnection.delete_server_group`. '''
     return self._connection.delete_server_group(Name=Name, Site=self.Name)
