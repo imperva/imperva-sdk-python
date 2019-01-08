@@ -96,6 +96,15 @@ class DataEnrichmentPolicy(MxObject):
     @staticmethod
     def _create_data_enrichment_policy(connection, Name=None, PolicyType=None, Rules=[], MatchCriteria=[], ApplyTo=[], update=False):
         validate_string(Name=Name)
+        obj = connection.get_data_enrichment_policy(Name=Name)
+        if obj:
+            if not update:
+                raise MxException("data enrichment policy '%s' already exists" % Name)
+            else:
+                # Update existing data enrichment policy
+                print("WARNING: data enrichment policy doesn't support update")
+                return
+
         body = {}
         body['policy-name'] = Name
         body['policy-type'] = PolicyType

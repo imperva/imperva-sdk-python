@@ -98,6 +98,15 @@ class CloudAccount(MxObject):
   @staticmethod
   def _create_cloud_account(connection, Name=None, PrivateKey=None, AccessKey=None, AwsRegion=None, AzureTenant=None, CloudProvider=None, update=False):
     validate_string(Name=Name)
+    obj = connection.get_cloud_account(Name=Name)
+    if obj:
+      if not update:
+        raise MxException("cloud account '%s' already exists" % Name)
+      else:
+        # Update existing cloud account
+        print("WARNING: cloud account doesn't support update")
+        return
+
     body = {}
     body['privateKey'] = PrivateKey
     body['accessKey'] = AccessKey

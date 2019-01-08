@@ -115,6 +115,15 @@ class AssessmentPolicy(MxObject):
     def _create_assessment_policy(connection, Name=None, Description=None, DbType=None, PolicyTags=[], AdcKeywords=[],
                                   TestNames=[], update=False):
         validate_string(Name=Name)
+        obj = connection.get_assessment_policy(Name=Name)
+        if obj:
+            if not update:
+                raise MxException("assessment policy '%s' already exists" % Name)
+            else:
+                # Update existing assessment policy
+                print("WARNING: assessment policy doesn't support update")
+                return
+
         body = {}
         body['name'] = Name
         body['description'] = Description

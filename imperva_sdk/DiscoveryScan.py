@@ -178,6 +178,15 @@ class DiscoveryScan(MxObject):
                              ServiceNamingTemplate=None, CredentialsEnabled=None, OsCredentials=[], DbCredentials=[],
                              Scheduling=None, update=False):
     validate_string(Name=Name)
+    obj = connection.get_discovery_scan(Name=Name)
+    if obj:
+      if not update:
+        raise MxException("discovery scan '%s' already exists" % Name)
+      else:
+        # Update existing discovery scan
+        print("WARNING: discovery scan doesn't support update")
+        return
+
     body = {}
     body['name'] =Name
     body['existing-site-name'] = ExistingSiteName
