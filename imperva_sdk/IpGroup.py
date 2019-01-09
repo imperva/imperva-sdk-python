@@ -77,6 +77,15 @@ class IpGroup(MxObject):
   @staticmethod
   def _create_ip_group(connection, Name=None, Entries=[], update=False):
     validate_string(Name=Name)
+    obj = connection.get_ip_group(Name=Name)
+    if obj:
+      if not update:
+        raise MxException("ip group '%s' already exists" % Name)
+      else:
+        # Update existing ip group
+        print("WARNING: ip group doesn't support update")
+        return
+
     body = {}
     body['entries'] = Entries
 
