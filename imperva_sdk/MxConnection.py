@@ -2364,7 +2364,7 @@ class MxConnection(object):
     '''
     Sets 'External HTTP Settings' in 'System Definitions'
     :type UseProxy: boolean
-    :param UseProxy: If UpdateProxy=True the MX will use proxy to access Imperva services
+    :param UseProxy: If UseProxy=True the MX will use proxy to access Imperva services
     :type Host: String
     :param Host: Hostname or IP of the proxy server
     :type Port: String
@@ -2389,5 +2389,20 @@ class MxConnection(object):
     }
 
     self._mx_api('PUT', '/conf/systemDefinitions/httpProxy', data=json.dumps(body))
+
+    return True
+
+  def _set_hybrid_waf(self, Enabled=True):
+    '''
+    Sets 'Enable Hybrid WAF' in 'System Definitions'.
+    This will register the MX server to the Unified management console.
+    :type Enabled: boolean
+    :param Enabled: If Enabled=True the MX will try to register to imperva's cloud
+    '''
+    body = {
+      'value': Enabled
+    }
+
+    self._mx_api('PUT', '/conf/systemDefinitions/hybrid-waf', data=json.dumps(body))
 
     return True
