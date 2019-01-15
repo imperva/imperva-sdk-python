@@ -162,6 +162,14 @@ class DBConnection(MxObject):
                               TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None, update=False):
         if SiteName is None or ServerGroupName is None or ServiceName is None or ConnectionName is None:
             raise MxException("missing DB connection path")
+        obj = connection.get_db_connection(SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName)
+        if obj:
+            if not update:
+                raise MxException("db connection '%s' already exists" % ConnectionName)
+            else:
+                # Update existing db connection
+                print("WARNING: db connection doesn't support update")
+                return
 
         fullPath = SiteName + "/" + ServerGroupName + "/" + ServiceName + "/dbConnections/" + ConnectionName
 

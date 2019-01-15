@@ -118,6 +118,15 @@ class AssessmentTest(MxObject):
                                 Severity=None, Category=None, ScriptType=None, OsType=None, DbType=None, RecommendedFix=None,
                                 TestScript=None, AdditionalScript=None, ResultsLayout=[], update=False):
         validate_string(Name=Name)
+        obj = connection.get_assessment_test(Name=Name)
+        if obj:
+            if not update:
+                raise MxException("assessment test '%s' already exists" % Name)
+            else:
+                # Update existing assessment test
+                print("WARNING: assessment test doesn't support update")
+                return
+
         body = {}
         body['name'] = Name
         body['description'] = Description
