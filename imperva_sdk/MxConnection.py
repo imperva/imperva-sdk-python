@@ -1979,7 +1979,7 @@ class MxConnection(object):
       policies[policy_type] = get_func()
     return policies
 
-  def upload_license(self, LicenseContent=None, LicenseFile=None, LicenseURL=None):
+  def upload_license(self, LicenseContent=None, LicenseFile=None, LicenseURL=None, FlexProtectCode=None):
     '''
     Upload a license file to the system (specify one of the three formats).
     >>> mx.upload_license(LicenseFile='/etc/passwd')
@@ -1991,7 +1991,10 @@ class MxConnection(object):
     :param LicenseFile: Path to license file on local system
     :type LicenseURL: string
     :param LicenseURL: Accessible URL to download license file from
+    :type FlexProtectCode: string
+    :param FlexProtectCode: FlexProtect License code in clear text
     '''
+    url = '/administration/license'
     if LicenseURL:
       if LicenseFile or LicenseContent:
         raise MxException("Must provide only 1 license parameter (Content, File or URL)")
@@ -2010,10 +2013,13 @@ class MxConnection(object):
           LicenseContent = base64.b64encode(lic_data.encode('utf-8')).decode('utf-8')
       except:
         raise MxException("Failed reading license file '%s'" % LicenseFile)
+    elif FlexProtectCode:
+      url = '/administration/flex_protect'
+      LicenseContent = FlexProtectCode
     if not LicenseContent:
       raise MxException("No license content provided")
     body = { 'licenseContent': LicenseContent }
-    self._mx_api('POST', '/administration/license', timeout=1800, data=json.dumps(body))
+    self._mx_api('POST', url, timeout=1800, data=json.dumps(body))
     return True
 
   def _export_objects_to_dict(self, object_type, context):
