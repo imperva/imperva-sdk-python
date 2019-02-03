@@ -1,6 +1,8 @@
 # Copyright 2018 Imperva. All rights reserved.
 
 import json
+
+import imperva_sdk
 from imperva_sdk.core import *
 
 class DBConnection(MxObject):
@@ -162,8 +164,17 @@ class DBConnection(MxObject):
                               TnsAdmin=None, HomeDirectory=None, Instance=None, HostName=None, update=False):
         if SiteName is None or ServerGroupName is None or ServiceName is None or ConnectionName is None:
             raise MxException("missing DB connection path")
-        obj = connection.get_db_connection(SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName)
-        if obj:
+        obj = None
+        try:
+            obj = connection.get_db_connection(SiteName=SiteName, ServerGroupName=ServerGroupName, ServiceName=ServiceName, ConnectionName=ConnectionName)
+        except imperva_sdk.MxException as e:
+            #get_db_connection throws exception in case item does not exist
+            if 'Failed getting DB connection' in e.args[0]:
+                pass
+            else:
+                raise e
+
+        if obj is not None:
             if not update:
                 raise MxException("db connection '%s' already exists" % ConnectionName)
             else:
