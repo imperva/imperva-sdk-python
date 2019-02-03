@@ -32,10 +32,17 @@ class TestImpervaSdkSanity(unittest.TestCase):
   test_profile		= True
   test_web_profile_policy = True
 
+  test_db_connection = True
+  test_assessment_scan = True
+  test_classification_scan = True
+  test_db_audit_policy = True
+  test_db_audit_report = True
+
   Site			= {"Name": "imperva_sdk sanity site"}
-  ServerGroup		= {"Name": "imperva_sdk sanity server group", "Site": Site["Name"], "ProtectedIps": [], "OperationMode": "active"}
+  ServerGroup		= {"Name": "imperva_sdk sanity server group", "Site": Site["Name"], "ProtectedIps": [], "OperationMode": "active", "ServerIps": ["1.1.1.1"]}
   WebService		= {"Name": "imperva_sdk sanity web service", "ServerGroup": ServerGroup["Name"], "Site": Site["Name"]}
   WebApplication	= {"Name": "imperva_sdk sanity web application", "WebService": WebService["Name"], "ServerGroup": ServerGroup["Name"], "Site": Site["Name"], "Mappings": [{ "priority": 1, "host": "www.myapp.com", "hostMatchType": "Exact" }]}
+  DbService = {"Name": "imperva_sdk sanity db service", "ServerGroup": ServerGroup["Name"], "Site": Site["Name"], "DbServiceType": "Oracle"}
 
   ActionSet		= {"Name": "imperva_sdk sanity action set", "AsType": "security"}
   Action		= {
@@ -96,6 +103,85 @@ class TestImpervaSdkSanity(unittest.TestCase):
                             }
                           }
 
+  DbConnection = {
+    "SiteName": Site["Name"],
+    "ServerGroupName": ServerGroup["Name"],
+    "ServiceName": DbService["Name"],
+    "ConnectionName" : "imperva_sdk sanity db connection",
+    "IpAddress": ServerGroup["ServerIps"][0],
+    "UserName": "system",
+    "Password": "123456",
+    "DbName": "orcl",
+    "Port": "1521",
+  }
+
+  AssessmentScan = {
+    "Name": "imperva_sdk sanity assessment scan",
+    "Type": "policy based",
+    "PolicyName": "Oracle Known Vulnerabilities",
+    "ApplyTo":["conf/dbServices/" + Site["Name"] + "/" + ServerGroup["Name"] + "/" + DbService["Name"] + "/dbConnections/" + DbConnection["ConnectionName"]]
+  }
+
+  ClassificationProfile = {
+    "Name": "imperva_sdk sanity classification profile",
+    "SiteName": Site["Name"],
+    "DataTypes": ["Password", "Phone", "ZIP Code"],
+    "AutoAcceptResults": "true",
+    "ScanViewsAndSynonyms": "true",
+    "SaveSampleData": "false",
+    "ScanSystemSchemas": "false",
+    "DataSampleAccuracy": "0.75",
+    "DbsAndSchemasUsage": "include",
+    "DbsAndSchemas": [{"database": "db1", "schema": "any"}],
+    "ExcludeTablesAndColumns": [{"table": "any", "column": "column1"}]
+  }
+
+  ClassificationScan = {
+    "Name": "imperva_sdk sanity classification scan",
+    "ProfileName": ClassificationProfile["Name"],
+    "ApplyTo": ["conf/dbServices/" + Site["Name"] + "/" + ServerGroup["Name"] + "/" + DbService["Name"] + "/dbConnections/" + DbConnection["ConnectionName"]]
+  }
+
+  DbAuditPolicy = {
+    "aggregation-time-slot": "30",
+    "num-days-to-audit": "7",
+    "counterbreach-policy-enabled": "false",
+    "user-defined-values": [],
+    "collect-statistics": "true",
+    "audit-responses-mode":	"All",
+    "data-collection-events": "true",
+    "use-gateway-configuration": "false",
+    "policy-name": "imperva_sdk sanity db audit policy",
+    "purge-archive-scheduling": {"enabled": "true", "number": "1", "time-type": "weeks"},
+    "archiving-action-set": "Default Archive Action Set",
+    "archive-scheduling": {"occurs": "none"},
+    "audit-parsed-query": "true",
+    "automatic-apply": "NotSet",
+    "archive-response": "false",
+    "quota-giga-bytes": "200",
+    "policy-type": "db-service",
+    "apply-to": [],
+    "data-collection-db-response": "false",
+    "quota-percentage": "50",
+    "match-criteria": [
+      {"values": [{"value": "select"}], "operation": "At least one", "type": "simple", "name": "Operations Tables", "handle-unknown-values": "false"},
+      {"sql-groups": [{"name": "Classified Objects"}], "name": "Table Groups", "values": [], "handle-unknown-values": "false", "operation": "At least one", "type": "table-group"}
+    ]
+  }
+
+  DbAuditReport = {
+    "Columns": [{"name": "Database", "aggregation": "count-distinct"},{"name": "Service", "aggregation": "group-by-id-name-of-service-id-name"},{"name": "Destination IP", "aggregation": "group-by"}],
+    "Filters": [{"values": ["5593158133644499881"], "column-name": "Server Group", "operation": "equals", "user-defined-values": []}],
+    "Policies": [DbAuditPolicy["policy-name"]],
+    "Sorting": [{"aggregation": "group-by-id-name-of-service-id-name", "direction": "asc", "column-name": "Service"}],
+    "Name": "imperva_sdk sanity db audit report",
+    "ReportFormat": "pdf",
+    "TimeFrame": {"from-to": "true", "from-date": 1533070800000, "to-date": 1535317200000},
+    "Scheduling": {"occurs": "recurring", "recurring": {"frequency": "daily", "daily": { "every-number-of-days": 1}, "starting-from": "2018-08-29", "at-time": "00:00:00"}
+    }
+}
+
+
   def setUp(self):
     if 'MX_HOST' in os.environ: self.host = os.environ['MX_HOST']
     if 'MX_USER' in os.environ: self.user = os.environ['MX_USER']
@@ -121,7 +207,7 @@ class TestImpervaSdkSanity(unittest.TestCase):
           raise e
       mx.logout
 
-  def test_sdk_sanity(self):
+  def test_waf_sdk_sanity(self):
 
     # Try to upload a license if it is provided
     if self.license:
@@ -237,6 +323,111 @@ class TestImpervaSdkSanity(unittest.TestCase):
       if not policy:
         raise Exception("Failed getting WebProfilePolicy %s" % self.WebProfilePolicy['Name'])
     mx.logout()
+
+  def test_dam_das_sdk_sanity(self):
+
+    # Delete test resources if they exist from previous runs
+    mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password, Port=self.port)
+    if mx.get_site(self.Site["Name"]):
+      mx.delete_site(self.Site["Name"])
+    if mx.get_assessment_scan(self.AssessmentScan["Name"]):
+      mx.delete_assessment_scan(self.AssessmentScan["Name"])
+    if mx.get_classification_scan(self.ClassificationScan["Name"]):
+      mx.delete_classification_scan(self.ClassificationScan["Name"])
+    if mx.get_classification_profile(self.ClassificationProfile["Name"]):
+      mx.delete_classification_profile(self.ClassificationProfile["Name"])
+    if mx.get_db_audit_policy(self.DbAuditPolicy["policy-name"]):
+      mx.delete_db_audit_policy(self.DbAuditPolicy["policy-name"])
+    #if mx.get_db_audit_report(self.DbAuditReport["display-name"]):
+      # delete_db_audit_report is not implemented
+    #if mx.get_db_connection(self.Site["Name"], self.ServerGroup["Name"], self.DbService["Name"], selfDbConnection["ConnectionName]):
+      # delete_db_connection is not implemented correctly
+    mx.logout()
+
+    # Create test resources
+    mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password, Port=self.port)
+    mx.create_site(**self.Site)
+    mx.create_server_group(**self.ServerGroup)
+    mx.create_db_service(**self.DbService)
+    try:
+      mx.create_db_connection(**self.DbConnection)
+    except imperva_sdk.MxExceptionNotFound:
+      self.test_db_connection = False
+    try:
+      mx.create_assessment_scan_das_object(**self.AssessmentScan)
+    except imperva_sdk.MxExceptionNotFound:
+      self.test_assessment_scan = False
+    try:
+      mx.create_classification_profile(**self.ClassificationProfile)
+      mx.create_classification_scan_das_object(**self.ClassificationScan)
+    except imperva_sdk.MxExceptionNotFound:
+      self.test_classification_scan = False
+    try:
+      mx.create_db_audit_dam_policy(Name=self.DbAuditPolicy["policy-name"], Parameters=self.DbAuditPolicy)
+    except imperva_sdk.MxExceptionNotFound:
+      self.test_db_audit_policy = False
+    try:
+      mx.create_db_audit_dam_report(Name=self.DbAuditReport["Name"], ReportFormat=self.DbAuditReport["ReportFormat"], Columns=self.DbAuditReport["Columns"],
+                                    Filters=self.DbAuditReport["Filters"], Policies=self.DbAuditReport["Policies"], Sorting=self.DbAuditReport["Sorting"],
+                                    TimeFrame=self.DbAuditReport["TimeFrame"], Scheduling=self.DbAuditReport["Scheduling"])
+    except imperva_sdk.MxExceptionNotFound:
+      self.test_db_audit_Report = False
+    mx.logout()
+
+    # Export to JSON
+    mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password, Port=self.port)
+    export = mx.export_to_json()
+    mx.logout()
+
+    # Delete test resources
+    mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password, Port=self.port)
+    if mx.get_site(self.Site["Name"]):
+      mx.delete_site(self.Site["Name"])
+    if mx.get_assessment_scan(self.AssessmentScan["Name"]):
+      mx.delete_assessment_scan(self.AssessmentScan["Name"])
+    if mx.get_classification_scan(self.ClassificationScan["Name"]):
+      mx.delete_classification_scan(self.ClassificationScan["Name"])
+    if mx.get_classification_profile(self.ClassificationProfile["Name"]):
+      mx.delete_classification_profile(self.ClassificationProfile["Name"])
+    if mx.get_db_audit_policy(self.DbAuditPolicy["policy-name"]):
+      mx.delete_db_audit_policy(self.DbAuditPolicy["policy-name"])
+    #if mx.get_db_audit_report(self.DbAuditReport["display-name"]):
+      # delete_db_audit_report is not implemented
+    #if mx.get_db_connection(self.Site["Name"], self.ServerGroup["Name"], self.DbService["Name"], selfDbConnection["ConnectionName]):
+      # delete_db_connection is not implemented correctly
+    mx.logout()
+
+    # Import from JSON
+    mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password, Port=self.port)
+    log = mx.import_from_json(export)
+    for entry in log:
+      if entry["Result"] != "SUCCESS":
+        raise Exception("import_from_json failure - %s" % str(entry))
+    mx.logout()
+
+    # Get test resources
+    mx = imperva_sdk.MxConnection(Host=self.host, Username=self.user, Password=self.password, Port=self.port)
+    site = mx.get_site(**self.Site)
+    if not site: raise Exception("Failed getting site")
+    server_group = mx.get_server_group(self.ServerGroup["Name"], Site=self.Site["Name"])
+    if server_group.OperationMode != self.ServerGroup["OperationMode"]: raise Exception(
+        "Failed getting server group properties")
+    db_service = mx.get_db_service(Name=self.DbService["Name"], Site=self.DbService["Site"], ServerGroup=self.DbService["ServerGroup"])
+    if not db_service: raise Exception("Failed getting web service")
+    if self.test_assessment_scan:
+      assess_scan = mx.get_assessment_scan(Name=self.AssessmentScan["Name"])
+      if assess_scan.Type != self.AssessmentScan["Type"]: raise Exception("imported assessment scan is different from the exported scan")
+    if self.test_classification_scan:
+      classification_scan = mx.get_classification_scan(Name=self.ClassificationScan["Name"])
+      classification_profile = mx.get_classification_profile(classification_scan.ProfileName)
+      if str(classification_profile.Name) != str(self.ClassificationProfile["Name"]): raise Exception("imported classification profile is different from the exported profile")
+    #get_db_audit_policy is not implemented correctly
+    # if self.test_db_audit_policy:
+    #   audit_policy = mx.get_db_audit_policy(self.DbAuditPolicy["policy-name"])
+    #   if audit_policy is None: raise Exception("could not retrieve imported db audit policy")
+    if self.test_db_audit_report:
+      audit_report = mx.get_db_audit_report(self.DbAuditReport["Name"])
+      if audit_report is None: raise Exception("could not retrieve imported db audit report")
 
 if __name__ == '__main__':
 
