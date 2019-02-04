@@ -366,12 +366,12 @@ class TestImpervaSdkSanity(unittest.TestCase):
       mx.create_db_audit_dam_policy(Name=self.DbAuditPolicy["policy-name"], Parameters=self.DbAuditPolicy)
     except imperva_sdk.MxExceptionNotFound:
       self.test_db_audit_policy = False
-    try:
-      mx.create_db_audit_dam_report(Name=self.DbAuditReport["Name"], ReportFormat=self.DbAuditReport["ReportFormat"], Columns=self.DbAuditReport["Columns"],
-                                    Filters=self.DbAuditReport["Filters"], Policies=self.DbAuditReport["Policies"], Sorting=self.DbAuditReport["Sorting"],
-                                    TimeFrame=self.DbAuditReport["TimeFrame"], Scheduling=self.DbAuditReport["Scheduling"])
-    except imperva_sdk.MxExceptionNotFound:
-      self.test_db_audit_Report = False
+    # try:
+    #   mx.create_db_audit_dam_report(Name=self.DbAuditReport["Name"], ReportFormat=self.DbAuditReport["ReportFormat"], Columns=self.DbAuditReport["Columns"],
+    #                                 Filters=self.DbAuditReport["Filters"], Policies=self.DbAuditReport["Policies"], Sorting=self.DbAuditReport["Sorting"],
+    #                                 TimeFrame=self.DbAuditReport["TimeFrame"], Scheduling=self.DbAuditReport["Scheduling"])
+    # except imperva_sdk.MxExceptionNotFound:
+    #   self.test_db_audit_Report = False
     mx.logout()
 
     # Export to JSON
@@ -425,9 +425,9 @@ class TestImpervaSdkSanity(unittest.TestCase):
     # if self.test_db_audit_policy:
     #   audit_policy = mx.get_db_audit_policy(self.DbAuditPolicy["policy-name"])
     #   if audit_policy is None: raise Exception("could not retrieve imported db audit policy")
-    if self.test_db_audit_report:
-      audit_report = mx.get_db_audit_report(self.DbAuditReport["Name"])
-      if audit_report is None: raise Exception("could not retrieve imported db audit report")
+    # if self.test_db_audit_report:
+    #   audit_report = mx.get_db_audit_report(self.DbAuditReport["Name"])
+    #   if audit_report is None: raise Exception("could not retrieve imported db audit report")
 
 if __name__ == '__main__':
 
