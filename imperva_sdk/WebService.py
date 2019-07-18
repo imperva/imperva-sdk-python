@@ -284,6 +284,19 @@ class WebService(MxObject):
     ''' See :py:meth:`imperva_sdk.MxConnection.delete_web_application`. '''
     return self._connection.delete_web_application(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, Name=Name)
 
+  def get_all_plugins(self):
+    """ Exports (from current MX connection) all plugins defined for the current Web Service. """
+    return self._connection._mx_api('GET', '/conf/webServices/%s/%s/%s/plugins' % (self._Site, self._ServerGroup, self.Name))
+
+  def update_all_plugins(self, swagger_json_list=None, plugins_definitions=None, print_payload=False):
+    """ Updates all plugins defined for current Web Service.
+    Input should be either an alrready exported plugins object or a list of swagger JSON objects."""
+    if (swagger_json_list and plugins_definitions) or (not swagger_json_list and not plugins_definitions):
+      raise MxException("Must define either plugins_definitions or swagger_json_list parameter")
+    data = plugins_definitions or _swagger_to_plugins(swaggers=swagger_json_list)
+    if print_payload:
+      print(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
+    return self._connection._mx_api('PUT', '/conf/webServices/%s/%s/%s/plugins' % (self._Site, self._ServerGroup, self.Name), data=json.dumps(data))
   #
   # Web Service extra functions
   #
@@ -340,3 +353,117 @@ class WebService(MxObject):
     self._SslKeys = WebService._get_ssl_keys(self._connection, Name=self.Name, ServerGroup=self._ServerGroup, Site=self._Site)
     return True
 
+
+def _swagger_to_plugins(swaggers=None):
+  paths_list = []
+  unique_paths = {}
+  for swagger in swaggers:
+    _parse_single_swagger_json(swagger, paths_list, unique_paths)
+  if len(paths_list) == 0:
+    return []
+  _sort_and_build_path_hierarchy(paths_list)
+  plugins_depth = _generate_plugins_def_per_depth(paths_list)
+  final_plugins = _get_ordered_plugins(plugins_depth)
+  return {"plugins": final_plugins}
+
+
+def _remove_path_parameter_recursively(paths_list, path_ind, prefix):
+  path_dict = paths_list[path_ind]
+  path_dict["depth"] += 1
+  path_dict["path"] = prefix + path_dict["path"][len(prefix) + 2:]
+  for child_ind in path_dict["children"]:
+    _remove_path_parameter_recursively(paths_list, child_ind, prefix)
+
+
+def _parse_single_swagger_json(swagger, paths_list, unique_paths):
+  swagger_version = swagger.get("swagger", None) or swagger.get("openapi", None)
+  if swagger_version is None or swagger_version[0:3] not in ["2.0", "3.0"]:
+    print("Not swagger JSON or not supported swagger version")
+    return None
+  base_path = ""
+  if "basePath" in swagger:
+    base_path = swagger["basePath"]
+  for path in swagger['paths']:
+    full_path = base_path + path
+    if full_path.find("{") > 0:
+      if unique_paths.get(full_path, -1) == -1:
+        unique_paths[full_path] = len(paths_list)
+        paths_list.append({"path": full_path, "parent": -1, "children": [], "artificial": False, "depth": 0})
+      else:
+        paths_list[unique_paths[full_path]]["artificial"] = False
+      tokens = full_path.split("}")
+      token_ind = 1
+      while token_ind < len(tokens) - 1:
+        truncated_path = "}".join(tokens[0:token_ind]) + "}"
+        token_ind = token_ind + 1
+        if unique_paths.get(truncated_path, -1) == -1:
+          unique_paths[truncated_path] = len(paths_list)
+          paths_list.append({"path": truncated_path, "parent": -1, "children": [], "artificial": True, "depth": 0})
+
+
+def _sort_and_build_path_hierarchy(paths_list):
+  paths_list.sort(key=lambda k: k['path'])
+  curr_ind = 1
+  while curr_ind < len(paths_list):
+    prev_ind = curr_ind - 1
+    prev_path_len = len(paths_list[prev_ind]["path"])
+    while paths_list[curr_ind]["path"][0:prev_path_len] != paths_list[prev_ind]["path"] and paths_list[prev_ind]["parent"] > -1:
+      prev_ind = paths_list[prev_ind]["parent"]
+      prev_path_len = len(paths_list[prev_ind]["path"])
+    if paths_list[curr_ind]["path"][0:prev_path_len] == paths_list[prev_ind]["path"]:
+      paths_list[curr_ind]["parent"] = prev_ind
+      paths_list[prev_ind]["children"].append(curr_ind)
+    curr_ind = curr_ind + 1
+
+
+def _update_plugin_path_regexp(plugin, paths_list, path_dict, right_curl_ind):
+  if len(path_dict["children"]) > 0:
+    plugin["pathReplace"] += '$3'
+    concat_separator = "(("
+    for child_ind in path_dict["children"]:
+      plugin["pathRegexp"] += concat_separator
+      concat_separator = "|"
+      child_path = paths_list[child_ind]["path"]
+      last_offset = child_path.find("{")
+      if last_offset == -1:
+        last_offset = len(child_path)
+      plugin["pathRegexp"] += child_path[right_curl_ind - 1:last_offset].replace("/", "\\/")
+    if not path_dict["artificial"]:
+      plugin["pathRegexp"] += "|$"
+    plugin["pathRegexp"] += ").*)"
+
+
+def _generate_plugins_def_per_depth(paths_list):
+  plugins_depth = [[]]
+  path_ind = 0
+  while path_ind < len(paths_list):
+    path_dict = paths_list[path_ind]
+    left_curl_ind = path_dict["path"].find("{")
+    if left_curl_ind > 0:
+      right_curl_ind = path_dict["path"].find("}")
+      parm_name = path_dict["path"][left_curl_ind + 1:right_curl_ind]
+      plugin = {
+        'pluginType': 'URL to Parameter',
+        'pathRegexp': '(' + path_dict["path"][0:left_curl_ind].replace("/", "\\/") + ')(.*?)',
+        'pathReplace': '$1' + parm_name,
+        'paramValue': '$2',
+        'paramName': parm_name
+      }
+      _remove_path_parameter_recursively(paths_list, path_ind, path_dict["path"][0:left_curl_ind] + parm_name)
+      _update_plugin_path_regexp(plugin, paths_list, path_dict, right_curl_ind)
+      if len(plugins_depth) == path_dict["depth"]:
+        plugins_depth.append([])
+      plugins_depth[path_dict["depth"]].append(plugin)
+    path_ind += 1
+  return plugins_depth
+
+
+def _get_ordered_plugins(plugins_depth):
+  final_plugins = []
+  priority = 1
+  for depth_list in plugins_depth:
+    for plugin_dict in depth_list:
+      plugin_dict["pluginOrder"] = priority
+      priority += 1
+      final_plugins.append(plugin_dict)
+  return final_plugins

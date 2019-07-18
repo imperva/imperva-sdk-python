@@ -263,8 +263,8 @@ Note that to use this JSON you need certain prerequisites -
   mx.logout()
 
 
-Example 5 - Swagger 2 Profile
-=============================
+Example 5 - Swagger to Profile
+==============================
 
 In v12.3 SecureSphere added APIs to manage the application profile. `imperva_sdk` added support for these APIs in the WebApplication object. In addition, `imperva_sdk` provides the ability to apply a Swagger JSON as a SecureSphere profile. Many API applications can automatically generate their schema in Swagger format (URL paths, allowed methods, parameters...) - this `imperva_sdk` function enables you to automatically update your profile with a Swagger representation.
 
@@ -285,6 +285,36 @@ In v12.3 SecureSphere added APIs to manage the application profile. `imperva_sdk
 
   # Apply swagger as profile
   app.update_profile(SwaggerJson=swagger_json)
+
+  # Log out
+  mx.logout()
+
+
+Example 6 - Swagger to Plugins
+==============================
+
+In v13.2 SecureSphere added APIs to manage plugin definitions. `imperva_sdk` added support for these APIs in the WebService object. In addition, `imperva_sdk` provides the ability to apply a Swagger JSON as input for automatic generation of URL to Parameter plugins based on path parameter definitions. When path parameters appear in swagger JSON, generated profile assumes the required plugins are already defined. SecureSphere Web service may contain multiple applications. Thus, an array of swagger JSON files can be provided as input for plugins generation.
+
+::
+
+  import imperva_sdk
+  import json
+
+  # Connect to MX
+  mx = imperva_sdk.MxConnection("10.0.0.1", Password="password")
+
+  # Load swagger file as JSON
+  with open('app1_swagger_file.json', 'r') as fd:
+    app1_swagger_json = json.loads(fd.read())
+
+  with open('app2_swagger_file.json', 'r') as fd:
+    app2_swagger_json = json.loads(fd.read())
+
+  # Select Web Application
+  srv = mx.get_web_service(Name="ws", Site="site", ServerGroup="sg")
+
+  # Generate plugins and associate to Web service
+  srv.update_all_plugins(swagger_json_list=[app1_swagger_json, app2_swagger_json])
 
   # Log out
   mx.logout()
