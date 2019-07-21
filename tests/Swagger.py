@@ -33,7 +33,7 @@ class TestImpervaSdkSwagger(unittest.TestCase):
       open_api_json = json.loads(fd.read())
     with open('resources/volume-api-v2.json', 'r') as fd:
       volume_api_json = json.loads(fd.read())
-    srv.update_all_plugins(swagger_json_list=[open_api_json, volume_api_json], print_payload=True)
+    srv.update_all_plugins(SwaggerJsonList=[open_api_json, volume_api_json], PrintPayload=True)
 
   def test_swagger_to_profile(self):
     app = self.mx.get_web_application(Name="Default Web Application", Site="Default Site", ServerGroup="zofim-sg", WebService="http-srv")
