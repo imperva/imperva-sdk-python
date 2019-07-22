@@ -1,0 +1,12 @@
+dist/**
+build/**
+_templates/**
+_static/**
+_build/**
+.pytest_cache/**
+conf.py
+make.bat
+Makefile
+.idea/**
+imperva_sdk/__pycache__/**
+imperva_sdk.egg-info

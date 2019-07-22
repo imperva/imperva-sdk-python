@@ -288,13 +288,13 @@ class WebService(MxObject):
     """ Exports (from current MX connection) all plugins defined for the current Web Service. """
     return self._connection._mx_api('GET', '/conf/webServices/%s/%s/%s/plugins' % (self._Site, self._ServerGroup, self.Name))
 
-  def update_all_plugins(self, swagger_json_list=None, plugins_definitions=None, print_payload=False):
+  def update_all_plugins(self, SwaggerJsonList=None, PluginsDefinitions=None, PrintPayload=False):
     """ Updates all plugins defined for current Web Service.
     Input should be either an alrready exported plugins object or a list of swagger JSON objects."""
-    if (swagger_json_list and plugins_definitions) or (not swagger_json_list and not plugins_definitions):
+    if (SwaggerJsonList and PluginsDefinitions) or (not SwaggerJsonList and not PluginsDefinitions):
       raise MxException("Must define either plugins_definitions or swagger_json_list parameter")
-    data = plugins_definitions or _swagger_to_plugins(swaggers=swagger_json_list)
-    if print_payload:
+    data = PluginsDefinitions or _swagger_to_plugins(swaggers=SwaggerJsonList)
+    if PrintPayload:
       print(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
     return self._connection._mx_api('PUT', '/conf/webServices/%s/%s/%s/plugins' % (self._Site, self._ServerGroup, self.Name), data=json.dumps(data))
   #
