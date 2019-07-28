@@ -284,7 +284,7 @@ class WebService(MxObject):
     ''' See :py:meth:`imperva_sdk.MxConnection.delete_web_application`. '''
     return self._connection.delete_web_application(WebService=self.Name, Site=self._Site, ServerGroup=self._ServerGroup, Name=Name)
 
-  def get_all_plugins(self):
+  def get_web_plugins(self):
     """ Exports (from current MX connection) all plugins defined for the current Web Service. """
     return self._connection._mx_api('GET', '/conf/webServices/%s/%s/%s/plugins' % (self._Site, self._ServerGroup, self.Name))
 

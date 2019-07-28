@@ -16,6 +16,7 @@
 
 import unittest
 import imperva_sdk
+from imperva_sdk.SwaggerJsonFile import SwaggerJsonFile
 import os
 
 class TestImpervaSdkSanity(unittest.TestCase):
@@ -91,17 +92,7 @@ class TestImpervaSdkSanity(unittest.TestCase):
     "DisplayResponsePage": True
   }
 
-  Swagger		= {
-                            "swagger": "2.0",
-                            "info": { "version": "1.0", "title": "GioraHack-serverless-todo" },
-                            "host": "www.myapp.com",
-                            "basePath": "/Prod",
-                            "schemes": [ "https" ],
-                            "paths": {
-                              "/todos": { "get": { "responses": {} }, "post": { "responses": {} } },
-                              "/todos/{id}": { "put": { "responses": {} } }
-                            }
-                          }
+  Swagger		= SwaggerJsonFile(file_path="resources/volume-api-v2.json")
 
   DbConnection = {
     "SiteName": Site["Name"],
@@ -315,7 +306,7 @@ class TestImpervaSdkSanity(unittest.TestCase):
       if obj.Regex != self.ParameterTypeGlobalObject["Regex"]: raise Exception("Failed getting parameter type configuration global object")
     if self.test_profile:
       profile = web_application.get_profile()
-      if len(profile["webProfileUrls"]) != len(self.Swagger["paths"]): raise Exception("Failed getting profile")
+      if len(profile["webProfileUrls"]) != len(self.Swagger.get_expanded_json()["paths"]): raise Exception("Failed getting profile")
     pol = mx.get_web_service_custom_policy(self.WebServiceCustomPolicy["Name"])
     if pol.FollowedAction != self.WebServiceCustomPolicy["FollowedAction"]: raise Exception("Failed getting web service custom policy")
     if self.test_web_profile_policy:
