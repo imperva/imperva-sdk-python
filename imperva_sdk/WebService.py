@@ -290,7 +290,7 @@ class WebService(MxObject):
 
   def update_all_plugins(self, SwaggerJsonList=None, PluginsDefinitions=None, PrintPayload=False):
     """ Updates all plugins defined for current Web Service.
-    Input should be either an alrready exported plugins object or a list of swagger JSON objects."""
+    Input should be either an already exported plugins object or a list of SwaggerJsonFile instances."""
     if (SwaggerJsonList and PluginsDefinitions) or (not SwaggerJsonList and not PluginsDefinitions):
       raise MxException("Must define either plugins_definitions or swagger_json_list parameter")
     data = PluginsDefinitions or _swagger_to_plugins(swaggers=SwaggerJsonList)
@@ -357,8 +357,8 @@ class WebService(MxObject):
 def _swagger_to_plugins(swaggers=None):
   paths_list = []
   unique_paths = {}
-  for swagger in swaggers:
-    _parse_single_swagger_json(swagger, paths_list, unique_paths)
+  for swagger_json_file in swaggers:
+    _parse_single_swagger_json(swagger_json_file, paths_list, unique_paths)
   if len(paths_list) == 0:
     return []
   _sort_and_build_path_hierarchy(paths_list)
@@ -375,16 +375,10 @@ def _remove_path_parameter_recursively(paths_list, path_ind, prefix):
     _remove_path_parameter_recursively(paths_list, child_ind, prefix)
 
 
-def _parse_single_swagger_json(swagger, paths_list, unique_paths):
-  swagger_version = swagger.get("swagger", None) or swagger.get("openapi", None)
-  if swagger_version is None or swagger_version[0:3] not in ["2.0", "3.0"]:
-    print("Not swagger JSON or not supported swagger version")
-    return None
-  base_path = ""
-  if "basePath" in swagger:
-    base_path = swagger["basePath"]
+def _parse_single_swagger_json(swagger_json_file, paths_list, unique_paths):
+  swagger = swagger_json_file.get_expanded_json()
   for path in swagger['paths']:
-    full_path = base_path + path
+    full_path = swagger_json_file.get_base_path(swagger['paths'][path]) + path
     if full_path.find("{") > 0:
       if unique_paths.get(full_path, -1) == -1:
         unique_paths[full_path] = len(paths_list)

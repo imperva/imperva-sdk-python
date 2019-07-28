@@ -4,6 +4,7 @@ import imperva_sdk
 import json
 import os
 import unittest
+from imperva_sdk.SwaggerJsonFile import SwaggerJsonFile
 
 
 class TestImpervaSdkSwagger(unittest.TestCase):
@@ -27,20 +28,15 @@ class TestImpervaSdkSwagger(unittest.TestCase):
 
   def test_swagger_to_plugin(self):
     srv = self.mx.get_web_service(Name="http-srv", Site="Default Site", ServerGroup="zofim-sg")
-    with open('resources/swagger.json', 'r') as fd:
-      swagger_json = json.loads(fd.read())
-    with open('resources/open_api.json', 'r') as fd:
-      open_api_json = json.loads(fd.read())
-    with open('resources/volume-api-v2.json', 'r') as fd:
-      volume_api_json = json.loads(fd.read())
+    open_api_json = SwaggerJsonFile(file_path="resources/open_api.json")
+    volume_api_json = SwaggerJsonFile(file_path="resources/volume-api-v2.json")
     srv.update_all_plugins(SwaggerJsonList=[open_api_json, volume_api_json], PrintPayload=True)
 
   def test_swagger_to_profile(self):
     app = self.mx.get_web_application(Name="Default Web Application", Site="Default Site", ServerGroup="zofim-sg", WebService="http-srv")
-    with open('resources/swagger.json', 'r') as fd:
-      swagger_json = json.loads(fd.read())
-    with open('resources/open_api.json', 'r') as fd:
-      open_api_json = json.loads(fd.read())
-    with open('resources/volume-api-v2.json', 'r') as fd:
-      volume_api_json = json.loads(fd.read())
+    open_api_json = SwaggerJsonFile("resources/open_api.json")
     app.update_profile(SwaggerJson=open_api_json)
+
+  def test_expand_external_references(self):
+    swagger = SwaggerJsonFile(file_path="resources/spec/swagger.json")
+    print(swagger.base_path)
