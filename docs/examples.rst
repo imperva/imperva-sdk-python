@@ -271,14 +271,14 @@ In v12.3 SecureSphere added APIs to manage the application profile. `imperva_sdk
 ::
 
   import imperva_sdk
+  from imperva_sdk.SwaggerJsonFile import SwaggerJsonFile
   import json
 
   # Connect to MX
   mx = imperva_sdk.MxConnection("10.0.0.1", Password="password")
 
   # Load swagger file as JSON
-  with open('swagger_file.json', 'r') as fd:
-    swagger_json = json.loads(fd.read())
+  swagger_json = SwaggerJsonFile('swagger_file.json')
 
   # Select Web Application
   app = mx.get_web_application(Name="app", Site="site", ServerGroup="sg", WebService="ws")
@@ -298,19 +298,17 @@ In v13.2 SecureSphere added APIs to manage plugin definitions. `imperva_sdk` add
 ::
 
   import imperva_sdk
+  from imperva_sdk.SwaggerJsonFile import SwaggerJsonFile
   import json
 
   # Connect to MX
   mx = imperva_sdk.MxConnection("10.0.0.1", Password="password")
 
   # Load swagger file as JSON
-  with open('app1_swagger_file.json', 'r') as fd:
-    app1_swagger_json = json.loads(fd.read())
+  app1_swagger_json = SwaggerJsonFile('app1_swagger_file.json')
+  app2_swagger_json = SwaggerJsonFile('app2_swagger_file.json')
 
-  with open('app2_swagger_file.json', 'r') as fd:
-    app2_swagger_json = json.loads(fd.read())
-
-  # Select Web Application
+  # Select Web Service
   srv = mx.get_web_service(Name="ws", Site="site", ServerGroup="sg")
 
   # Generate plugins and associate to Web service
