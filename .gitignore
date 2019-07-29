@@ -4,7 +4,6 @@ _templates/**
 _static/**
 _build/**
 .pytest_cache/**
-conf.py
 make.bat
 Makefile
 .idea/**

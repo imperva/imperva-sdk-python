@@ -2,6 +2,7 @@
 
 import json
 import hashlib
+import re
 from imperva_sdk.core import *
 
 
@@ -337,37 +338,25 @@ class WebApplication(MxObject):
 
 
 # Function for converting Swagger JSON to Profile format
-def _swagger_to_profile(mx_conn=None, swagger=None):
-  swagger_version = swagger.get("swagger", None) or swagger.get("openapi", None)
-  if swagger_version is None or swagger_version[0:3] not in ["2.0", "3.0"]:
-    print("Not swagger JSON or not supported swagger version")
-    return None
+def _swagger_to_profile(mx_conn=None, swagger_json_file=None):
+  swagger = swagger_json_file.get_expanded_json()
   profile = {
-    "learnedHosts": [],
+    "learnedHosts": swagger_json_file.get_all_hosts(),
     "patternUrls": [],
     "cookies": [],
     "susceptibleDirectories": [],
     "actionUrls": [],
     "webProfileUrls": [],
+    "headers": [],
     "directories": [{'fullPath': "/", 'locked': True}]
   }
-  if "host" in swagger:
-    profile["learnedHosts"] = [swagger["host"].split(":")[0]]
-  base_path = ""
-  if "basePath" in swagger:
-    base_path = swagger["basePath"]
+  _add_security_urls(swagger_json_file, profile)
   default_content_types = []
   for content_type in swagger.get("consumes", []):
     _add_content_type(content_type, default_content_types)
   for path in swagger['paths']:
-    url = {
-      'status': 'InProtection',
-      'locked': True,
-      'urlFullPath': base_path + path.translate({ord('{'): None, ord('}'): None}),
-      'allowedMethods': [],
-      'contentTypes': [],
-      'parameters': []
-    }
+    base_path = swagger_json_file.get_base_path(swagger['paths'][path])
+    url = _create_new_url(base_path + path.translate({ord('{'): None, ord('}'): None}))
     split_url = url['urlFullPath'].split('/')
     for i in range(len(split_url) - 2):
       directory = '/'.join(split_url[0:i+2])
@@ -377,7 +366,8 @@ def _swagger_to_profile(mx_conn=None, swagger=None):
       common_parms_exists = 0
       if method == "parameters":
         common_parms_exists = 1
-        _handle_swagger_parameters(mx_conn, swagger['paths'][path]['parameters'], swagger, url, True)
+        _handle_swagger_parameters(mx_conn, swagger['paths'][path]['parameters'], url, True)
+      if method in ["summary", "description", "servers", "parameters"]:
         continue
       if {'status': 'decided', 'method': method.upper()} not in url['allowedMethods']:
         url['allowedMethods'].append({'status': 'decided', 'method': method.upper()})
@@ -385,23 +375,62 @@ def _swagger_to_profile(mx_conn=None, swagger=None):
         _add_content_type(content_type, url['contentTypes'])
       if 'parameters' in swagger['paths'][path][method]:
         _handle_swagger_parameters(mx_conn, swagger['paths'][path][method]['parameters'],
-                                   swagger, url, len(swagger['paths'][path]) - common_parms_exists == 1)
+                                   url, len(swagger['paths'][path]) - common_parms_exists == 1)
       if "requestBody" in swagger['paths'][path][method]:
-        _handle_request_body(mx_conn, swagger, swagger['paths'][path][method]["requestBody"], url)
+        _handle_request_body(mx_conn, swagger['paths'][path][method]["requestBody"], url)
     if len(url['contentTypes']) == 0 and len(default_content_types) > 0:
       url['contentTypes'] = default_content_types
     profile["webProfileUrls"].append(url)
   return profile
 
 
-def _handle_request_body(mx_conn, swagger, body_dict, url):
-  if not _resolve_references(swagger, body_dict):
+def _create_new_url(url_full_path):
+  return {
+      'status': 'InProtection',
+      'locked': True,
+      'urlFullPath': url_full_path,
+      'allowedMethods': [],
+      'contentTypes': [],
+      'parameters': []
+  }
+
+
+def _add_security_urls(swagger_json_file, profile):
+  security_schemes_dict = swagger_json_file.get_security_schemes()
+  if not security_schemes_dict:
     return
+  for sec_scheme_key in security_schemes_dict:
+    sec_scheme_dict = security_schemes_dict[sec_scheme_key]
+    in_attr = sec_scheme_dict.get("in", None)
+    if in_attr == "header":
+      profile["headers"].append({"headerName": sec_scheme_dict["name"]})
+    _add_oauth2_urls(swagger_json_file, profile, sec_scheme_dict)                       # Swagger 2.0
+    for flow_key in sec_scheme_dict.get("flows", {}):
+      _add_oauth2_urls(swagger_json_file, profile, sec_scheme_dict["flows"][flow_key])  # OpenAPI 3.0 and above
+
+
+def _add_oauth2_urls(swagger_json_file, profile, flow_dict):
+  authorization_url = flow_dict.get("authorizationUrl", None)
+  parsed_url = swagger_json_file.get_parsed_url(authorization_url)
+  if parsed_url and parsed_url["path"]:
+    url = _create_new_url(parsed_url["path"])
+    url["allowedMethods"].append({"method": "GET", "status": "decided"})
+    url["contentTypes"].append("URL")
+    profile["webProfileUrls"].append(url)
+  token_url = flow_dict.get("tokenUrl", None)
+  parsed_url = swagger_json_file.get_parsed_url(token_url)
+  if parsed_url and parsed_url["path"]:
+    url = _create_new_url(parsed_url["path"])
+    url["allowedMethods"].append({"method": "POST", "status": "decided"})
+    url["allowedMethods"].append({"method": "GET", "status": "decided"})
+    url["contentTypes"].append("URL")
+    profile["webProfileUrls"].append(url)
+
+
+def _handle_request_body(mx_conn, body_dict, url):
   for content_type in body_dict.get("content", {}):
     _add_content_type(content_type, url['contentTypes'])
     schema_dict = body_dict["content"][content_type].get("schema", {})
-    if not _resolve_references(swagger, schema_dict):
-      continue
     body_type = schema_dict.get("type", None)
     if body_type != "object":
       print("Got request body type: {}. Currently, supporting only type = object.".format(body_type))
@@ -430,11 +459,9 @@ def _get_parameter_attribute(swagger_parm_obj, attr_name, default_val=None):
   return default_val
 
 
-def _handle_swagger_parameters(mx_conn, parameters_dict, swagger, url, is_single_method):
+def _handle_swagger_parameters(mx_conn, parameters_dict, url, is_single_method):
   for param_obj in parameters_dict:
     parameter = param_obj
-    if not _resolve_references(swagger, parameter):
-      continue
     in_attr = _get_parameter_attribute(parameter, "in")
     if in_attr is None or in_attr not in ["query", "path", "body", "formData"]:
       continue
@@ -442,8 +469,6 @@ def _handle_swagger_parameters(mx_conn, parameters_dict, swagger, url, is_single
       _handle_single_param(mx_conn, url, parameter, _get_parameter_attribute(parameter, "name"), in_attr, is_single_method)
     else:
       if "schema" in parameter:
-        if not _resolve_references(swagger, parameter["schema"]):
-          continue
         if "type" in parameter["schema"] and parameter["schema"]["type"] == "object":
           if "properties" in parameter["schema"]:
             for parm_name in parameter["schema"]["properties"]:
@@ -452,28 +477,23 @@ def _handle_swagger_parameters(mx_conn, parameters_dict, swagger, url, is_single
           print("Body parameter is not of type 'object'")
 
 
-def _resolve_references(swagger, dict_obj):
-  ref_string = dict_obj.pop("$ref", None)
-  if ref_string:
-    if ref_string[0:1] == "#":
-      help_dict = swagger
-      for token in ref_string[2:].split("/"):
-        help_dict = help_dict.get(token, None)
-        if help_dict is None or type(help_dict) is not dict:
-          print("Invalid internal reference {}.".format(ref_string))
-          return False
-      dict_obj.update(help_dict)
-    else:
-      print("Unsupported external reference {}.".format(ref_string))
-      return False
-  return True
+def _get_explode_attr(in_attr, parm_dict):
+  default_style = ""
+  if in_attr == "query":
+    default_style = "form"
+  style_attr = parm_dict.get("style", default_style)
+  return parm_dict.get("explode", style_attr == "form")
 
 
 def _handle_single_param(mx_conn, url, parameter, parm_name, in_attr, is_single_method):
   parm_dict = parameter
-  if _get_parameter_attribute(parameter, "type") == "array" and _get_parameter_attribute(parameter, "collectionFormat") == "multi":
-    parm_dict =  _get_parameter_attribute(parameter, "items", {})
   type_attr = _get_parameter_attribute(parm_dict, "type")
+  collection_format_attr = _get_parameter_attribute(parm_dict, "collectionFormat")
+  if type_attr == "array" and (collection_format_attr == "multi" or _get_explode_attr(in_attr, parm_dict)):
+    # when multi (v2) or explode (v3) arrays are represented as passing same parameter multiple times
+    # (each with different value). Thus, we can treat the array as a regular parameter defined under "items"
+    parm_dict = _get_parameter_attribute(parameter, "items", {})
+    type_attr = _get_parameter_attribute(parm_dict, "type")
   format_attr = _get_parameter_attribute(parm_dict, "format")
   add_parameter = {
     "name": parm_name,
@@ -559,7 +579,7 @@ def _valid_regex_pattern(regex_pattern=None):
     re.compile(regex_pattern)
     return True
   except:
-    print("Regex pattern: " + regex_pattern + " is nt valid")
+    print("Regex pattern: " + regex_pattern + " isn't valid")
     return False
 
 
@@ -568,4 +588,5 @@ def _handle_regex_pattern(mx_conn, parm_name, parm_type, regex_pattern, add_para
   mx_conn.create_parameter_type_global_object(Name=custom_name, Regex=regex_pattern, update=True)
   add_parameter["customValueType"] = custom_name
   add_parameter.pop("type")
+
 

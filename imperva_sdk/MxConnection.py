@@ -41,6 +41,7 @@ from imperva_sdk.Tag                            import *
 from imperva_sdk.DiscoveryScan                  import *
 from imperva_sdk.CloudAccount                   import *
 from imperva_sdk.IpGroup                        import *
+from imperva_sdk.SwaggerJsonFile                import *
 
 ApiVersion = "v1"
 DefaultMxPort = 8083
