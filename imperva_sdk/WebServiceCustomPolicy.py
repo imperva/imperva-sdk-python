@@ -249,7 +249,8 @@ class WebServiceCustomPolicy(MxObject):
       return obj_exists
     try:
       res = connection._mx_api('GET', '/conf/webServiceCustomPolicies/%s' % Name)
-    except:
+    except Exception as e:
+      #print('Exception occured for policy Name %s: %s' %(Name,e))
       return None
     if 'followedAction' not in res: res['followedAction'] = ''
     if 'oneAlertPerSession' not in res: res['oneAlertPerSession'] = None
@@ -336,4 +337,31 @@ class WebServiceCustomPolicy(MxObject):
     body = { Parameter: Value }
     connection._mx_api('PUT', '/conf/webServiceCustomPolicies/%s' % Name, data=json.dumps(body))
     return True
+  @staticmethod
+  def _clone_web_service_custom_policy(connection, Name=None, NamePrefix=None, Overwrite=False, Enabled=None, Action=None, FollowedAction=None, ApplyTo=None):
+    newName = NamePrefix + ' ' + Name
+    validate_string(Name=Name)
+    validate_string(Name=newName)
+    pol = WebServiceCustomPolicy._exists(connection=connection, Name=Name)
+    if not pol:
+      pol = connection.get_web_service_custom_policy(Name=Name)
+    pol_dict = dict(pol)
+    pol_dict['Name'] = newName
+    if Overwrite:
+      newPol = connection.get_web_service_custom_policy(newName)
+      if newPol:
+        connection._mx_api('DELETE', '/conf/webServiceCustomPolicies/%s' % newName)
+        connection._instances.remove(newPol)
+        del newPol
+    if Enabled != None:
+      pol_dict['Enabled'] = Enabled
+    if Action != None:
+      pol_dict['Action'] = Action # 'block' or 'none'
+    if FollowedAction != None:
+      pol_dict['FollowedAction'] = FollowedAction
+    if ApplyTo != None:
+      pol_dict['ApplyTo'] = ApplyTo
+    p = connection.create_web_service_custom_policy(**pol_dict)
+    del pol_dict
+    return p
 

@@ -5,7 +5,7 @@ from imperva_sdk.core import *
 
 class ServerGroup(MxObject):
   ''' 
-  MX Server Group Class 
+  MX Server Group Class Updated
 
   >>> sg = site.create_server_group("my server group")
   >>> sg.OperationMode = 'active'

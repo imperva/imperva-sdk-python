@@ -929,7 +929,21 @@ class MxConnection(object):
     :param Name: Policy name.
     '''
     return WebServiceCustomPolicy._delete_web_service_custom_policy(connection=self, Name=Name)
-    
+  
+  def clone_web_service_custom_policy(self, Name=None,NamePrefix=None,Overwrite=False,Enabled=None,Action=None,FollowedAction=None,ApplyTo=None):
+    '''
+    Clone policy. If defined, overwrite Enabled, FollowedAction and ApplyTo.
+    '''
+    return WebServiceCustomPolicy._clone_web_service_custom_policy(connection=self,Name=Name,NamePrefix=NamePrefix, Overwrite=Overwrite, Enabled=Enabled, Action=Action, FollowedAction=FollowedAction, ApplyTo=ApplyTo)
+
+  # Utility Functions
+  def get_match_all(self,Site=None):
+    '''
+    Get the MatchAll json structure to push against ApplyTo='all' or ApplyTo=Site if specified
+    '''
+    sites = self.get_all_sites()
+
+
   def _update_web_service_custom_policy(self, Name=None, Parameter=None, Value=None):
     return WebServiceCustomPolicy._update_web_service_custom_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
     
