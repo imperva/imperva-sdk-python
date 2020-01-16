@@ -930,19 +930,34 @@ class MxConnection(object):
     '''
     return WebServiceCustomPolicy._delete_web_service_custom_policy(connection=self, Name=Name)
   
-  def clone_web_service_custom_policy(self, Name=None,NamePrefix=None,Overwrite=False,Enabled=None,Action=None,FollowedAction=None,ApplyTo=None):
+  def delete_all_web_service_custom_policies(self):
     '''
-    Clone policy. If defined, overwrite Enabled, FollowedAction and ApplyTo.
+    Delete all custom web service policies
     '''
-    return WebServiceCustomPolicy._clone_web_service_custom_policy(connection=self,Name=Name,NamePrefix=NamePrefix, Overwrite=Overwrite, Enabled=Enabled, Action=Action, FollowedAction=FollowedAction, ApplyTo=ApplyTo)
+    return WebServiceCustomPolicy._delete_all_web_service_custom_policies(connection=self)
+
+  def clone_web_service_custom_policy(self, Name=None,NamePrefix=None,Overwrite=False,Enabled=None,Action=None,FollowedAction=None,ApplyTo=None,Verbose=False):
+    '''
+    Clone policy. If defined, overwrite Enabled, FollowedAction, ApplyTo, etc.
+    '''
+    return WebServiceCustomPolicy._clone_web_service_custom_policy(connection=self,Name=Name,NamePrefix=NamePrefix, Overwrite=Overwrite, Enabled=Enabled, Action=Action, FollowedAction=FollowedAction, ApplyTo=ApplyTo, Verbose=Verbose)
+
+  def clone_all_web_service_custom_policies(self,NamePrefix=None,Overwrite=False,Enabled=None,Action=None,FollowedAction=None,ApplyTo=None,DefaultOnly=True,Skip=None):
+    '''
+    Clone all policies. If defined, overwrite Enabled, FollowedAction, ApplyTo, etc.
+    '''
+    return WebServiceCustomPolicy._clone_all_web_service_custom_policies(connection=self,NamePrefix=NamePrefix, Overwrite=Overwrite, Enabled=Enabled, Action=Action, FollowedAction=FollowedAction, ApplyTo=ApplyTo,DefaultOnly=DefaultOnly)
 
   # Utility Functions
-  def get_match_all(self,Site=None):
+  def get_all_services(self,Site=None):
     '''
-    Get the MatchAll json structure to push against ApplyTo='all' or ApplyTo=Site if specified
+    Get the MatchAll list of services to push against ApplyTo='all' or ApplyTo=Site if specified
     '''
-    sites = self.get_all_sites()
-
+    ApplyToServices = []
+    for site in self.get_all_sites():
+        for sg in site.get_all_server_groups():
+            ApplyToServices = ApplyToServices + sg.get_all_web_services()
+    return MxList(ApplyToServices)
 
   def _update_web_service_custom_policy(self, Name=None, Parameter=None, Value=None):
     return WebServiceCustomPolicy._update_web_service_custom_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
