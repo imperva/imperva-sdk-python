@@ -324,12 +324,19 @@ class WebServiceCustomPolicy(MxObject):
       raise MxException("Policy does not exist")
     return True  
   @staticmethod  
-  def _delete_all_web_service_custom_policies(connection, Name=None):
-    validate_string(Name=Name)
+  def _delete_all_web_service_custom_policies(connection, SkipList=None):
     policies = connection.get_all_web_service_custom_policies()
     for policy in policies:
+      skipPolicy = False
+      if SkipList != None:
+        for skipItem in SkipList:
+          if skipItem in policy.Name:
+            skipPolicy=True
+            break
+      if skipPolicy: 
+        continue # we skip this policy (useful in some cases such as ThreatRadar policies)
       if policy.SendToCd == None: # we conclude is a custom policy 
-        connection._delete_web_service_custom_policy(policy.Name)
+        connection.delete_web_service_custom_policy(policy.Name)
   @staticmethod
   def _update_web_service_custom_policy(connection, Name=None, Parameter=None, Value=None):
     if Parameter in ['enabled', 'sendToCD', 'displayResponsePage', 'oneAlertPerSession']:
@@ -389,10 +396,10 @@ class WebServiceCustomPolicy(MxObject):
             skipPolicy=True
             break
       if skipPolicy: 
-        continue # we schip this policy (useful in some cases such as ThreatRadar policies)
+        continue # we skip this policy (useful in some cases such as ThreatRadar policies)
       clone = False
       if DefaultOnly:
-        if policy.SendToCd != None:
+        if policy.SendToCd != None: # is it a default policy? 
           clone = True
       else:
         clone = True

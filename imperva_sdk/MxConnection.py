@@ -930,11 +930,11 @@ class MxConnection(object):
     '''
     return WebServiceCustomPolicy._delete_web_service_custom_policy(connection=self, Name=Name)
   
-  def delete_all_web_service_custom_policies(self):
+  def delete_all_web_service_custom_policies(self, SkipList=None):
     '''
     Delete all custom web service policies
     '''
-    return WebServiceCustomPolicy._delete_all_web_service_custom_policies(connection=self)
+    return WebServiceCustomPolicy._delete_all_web_service_custom_policies(connection=self, SkipList=SkipList)
 
   def clone_web_service_custom_policy(self, Name=None,NamePrefix=None,Overwrite=False,Enabled=None,Action=None,FollowedAction=None,ApplyTo=None,Verbose=False):
     '''
