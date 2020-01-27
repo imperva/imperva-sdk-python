@@ -8,6 +8,7 @@ import time
 from imperva_sdk.core                           import *
 from imperva_sdk.Site                           import *
 from imperva_sdk.ServerGroup                    import *
+from imperva_sdk.GatewayGroup                   import *
 from imperva_sdk.WebService                     import *
 from imperva_sdk.WebApplication                 import *
 from imperva_sdk.DbService                      import *
@@ -292,6 +293,13 @@ class MxConnection(object):
     '''
     return Site._delete_site(connection=self, Name=Name)
 
+  def delete_all_sites(self):
+    '''
+    Deletes all the sites, excluding default one which cannot be deleted.
+    If no (custom) site exists, nothing happens.
+    '''
+    return Site._delete_all_sites(connection=self)
+  
   def get_all_server_groups(self, Site=None):
     '''
     :type Site: string
@@ -339,6 +347,30 @@ class MxConnection(object):
     :param Site: Site name
     '''
     return ServerGroup._delete_server_group(connection=self, Name=Name, Site=Site)
+
+  def create_gatewaygroup(self,Name=None, gatewayPlatform=None, gatewayMode=None, failMode=None, overloadPolicy=None, Overwrite=None):
+    '''
+    Set GatewayGroup
+    '''
+    return GatewayGroup._create_gatewaygroup(connection=self,Name=Name, gatewayPlatform=gatewayPlatform, gatewayMode=gatewayMode, failMode=failMode, overloadPolicy=overloadPolicy, Overwrite=Overwrite)
+
+  def get_gatewaygroup(self,Name=None):
+    '''
+    Get GatewayGroup
+    '''
+    return GatewayGroup._get_gatewaygroup(connection=self,Name=Name)
+
+  def get_all_gateways(self,gatewayGroup=None):
+    '''
+    Get All Gateways in a GatewayGroup
+    '''
+    return GatewayGroup._get_all_gateways(connection=self,gatewayGroup=gatewayGroup)
+
+  def get_all_gatewaygroups(self):
+    '''
+    Get All GatewayGroups
+    '''
+    return GatewayGroup._get_all_gatewaygroups(connection=self)
 
   def get_all_web_services(self, ServerGroup=None, Site=None):
     '''
@@ -644,6 +676,35 @@ class MxConnection(object):
     :return: Created KrpRule instance.
     '''
     return KrpRule._create_krp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts, ServerCertificate=ServerCertificate, ClientAuthenticationAuthorities=ClientAuthenticationAuthorities, OutboundRules=OutboundRules, Name=None, update=update)
+
+  def create_aws_krp_rule(self, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, GatewayPorts=None, Alias=None, Priority=None, InternalIpHost=None, ServerPort=None, Refresh=True,ServerCertificate=None,ClientAuthenticationAuthorities=None,Name=None,Update=False):
+    '''
+    Please, see FR Case 00485106: Decouple Gateway Group Alias from the presence of a Gateway in a Gateway Group
+    For this reason, we first need to monitor for existence of a specific Gateway Group (containing at least a Gateway)
+    Once that exists, we can create the KRP rule (which is using the GW associated Label)
+    '''
+    OutboundRules=[{'priority': Priority, 'internalIpHost': InternalIpHost, 'serverPort': ServerPort}]
+    if Refresh:
+      self.delete_all_sites()
+      time.sleep(1)
+      site = self.create_site(Name = Site, update = False)
+      server_group = site.create_server_group(ServerGroup, update=False, OperationMode='active')
+      time.sleep(1)
+      server_group.create_web_service(ForwardedClientIp={"forwardHeaderName": "X-Forwarded-For", "forwardClientIP": True}, Name=WebService, update=False) 
+    k = 0
+# _create_krp_rule(connection, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, Alias=None, GatewayPorts=[], ServerCertificate=None, ClientAuthenticationAuthorities=None, OutboundRules=[], Name=None, update=False):    
+# _get_krp_rule(connection, ServerGroup=None, Site=None, WebService=None, GatewayGroup=None, Alias=None, GatewayPorts=None)
+# _delete_krp_rule(connection, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, Alias=None, GatewayPorts=[])
+    while(True):
+        if(self.get_gatewaygroup(GatewayGroup) != None):
+            #if KrpRule._get_krp_rule(connection=self,ServerGroup=ServerGroup,Site=Site,WebService=WebService,GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts):
+            #  KrpRule._delete_krp_rule(connection=self,WebService=WebService,ServerGroup=ServerGroup,Site=Site,GatewayGroup=GatewayGroup,Alias=Alias, GatewayPorts=GatewayPorts)
+            KrpRule._create_krp_rule(connection=self,WebService=WebService,ServerGroup=ServerGroup,Site=Site,GatewayGroup=GatewayGroup,Alias=Alias,GatewayPorts=GatewayPorts,ServerCertificate=None,ClientAuthenticationAuthorities=None,OutboundRules=OutboundRules,Name=Name,update=Update)
+            break
+        else:
+            time.sleep(10)   
+            if k >= 600: # break after 100 minutes
+              break 
 
   def delete_krp_rule(self, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, Alias=None, GatewayPorts=[]):
     '''

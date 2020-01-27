@@ -138,8 +138,8 @@ class WebService(MxObject):
   @staticmethod  
   def _get_all_web_services(connection, ServerGroup=None, Site=None):
     validate_string(Site=Site, ServerGroup=ServerGroup)
-    res = connection._mx_api('GET', '/conf/webServices/%s/%s' % (Site, ServerGroup))
     try:
+      res = connection._mx_api('GET', '/conf/webServices/%s/%s' % (Site, ServerGroup))
       names = res['web-services']
     except:
       raise MxException("Failed getting web services")
@@ -201,7 +201,8 @@ class WebService(MxObject):
           pass
         return ws
       else:
-        raise MxException("Web Service already exists")
+        #raise MxException("Web Service already exists")
+        connection.delete_web_service(Name=Name, ServerGroup=ServerGroup, Site=Site)
     body = {}
     if Ports: body['ports'] = Ports
     if SslPorts: body['sslPorts'] = SslPorts
@@ -236,6 +237,10 @@ class WebService(MxObject):
   def _delete_web_service(connection, Name=None, ServerGroup=None, Site=None):
     validate_string(Name=Name, ServerGroup=ServerGroup, Site=Site)
     ws = connection.get_web_service(Name=Name, Site=Site, ServerGroup=ServerGroup)
+    # delete any existing KrpRules:
+    krpRules = connection.get_all_krp_rules(ServerGroup=ServerGroup, Site=Site, WebService=Name)
+    for krpRule in krpRules:
+      connection.delete_krp_rule(WebService=Name, ServerGroup=ServerGroup, Site=Site, GatewayGroup=krpRule.GatewayGroup, Alias=krpRule.Alias, GatewayPorts=krpRule.GatewayPorts)
     if ws:
       connection._mx_api('DELETE', '/conf/webServices/%s/%s/%s' % (Site, ServerGroup, Name))
       connection._instances.remove(ws)
