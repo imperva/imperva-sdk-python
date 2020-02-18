@@ -685,20 +685,15 @@ class MxConnection(object):
     '''
     OutboundRules=[{'priority': Priority, 'internalIpHost': InternalIpHost, 'serverPort': ServerPort}]
     if Refresh:
-      self.delete_all_sites()
+      self.delete_all_sites() # this should delete sites, their SGs, their Services, their KrpRules
       time.sleep(1)
       site = self.create_site(Name = Site, update = False)
       server_group = site.create_server_group(ServerGroup, update=False, OperationMode='active')
       time.sleep(1)
       server_group.create_web_service(ForwardedClientIp={"forwardHeaderName": "X-Forwarded-For", "forwardClientIP": True}, Name=WebService, update=False) 
     k = 0
-# _create_krp_rule(connection, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, Alias=None, GatewayPorts=[], ServerCertificate=None, ClientAuthenticationAuthorities=None, OutboundRules=[], Name=None, update=False):    
-# _get_krp_rule(connection, ServerGroup=None, Site=None, WebService=None, GatewayGroup=None, Alias=None, GatewayPorts=None)
-# _delete_krp_rule(connection, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, Alias=None, GatewayPorts=[])
     while(True):
         if(self.get_gatewaygroup(GatewayGroup) != None):
-            #if KrpRule._get_krp_rule(connection=self,ServerGroup=ServerGroup,Site=Site,WebService=WebService,GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts):
-            #  KrpRule._delete_krp_rule(connection=self,WebService=WebService,ServerGroup=ServerGroup,Site=Site,GatewayGroup=GatewayGroup,Alias=Alias, GatewayPorts=GatewayPorts)
             KrpRule._create_krp_rule(connection=self,WebService=WebService,ServerGroup=ServerGroup,Site=Site,GatewayGroup=GatewayGroup,Alias=Alias,GatewayPorts=GatewayPorts,ServerCertificate=None,ClientAuthenticationAuthorities=None,OutboundRules=OutboundRules,Name=Name,update=Update)
             break
         else:
@@ -2488,6 +2483,19 @@ class MxConnection(object):
     self._mx_api('PUT', '/conf/systemDefinitions/httpProxy', data=json.dumps(body))
 
     return True
+
+  def reset_password(self,Username=None,Password=None, Enabled=True, Locked=False, ReadOnly=False):
+    Authenticator = 'SecureSphere'
+    enabled  = 'true' if Enabled else 'false'
+    locked   = 'false' if not Locked else 'true'
+    readonly = 'false' if not ReadOnly else 'true'
+    validate_string(Username=Username)
+    body = {
+      'authenticator': Authenticator,
+      'password': Password
+    }
+    ret = self._mx_api('PUT','/conf/users/%s' %Username, data=json.dumps(body))
+    return ret
 
   def _set_hybrid_waf(self, Enabled=True):
     '''

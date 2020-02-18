@@ -2,7 +2,9 @@
 
 import re
 import os
-valid_string_pattern = re.compile(r'^[a-zA-Z0-9 _\.\'\-\[\]\,\(\)\:\+]*$')
+import copy
+import json
+valid_string_pattern = re.compile(r'^[a-zA-Z0-9 _\.\'\-\[\]\,\(\)\:\+\#]*$')
 
 #
 # In "imperva_sdk", all Class parameters start with a capital letter.
@@ -77,3 +79,91 @@ def imperva_sdk_version():
     pass
   return "Error getting imperva_sdk version"
   
+# Utility Functions
+    
+def ReplaceFollowedAction(http1xProtPol,followedActionName):
+    if type(http1xProtPol) is list:
+        for item in http1xProtPol:
+            ReplaceFollowedAction(item,followedActionName)
+    elif type(http1xProtPol) is dict:
+        for key in http1xProtPol:
+            if type(key) is str and key == 'followedAction':
+                http1xProtPol[key] = followedActionName
+            else:
+                ReplaceFollowedAction(http1xProtPol[key],followedActionName)
+
+def AddOperationToListDict(applyToListDict):
+    if type(applyToListDict) == list:
+        # we assume a list of dictionaries
+        for applyToDict in applyToListDict:
+            applyToDict['operation'] = 'add'
+    elif type(applyToListDict) == dict:
+        applyToListDict['operation'] = 'add'
+    else:
+        raise Exception('AddOperationToListDict - applyToListDict is not a list of dict ! :' + str(applyToListDict))
+    return applyToListDict
+
+def GetSiteSgServices(mx, siteName):
+    sgs = mx.get_all_server_groups(Site=siteName)
+    siteSgSrvDict = {}
+    siteSgSrvDictList = []
+    for sg in sgs:
+        services = mx.get_all_web_services(ServerGroup=sg.Name, Site=siteName)
+        for service in services:
+            siteSgSrvDict['siteName'] = siteName;
+            siteSgSrvDict['serverGroupName'] = sg.Name;
+            siteSgSrvDict['webServiceName'] = service.Name;
+            siteSgSrvDictList.append(copy.deepcopy(siteSgSrvDict))
+    return siteSgSrvDictList[0] if len(siteSgSrvDictList) == 1 else siteSgSrvDictList
+
+def GetAllApplyTo(mx):
+    applyTo = []
+    sites = mx.get_all_sites()
+    for site in sites:
+        applyToItem = GetSiteSgServices(mx, site.Name)
+        if len(applyToItem) != 0:
+            if type(applyToItem) is list:
+                applyTo += copy.deepcopy(applyToItem)
+            elif type(applyToItem) is dict:
+                applyTo.append(copy.deepcopy(applyToItem))
+            else:
+                raise Exception('In GetAllApplyTo: applyToItem not a list nor a dict!')           
+    return applyTo
+
+def CurateApplyTo(mx, http1xProtPol):
+    http1xProtPol['applyTo'] = GetAllApplyTo(mx)
+    AddOperationToListDict(http1xProtPol['applyTo'])
+    return http1xProtPol
+
+def PostPutPolicy(mx,dictBody,urlBase,polName):
+    try:
+        mx._mx_api('POST', urlBase + '/%s' % polName, data=json.dumps(dictBody))
+    except Exception as e: 
+        print("An error was thrown by POST on policy: " + polName + "Error: " + str(e) + "; trying a PUT...")
+        try:
+          mx._mx_api('PUT',  urlBase + '/%s' % polName, data=json.dumps(dictBody))
+        except Exception as e:
+          print("An error was thrown by PUT on policy: " + polName + "Error: " + str(e) + "; This has to be fixed...")
+
+def PolicyNameContainsToken(strTokens, pol):
+    rez = False
+    for strToken in strTokens:
+        if strToken.lower() in pol.lower():
+            rez = True
+    return rez
+ 
+def EnableRules(rules):
+    lRules = list(rules)
+    for ruleDict in rules:
+        assert type(ruleDict) == dict 
+        ruleDict['enabled'] = True
+    return lRules 
+
+def SetFollowedAction(rules,followedAction):
+    lRules = list(rules)
+    for ruleDict in rules:
+        assert type(ruleDict) == dict 
+        ruleDict['followedAction'] = followedAction
+    return lRules 
+
+
