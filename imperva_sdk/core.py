@@ -153,15 +153,15 @@ def PolicyNameContainsToken(strTokens, pol):
     return rez
  
 def EnableRules(rules):
-    lRules = list(rules)
-    for ruleDict in rules:
+    lRules = copy.deepcopy(list(rules))
+    for ruleDict in lRules:
         assert type(ruleDict) == dict 
         ruleDict['enabled'] = True
     return lRules 
 
 def SetFollowedAction(rules,followedAction):
-    lRules = list(rules)
-    for ruleDict in rules:
+    lRules = copy.deepcopy(list(rules))
+    for ruleDict in lRules:
         assert type(ruleDict) == dict 
         ruleDict['followedAction'] = followedAction
     return lRules 

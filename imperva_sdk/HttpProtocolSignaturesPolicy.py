@@ -29,6 +29,7 @@ class HttpProtocolSignaturesPolicy(MxObject):
   def __init__(self, connection=None, Name=None, SendToCd=None, DisplayResponsePage=None, ApplyTo=[], Rules=[], Exceptions=[]):
     super(HttpProtocolSignaturesPolicy, self).__init__(connection=connection, Name=Name)
     validate_string(Name=Name)
+    # print("__init__; self._Rules = MxList(Rules)")
     self._SendToCd = SendToCd
     self._DisplayResponsePage = DisplayResponsePage
     self._ApplyTo = MxList(ApplyTo)
@@ -113,7 +114,7 @@ class HttpProtocolSignaturesPolicy(MxObject):
       self._DisplayResponsePage = DisplayResponsePage
   @ApplyTo.setter
   def ApplyTo(self, ApplyTo):
-
+    # print("ApplyTo.setter")
     change = []
 
     # Translate ApplyTo to objects if we need to
@@ -148,13 +149,16 @@ class HttpProtocolSignaturesPolicy(MxObject):
         change.append(apply_dict)
 
     if change:
+      # print("setting apply to...")
       self._connection._update_http_protocol_signatures_policy(Name=self._Name, Parameter='applyTo', Value=change)
       self._ApplyTo = MxList(ApplyToObjects)
   @Rules.setter
   def Rules(self, Rules):
     # Because the Rules isn't really a list and the MX can return it in different orders, we need to compare only the rules
+    # print("updating rules...\nRules: " + json.dumps(Rules) + "\n_Rules: " + json.dumps(self._Rules))
     change = False
     for cur_rule in Rules:
+      # print("cur_rule: " + json.dumps(cur_rule))
       if cur_rule not in self._Rules:
         change = True
         break
@@ -164,6 +168,7 @@ class HttpProtocolSignaturesPolicy(MxObject):
           change = True
           break
     if change:
+      # print("change=True; updating rules...")
       self._connection._update_http_protocol_signatures_policy(Name=self._Name, Parameter='rules', Value=Rules)
       self._Rules = Rules
   @Exceptions.setter
