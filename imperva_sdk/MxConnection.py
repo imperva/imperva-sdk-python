@@ -366,11 +366,11 @@ class MxConnection(object):
     '''
     return GatewayGroup._get_all_gateways(connection=self,gatewayGroup=gatewayGroup)
 
-  def get_all_gatewaygroups(self):
+  def get_all_gatewaygroups(self,IsCloud=None):
     '''
     Get All GatewayGroups
     '''
-    return GatewayGroup._get_all_gatewaygroups(connection=self)
+    return GatewayGroup._get_all_gatewaygroups(connection=self,IsCloud=IsCloud)
 
   def get_all_web_services(self, ServerGroup=None, Site=None):
     '''
@@ -1008,9 +1008,11 @@ class MxConnection(object):
 
   def clone_mx_sites(self, fromMX):
     ttooMX = self
+    # clone action sets
+    self.clone_action_sets(fromMX)
+    # duplicate sites
     for site in fromMX.get_all_sites():
-      gwGroups = ttooMX.get_all_gatewaygroups()
-      assert(len(gwGroups) == 1) # if on dest setup we don't have one and only one GW Group, we have an error condition
+      gwGroups = ttooMX.get_all_gatewaygroups(IsCloud=True)
       if site.Name != 'Default Site':
           if ttooMX.get_site(Name=site.Name) != None:
               ttooMX.delete_site(Name=site.Name)
@@ -1019,7 +1021,82 @@ class MxConnection(object):
           toSite = ttooMX.get_site(Name='Default Site')
       # now, we should have the site; default should always be there
       self.clone_site_config(site,toSite, gwGroups[0].Name)
+    # clone other types of policies
+    self.clone_external_web_service_custom_policies(fromMX)
+    self.clone_external_http_protocol_signatures_policies(fromMX)
+    self.clone_http1x_protocol_validation(fromMX)
+    self.clone_http2_protocol_validation(fromMX)
 
+  def clone_external_web_service_custom_policies(self, fromMX):
+    ttooMX = self
+    toAllServices = ttooMX.get_all_services()
+    for fromPol in fromMX.get_all_web_service_custom_policies():
+        toPol = ttooMX.get_web_service_custom_policy(Name=fromPol.Name)
+        try:
+            if toPol == None:
+                # a new policy needs to be created
+                ttooMX.create_web_service_custom_policy(\
+                            Name=fromPol.Name,Enabled=fromPol.Enabled,Severity=fromPol.Severity,Action=fromPol.Action,FollowedAction=fromPol.FollowedAction,ApplyTo=toAllServices,OneAlertPerSession=fromPol.OneAlertPerSession,MatchCriteria=fromPol.MatchCriteria)
+            else:
+                # the below 4 are for ADC policies
+                toPol.Enabled = fromPol.Enabled
+                toPol.FollowedAction = fromPol.FollowedAction
+                toPol.ApplyTo = toAllServices
+                toPol.Severity = fromPol.Severity
+                toPol.OneAlertPerSession = fromPol.OneAlertPerSession
+                if not toPol.SendToCd:
+                    # the below is for non ADC policies:
+                    toPol.MatchCriteria = fromPol.MatchCriteria              
+        except Exception as e:
+            print("Error applying " + fromPol.Name + " - ", e)
+            print("Try applying a custom policy with the same defintions ... ")
+            try: 
+                ttooMX.create_web_service_custom_policy(\
+                            Name=fromPol.Name + " Custom",Enabled=fromPol.Enabled,Severity=fromPol.Severity,Action=fromPol.Action,FollowedAction=fromPol.FollowedAction,ApplyTo=toAllServices,OneAlertPerSession=fromPol.OneAlertPerSession,MatchCriteria=fromPol.MatchCriteria,update=True)
+            except Exception as e:
+                print("This failed too ... manual oversight required. Moving on to next one ... ", e)
+  
+  def clone_external_http_protocol_signatures_policies(self,fromMX,skipPolicies=['legacy','emergency']):
+    ttooMX = self
+    toAllServices = ttooMX.get_all_services()      
+    for fromPol in fromMX.get_all_http_protocol_signatures_policies():
+      if skipPolicies is not None and fromPol.Name.lower() in skipPolicies:
+        continue
+      toPol = ttooMX.get_web_service_custom_policy(Name=fromPol.Name)
+      try:
+          if toPol == None:
+              ttooMX.create_http_protocol_signatures_policy(Name=fromPol.Name,ApplyTo=toAllServices,Rules=fromPol.Rules,update=True)
+      except Exception as e:
+          print("Error applying " + fromPol.Name + " - ", e)      
+
+  def clone_http1x_protocol_validation(self,fromMX):
+    ttooMX = self
+    urlBase= '/conf/policies/security/httpProtocolPolicies'
+    polName= 'HTTP/1.x Protocol Policy'
+    fromPol = GetPolicy(fromMX,urlBase,polName)
+    if not PostPutPolicy(ttooMX,CurateApplyTo(ttooMX,fromPol),urlBase,polName):
+      PostPutPolicy(ttooMX,fromPol,urlBase,polName + ' Custom')
+
+  def clone_http2_protocol_validation(self,fromMX):
+    ttooMX = self    
+    urlBase= '/conf/policies/security/http2ProtocolPolicies'
+    polName= 'HTTP/2 Protocol Policy'
+    fromPol = GetPolicy(fromMX,urlBase,polName) 
+    if not PostPutPolicy(ttooMX,CurateApplyTo(ttooMX,fromPol),urlBase,polName):
+      PostPutPolicy(ttooMX,fromPol,urlBase,polName + ' Custom')      
+
+  def clone_action_sets(self, fromMX):
+    ttooMX = self
+    # Copy non-existent (or update) Followed Actions across, including w/ actions and interfaces   
+    fromMXAllActionSets = fromMX.get_all_action_sets()
+    fromActionSetNames = [actionSet.Name for actionSet in fromMXAllActionSets]
+    for fromActionSetName in fromActionSetNames:
+        fromActionSet = [actionSet for actionSet in fromMXAllActionSets if actionSet.Name == fromActionSetName][0]
+        toActionSet = ttooMX.create_action_set(Name=fromActionSetName,AsType=fromActionSet.AsType,update=True)
+        for action in fromActionSet.get_all_actions():
+            toActionSet.create_action(Name=action.Name,ActionType=action.ActionType,Protocol=action.Protocol,SyslogFacility=action.SyslogFacility,Host=action.Host,SyslogLogLevel=action.SyslogLogLevel,ActionInterface=action.ActionInterface,Message=action.Message,Port=action.Port,update=True)
+
+    
   def clone_site_config(self,fromSite,ttooSite, gwGroup):
     for sg in fromSite.get_all_server_groups():
         # the SG is not present, as we're on a brand new site. Create the SG

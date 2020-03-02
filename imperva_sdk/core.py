@@ -110,9 +110,9 @@ def GetSiteSgServices(mx, siteName):
     for sg in sgs:
         services = mx.get_all_web_services(ServerGroup=sg.Name, Site=siteName)
         for service in services:
-            siteSgSrvDict['siteName'] = siteName;
-            siteSgSrvDict['serverGroupName'] = sg.Name;
-            siteSgSrvDict['webServiceName'] = service.Name;
+            siteSgSrvDict['siteName'] = siteName
+            siteSgSrvDict['serverGroupName'] = sg.Name
+            siteSgSrvDict['webServiceName'] = service.Name
             siteSgSrvDictList.append(copy.deepcopy(siteSgSrvDict))
     return siteSgSrvDictList[0] if len(siteSgSrvDictList) == 1 else siteSgSrvDictList
 
@@ -135,15 +135,23 @@ def CurateApplyTo(mx, http1xProtPol):
     AddOperationToListDict(http1xProtPol['applyTo'])
     return http1xProtPol
 
+def GetPolicy(mx,urlBase,polName):
+  return mx._mx_api('GET', urlBase + '/%s' % polName)
+
 def PostPutPolicy(mx,dictBody,urlBase,polName):
+  retPol = False
+  try:
+    mx._mx_api('POST', urlBase + '/%s' % polName, data=json.dumps(dictBody))
+    retPol = True
+  except Exception as e: 
+    print("An error was thrown by POST on policy: " + polName + "Error: " + str(e) + "; trying a PUT...")
     try:
-        mx._mx_api('POST', urlBase + '/%s' % polName, data=json.dumps(dictBody))
-    except Exception as e: 
-        print("An error was thrown by POST on policy: " + polName + "Error: " + str(e) + "; trying a PUT...")
-        try:
-          mx._mx_api('PUT',  urlBase + '/%s' % polName, data=json.dumps(dictBody))
-        except Exception as e:
-          print("An error was thrown by PUT on policy: " + polName + "Error: " + str(e) + "; This has to be fixed...")
+      mx._mx_api('PUT',  urlBase + '/%s' % polName, data=json.dumps(dictBody))
+      retPol = True
+    except Exception as e:
+      print("An error was thrown by PUT on policy: " + polName + "Error: " + str(e) + "; This has to be fixed...")
+      retPol = False
+  return retPol
 
 def PolicyNameContainsToken(strTokens, pol):
     rez = False

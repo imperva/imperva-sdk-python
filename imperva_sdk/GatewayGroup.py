@@ -58,7 +58,7 @@ class GatewayGroup(MxObject):
       return None
 
   @staticmethod
-  def _get_all_gatewaygroups(connection):
+  def _get_all_gatewaygroups(connection,IsCloud):
     res = connection._mx_api('GET', '/conf/gatewayGroups')
     try:
       gatewaygroup_names = []
@@ -66,12 +66,14 @@ class GatewayGroup(MxObject):
           if type(value) is list:
             gatewaygroup_names = gatewaygroup_names + value
           else:
-            gatewaygroup_names.append(value)      
+            gatewaygroup_names.append(value)       
     except:
       raise MxException("Failed getting gatewayGroups")
     gatewaygroups = []
     for gatewaygroup_name in gatewaygroup_names:
       gatewaygroups.append(GatewayGroup._get_gatewaygroup(connection=connection, Name=gatewaygroup_name))
+    if IsCloud:
+      assert(len(gatewaygroups) == 1) # if on Cloud and on dest setup we don't have one and only one GW Group, we have an error condition  
     return gatewaygroups
 
   @staticmethod
