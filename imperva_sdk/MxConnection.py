@@ -677,13 +677,14 @@ class MxConnection(object):
     '''
     return KrpRule._create_krp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts, ServerCertificate=ServerCertificate, ClientAuthenticationAuthorities=ClientAuthenticationAuthorities, OutboundRules=OutboundRules, Name=None, update=update)
 
-  def create_aws_krp_rule(self, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, GatewayPorts=None, Alias=None, Priority=None, InternalIpHost=None, ServerPort=None, Refresh=True,ServerCertificate=None,ClientAuthenticationAuthorities=None,Name=None,Update=False):
+  def create_aws_krp_rule(self, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, GatewayPorts=None, Alias=None, Priority=None, InternalIpHost=None, ExternalHost=None,UrlPrefix=None,ServerPort=None, Refresh=True,ServerCertificate=None,ClientAuthenticationAuthorities=None,Name=None,Update=False):
     '''
     Please, see FR Case 00485106: Decouple Gateway Group Alias from the presence of a Gateway in a Gateway Group
     For this reason, we first need to monitor for existence of a specific Gateway Group (containing at least a Gateway)
     Once that exists, we can create the KRP rule (which is using the GW associated Label)
     '''
-    OutboundRules=[{'priority': Priority, 'internalIpHost': InternalIpHost, 'serverPort': ServerPort}]
+    OutboundRules=[{'priority': Priority, 'internalIpHost': InternalIpHost, 'serverPort': ServerPort, 'externalHost': ExternalHost, 'urlPrefix': UrlPrefix}]
+    #OutboundRules=[{'priority': Priority, 'internalIpHost': InternalIpHost, 'serverPort': ServerPort}]
     if Refresh:
       self.delete_all_sites() # this should delete sites, their SGs, their Services, their KrpRules
       time.sleep(1)
