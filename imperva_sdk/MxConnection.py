@@ -115,6 +115,9 @@ class MxConnection(object):
     self.__Port = Port
     self.__Debug = Debug
     self.__IsAuthenticated = False
+    # dummy key/cert -> replace w/ your own
+    self.DummyKey = '-----BEGIN RSA PRIVATE KEY-----\nMIIEogIBAAKCAQEAwzK+CexdGYo2vGyYZ7D77TUao3bGkrAhc3EAkL8Kb652GfKN\nVvmGf+P6jGyAKOtFNmkoyTbfrVjiLzIXwtmY/dvwsQd9ILQSVBALdbNXuKOBPCjX\n2UhHRoUP+dfLxsj6XJAXZT41Zo95kOW5o/JOMTLExvMBl2riKf5XFNYWBMNezoQO\nIxny1FkHn35RtxjF2ZEZaLTU8l8+PPl0Ih6eMCDhB78ipidKsTIuM+yR8aDptjHU\nOj195WwAvhZNktFiU5mEs88y+m3Zr3z/u9b8Od8NqZvATbJd+22xutRodXoWZNXf\nY1IkqpdmJXfP5zWv+07tVdfrrWP8W/DbtUAL4wIDAQABAoIBADzipPg/a8K9o9ke\nHmOphss0lzyJneK/YY+6nayIil7PkjMBvyhz6IoXuFz4svkQeaRBJOGuZhKR+Osz\nusmiSeBVLDxr05HR2S2zW3+5ExGanoL/UmSJ8QGEG7mYoA0/PyiEIWgJAWseMZMK\ntN74g39BELPltIdgZW8n0E3FgVS2d2WYGXjXsfdybFI1qYzqaKLKBz0I1R47bTYI\npB+kzti/61CAMkIagmm2UUk0Pr3MGmikGI+YMAsqPUjCcPk8OGpU5xhY6Tt++W1j\n6V8C5gyzxyD7bm3nBctpstxUpmAdEF9zY1+uvk+xt6QhKLFEQAww5RmMbx5MZLA4\nmAtxIRECgYEA/OZkArPrTlnL70MyAEAiNa+RipOJAsaJ7+jzXWTMU+rwt8WJpQwN\nLK3gPkKDcz6Y2Q655QORD7clcQ98gv6ismLGsUBw1NxhH6ybKjN+vPQAyQYzcOJK\naT6w33j16DyFvCMBing69TAmhqu2wkT+7PDe8e7ntD9Y49UQYM7IUm8CgYEAxZdI\nDjpLYr4SUfwLc2ukhDoYR0liy8vMWKd0l4ZiA16Gi6+eObjmSiRfTLIy/sO6F8IP\nwEfFWy24l5v4OElUHG9kU/+g+LL5NC7yewDKMgDXogbvZKrUou4V4hYYEuj89mPy\nGgVJp3hv1E6J9zydFdbBN3U+53jrbLm0hSs7B80CgYBTPnLFAPv/OkeKZg/bTUD1\ncujxOEbtBvT4ZzFUGI25QagilX8NOL5Nap5ZYANst7oQGGzQGTByf9JvOK2/YJml\nJiZIyfFZ34CIsIQSjAi3oYlwof3ktlfP9La7mFE5NFLA7rTfI1wkwMito2/w2k0f\nKNn5wK28Au37cHKHqwj9OQKBgAEwGaTMQOvFDMMlasQ033ZUCxVSoZ9sCDx4NUE7\n85blmJV6Zs8eB3Rmp5QEdj4F2zaNWh7jz5Huwm9W5rUf67uIB+hhXwxftxPTPG30\n4UJPsvwsYoAObtzT5ZnIXDiw4eRxUWFKqtiw5qs2FapA2Qjqk5rLv6cQmQm8TBOI\n4P/5AoGAOeRnlQIYRrzJqmexmLE+79DMvwTpYeH2AjHBik3zcM0oAncYyIudvGNX\nUDDpvKWc/HnThs7NIX64+xKVzMiiG22RCE3PtnUlwQP8H+2UwESui5k9bybwAp0f\nzdr+PU31Oqe0mIK1ru05o+39BLMANbl0Mq3JtW2e5lObv9a9do4=\n-----END RSA PRIVATE KEY-----\n'
+    self.DummyPem = '-----BEGIN CERTIFICATE-----\nMIIDMzCCAhugAwIBAgIJALcqMWys6AJWMA0GCSqGSIb3DQEBBQUAMDAxLjAsBgNV\nBAMMJWRpcmVjdC1jb25uZWN0LXByb21ldGhldXMuZXhhbXBsZS5jb20wHhcNMTkx\nMDAxMDgzMTIyWhcNMjkwOTI4MDgzMTIyWjAwMS4wLAYDVQQDDCVkaXJlY3QtY29u\nbmVjdC1wcm9tZXRoZXVzLmV4YW1wbGUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC\nAQ8AMIIBCgKCAQEAwzK+CexdGYo2vGyYZ7D77TUao3bGkrAhc3EAkL8Kb652GfKN\nVvmGf+P6jGyAKOtFNmkoyTbfrVjiLzIXwtmY/dvwsQd9ILQSVBALdbNXuKOBPCjX\n2UhHRoUP+dfLxsj6XJAXZT41Zo95kOW5o/JOMTLExvMBl2riKf5XFNYWBMNezoQO\nIxny1FkHn35RtxjF2ZEZaLTU8l8+PPl0Ih6eMCDhB78ipidKsTIuM+yR8aDptjHU\nOj195WwAvhZNktFiU5mEs88y+m3Zr3z/u9b8Od8NqZvATbJd+22xutRodXoWZNXf\nY1IkqpdmJXfP5zWv+07tVdfrrWP8W/DbtUAL4wIDAQABo1AwTjAdBgNVHQ4EFgQU\nMeDvozVnvcr5SuvK4u05Uli1yegwHwYDVR0jBBgwFoAUMeDvozVnvcr5SuvK4u05\nUli1yegwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAtlPPZlPwlnb0\nofYpEY0VQn8RIwtw64TVB1Vz78IVPJuNjhFcmaDxghXrsCLLBcvrMGjNyGBozhKY\nW9x66Mw7qVO5/ICtz4JLk4pTYDm2Fyoew8cI5GvPdpQu7LEnisu1Fh2ngrY4XL8S\nqSxxo8RWasxZSRy1HXKRwR6ppE8FU2tzQim5M+ZYgcefEPn55J18SbB62+ZvdY3m\nAl9IHgiaTmseHYl2wmyLJU/viySGRd7Z4NOWmPapktW2ERQs+Tb1pq8zMI4GtzRk\nWT7qNGJVKXZsXABlLzBK2SjaTTkaxvEEhtiAXrS3k/4SoTgzdI9OEHgL36OB0qao\n1ZZntXikxg==\n-----END CERTIFICATE-----\n'    
     auth_string = '%s:%s' % (Username, Password)
     self.__Headers = {
       "Authorization": 'Basic %s' % base64.b64encode(auth_string.encode('utf-8')).decode('utf-8'),
@@ -677,7 +680,7 @@ class MxConnection(object):
     '''
     return KrpRule._create_krp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts, ServerCertificate=ServerCertificate, ClientAuthenticationAuthorities=ClientAuthenticationAuthorities, OutboundRules=OutboundRules, Name=None, update=update)
 
-  def create_aws_krp_rule(self, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, GatewayPorts=None, Alias=None, Priority=None, InternalIpHost=None, ExternalHost=None,UrlPrefix=None,ServerPort=None, Refresh=True,ServerCertificate=None,ClientAuthenticationAuthorities=None,Name=None,Update=False):
+  def create_aws_krp_rule(self, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, GatewayPorts=None, Alias=None, Priority=None, InternalIpHost=None, ExternalHost=None,UrlPrefix=None,ServerPort=None, Refresh=True,ServerCertificate=None,ClientAuthenticationAuthorities=None,Name=None,Update=False, SslKeyName=None, CertKey=None, CertPem=None):
     '''
     Please, see FR Case 00485106: Decouple Gateway Group Alias from the presence of a Gateway in a Gateway Group
     For this reason, we first need to monitor for existence of a specific Gateway Group (containing at least a Gateway)
@@ -689,16 +692,26 @@ class MxConnection(object):
       self.delete_all_sites() # this should delete sites, their SGs, their Services, their KrpRules
       time.sleep(1)
       site = self.create_site(Name = Site, update = False)
-      server_group = site.create_server_group(ServerGroup, update=False, OperationMode='active')
+      server_group = site.create_server_group(ServerGroup, update=False, OperationMode='active')    
       time.sleep(1)
-      server_group.create_web_service(ForwardedClientIp={"forwardHeaderName": "X-Forwarded-For", "forwardClientIP": True}, Name=WebService, update=False) 
+      # upload dummy cert        
+      ttooSrv = server_group.create_web_service(ForwardedClientIp={"forwardHeaderName": "X-Forwarded-For", "forwardClientIP": True}, Name=WebService, update=False) 
+      if SslKeyName is None:
+        ttooSrv.upload_ssl_certificate(SslKeyName='prometheus',Private=self.DummyKey,Certificate=self.DummyPem)
+      else: # SslKeyName is not None, so we also need Key and Pem
+        if CertKey is None or CertPem is None:
+          # error this should not happen
+          print('In mx.create_aws_krp_rule - since SslKeyName is not None, CertKey and CertPem cannot be None either!')
+        else:
+          ttooSrv.upload_ssl_certificate(SslKeyName=CertKey,Private=CertKey,Certificate=CertPem)
     k = 0
     while(True):
         if(self.get_gatewaygroup(GatewayGroup) != None):
             KrpRule._create_krp_rule(connection=self,WebService=WebService,ServerGroup=ServerGroup,Site=Site,GatewayGroup=GatewayGroup,Alias=Alias,GatewayPorts=GatewayPorts,ServerCertificate=None,ClientAuthenticationAuthorities=None,OutboundRules=OutboundRules,Name=Name,update=Update)
             break
         else:
-            time.sleep(10)   
+            time.sleep(10)  
+            k = k + 10
             if k >= 600: # break after 100 minutes
               break 
 
@@ -1108,12 +1121,9 @@ class MxConnection(object):
         self.clone_server_group(sg, ttooSg, gwGroup)
 
   def clone_server_group(self,fromSg, ttooSg, gwGroup):
-    # dummy key/cert -> replace w/ your own
-    key = '-----BEGIN RSA PRIVATE KEY-----\nMIIEogIBAAKCAQEAwzK+CexdGYo2vGyYZ7D77TUao3bGkrAhc3EAkL8Kb652GfKN\nVvmGf+P6jGyAKOtFNmkoyTbfrVjiLzIXwtmY/dvwsQd9ILQSVBALdbNXuKOBPCjX\n2UhHRoUP+dfLxsj6XJAXZT41Zo95kOW5o/JOMTLExvMBl2riKf5XFNYWBMNezoQO\nIxny1FkHn35RtxjF2ZEZaLTU8l8+PPl0Ih6eMCDhB78ipidKsTIuM+yR8aDptjHU\nOj195WwAvhZNktFiU5mEs88y+m3Zr3z/u9b8Od8NqZvATbJd+22xutRodXoWZNXf\nY1IkqpdmJXfP5zWv+07tVdfrrWP8W/DbtUAL4wIDAQABAoIBADzipPg/a8K9o9ke\nHmOphss0lzyJneK/YY+6nayIil7PkjMBvyhz6IoXuFz4svkQeaRBJOGuZhKR+Osz\nusmiSeBVLDxr05HR2S2zW3+5ExGanoL/UmSJ8QGEG7mYoA0/PyiEIWgJAWseMZMK\ntN74g39BELPltIdgZW8n0E3FgVS2d2WYGXjXsfdybFI1qYzqaKLKBz0I1R47bTYI\npB+kzti/61CAMkIagmm2UUk0Pr3MGmikGI+YMAsqPUjCcPk8OGpU5xhY6Tt++W1j\n6V8C5gyzxyD7bm3nBctpstxUpmAdEF9zY1+uvk+xt6QhKLFEQAww5RmMbx5MZLA4\nmAtxIRECgYEA/OZkArPrTlnL70MyAEAiNa+RipOJAsaJ7+jzXWTMU+rwt8WJpQwN\nLK3gPkKDcz6Y2Q655QORD7clcQ98gv6ismLGsUBw1NxhH6ybKjN+vPQAyQYzcOJK\naT6w33j16DyFvCMBing69TAmhqu2wkT+7PDe8e7ntD9Y49UQYM7IUm8CgYEAxZdI\nDjpLYr4SUfwLc2ukhDoYR0liy8vMWKd0l4ZiA16Gi6+eObjmSiRfTLIy/sO6F8IP\nwEfFWy24l5v4OElUHG9kU/+g+LL5NC7yewDKMgDXogbvZKrUou4V4hYYEuj89mPy\nGgVJp3hv1E6J9zydFdbBN3U+53jrbLm0hSs7B80CgYBTPnLFAPv/OkeKZg/bTUD1\ncujxOEbtBvT4ZzFUGI25QagilX8NOL5Nap5ZYANst7oQGGzQGTByf9JvOK2/YJml\nJiZIyfFZ34CIsIQSjAi3oYlwof3ktlfP9La7mFE5NFLA7rTfI1wkwMito2/w2k0f\nKNn5wK28Au37cHKHqwj9OQKBgAEwGaTMQOvFDMMlasQ033ZUCxVSoZ9sCDx4NUE7\n85blmJV6Zs8eB3Rmp5QEdj4F2zaNWh7jz5Huwm9W5rUf67uIB+hhXwxftxPTPG30\n4UJPsvwsYoAObtzT5ZnIXDiw4eRxUWFKqtiw5qs2FapA2Qjqk5rLv6cQmQm8TBOI\n4P/5AoGAOeRnlQIYRrzJqmexmLE+79DMvwTpYeH2AjHBik3zcM0oAncYyIudvGNX\nUDDpvKWc/HnThs7NIX64+xKVzMiiG22RCE3PtnUlwQP8H+2UwESui5k9bybwAp0f\nzdr+PU31Oqe0mIK1ru05o+39BLMANbl0Mq3JtW2e5lObv9a9do4=\n-----END RSA PRIVATE KEY-----\n'
-    pem = '-----BEGIN CERTIFICATE-----\nMIIDMzCCAhugAwIBAgIJALcqMWys6AJWMA0GCSqGSIb3DQEBBQUAMDAxLjAsBgNV\nBAMMJWRpcmVjdC1jb25uZWN0LXByb21ldGhldXMuZXhhbXBsZS5jb20wHhcNMTkx\nMDAxMDgzMTIyWhcNMjkwOTI4MDgzMTIyWjAwMS4wLAYDVQQDDCVkaXJlY3QtY29u\nbmVjdC1wcm9tZXRoZXVzLmV4YW1wbGUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC\nAQ8AMIIBCgKCAQEAwzK+CexdGYo2vGyYZ7D77TUao3bGkrAhc3EAkL8Kb652GfKN\nVvmGf+P6jGyAKOtFNmkoyTbfrVjiLzIXwtmY/dvwsQd9ILQSVBALdbNXuKOBPCjX\n2UhHRoUP+dfLxsj6XJAXZT41Zo95kOW5o/JOMTLExvMBl2riKf5XFNYWBMNezoQO\nIxny1FkHn35RtxjF2ZEZaLTU8l8+PPl0Ih6eMCDhB78ipidKsTIuM+yR8aDptjHU\nOj195WwAvhZNktFiU5mEs88y+m3Zr3z/u9b8Od8NqZvATbJd+22xutRodXoWZNXf\nY1IkqpdmJXfP5zWv+07tVdfrrWP8W/DbtUAL4wIDAQABo1AwTjAdBgNVHQ4EFgQU\nMeDvozVnvcr5SuvK4u05Uli1yegwHwYDVR0jBBgwFoAUMeDvozVnvcr5SuvK4u05\nUli1yegwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAtlPPZlPwlnb0\nofYpEY0VQn8RIwtw64TVB1Vz78IVPJuNjhFcmaDxghXrsCLLBcvrMGjNyGBozhKY\nW9x66Mw7qVO5/ICtz4JLk4pTYDm2Fyoew8cI5GvPdpQu7LEnisu1Fh2ngrY4XL8S\nqSxxo8RWasxZSRy1HXKRwR6ppE8FU2tzQim5M+ZYgcefEPn55J18SbB62+ZvdY3m\nAl9IHgiaTmseHYl2wmyLJU/viySGRd7Z4NOWmPapktW2ERQs+Tb1pq8zMI4GtzRk\nWT7qNGJVKXZsXABlLzBK2SjaTTkaxvEEhtiAXrS3k/4SoTgzdI9OEHgL36OB0qao\n1ZZntXikxg==\n-----END CERTIFICATE-----\n'
     for fromSrv in fromSg.get_all_web_services():
       ttooSrv = ttooSg.create_web_service(Name=fromSrv.Name)
-      ttooSrv.upload_ssl_certificate(SslKeyName='prometheus',Private=key,Certificate=pem)
+      ttooSrv.upload_ssl_certificate(SslKeyName='prometheus',Private=self.DummyKey,Certificate=self.DummyPem)
       for krpRule in fromSrv.get_all_krp_rules():
           ttooSrv.create_krp_rule(\
                           GatewayGroup=gwGroup,\
