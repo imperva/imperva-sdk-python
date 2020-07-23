@@ -135,6 +135,7 @@ def CurateApplyTo(mx, http1xProtPol):
     AddOperationToListDict(http1xProtPol['applyTo'])
     return http1xProtPol
 
+# example:    response = self._mx_api('GET', '/conf/systemDefinitions/httpProxy'); so urlBase starts w/ /conf
 def GetPolicy(mx,urlBase,polName):
   return mx._mx_api('GET', urlBase + '/%s' % polName)
 

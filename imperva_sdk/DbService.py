@@ -97,12 +97,11 @@ class DbService(MxObject):
   @staticmethod  
   def _get_all_db_services(connection, ServerGroup=None, Site=None):
     validate_string(Site=Site, ServerGroup=ServerGroup)
+    res = connection._mx_api('GET', '/conf/dbServices/%s/%s' % (Site, ServerGroup))
     try:
-      res = connection._mx_api('GET', '/conf/dbServices/%s/%s' % (Site, ServerGroup))
       names = res['db-services']
     except:
-      return []
-      #raise MxException("Failed getting DB services")
+      raise MxException("Failed getting DB services")
     dbss = []
     for name in names:
       dbss.append(connection.get_db_service(Name=name, Site=Site, ServerGroup=ServerGroup))

@@ -55,7 +55,7 @@ class GatewayGroup(MxObject):
       else:
           return None
     except:
-      return None
+      raise MxException("Failed getting all gateways")
 
   @staticmethod
   def _get_all_gatewaygroups(connection,IsCloud):
@@ -72,8 +72,6 @@ class GatewayGroup(MxObject):
     gatewaygroups = []
     for gatewaygroup_name in gatewaygroup_names:
       gatewaygroups.append(GatewayGroup._get_gatewaygroup(connection=connection, Name=gatewaygroup_name))
-    if IsCloud:
-      assert(len(gatewaygroups) == 1) # if on Cloud and on dest setup we don't have one and only one GW Group, we have an error condition  
     return gatewaygroups
 
   @staticmethod
@@ -87,9 +85,9 @@ class GatewayGroup(MxObject):
       gatewaygroup_name = res['gatewayGroupName']
       return GatewayGroup(connection=connection, Name=gatewaygroup_name, GWSettings=res)
     except:
-      return None
-  @staticmethod
+      raise MxException("Failed getting gateway group")
 
+  @staticmethod
   def _create_gatewaygroup(connection, Name=None, gatewayPlatform=None, gatewayMode=None, failMode=None, overloadPolicy=None, Overwrite=None):
     validate_string(Name=Name)
     validate_string(Name=gatewayPlatform)
@@ -101,25 +99,27 @@ class GatewayGroup(MxObject):
           GatewayGroup._delete_gatewaygroup(connection, Name=Name)
       else:
           return gatewaygroup_exists
-    else:
-      body = {
-        'gatewayPlatform': gatewayPlatform,
-        'gatewayMode': gatewayMode,
-        'failMode': failMode
-      }
-      if overloadPolicy != None:
-          body['overloadPolicy']= overloadPolicy
-      connection._mx_api('POST', '/conf/gatewayGroups/%s' % Name, data=json.dumps(body))
-      return GatewayGroup._get_gatewaygroup(connection=connection, Name=Name)
-  @staticmethod
+    body = {
+      'gatewayPlatform': gatewayPlatform,
+      'gatewayMode': gatewayMode,
+      'failMode': failMode
+    }
+    if overloadPolicy != None:
+        body['overloadPolicy']= overloadPolicy
+    connection._mx_api('POST', '/conf/gatewayGroups/%s' % Name, data=json.dumps(body))
+    return GatewayGroup._get_gatewaygroup(connection=connection, Name=Name)
 
+  @staticmethod
   def _delete_gatewaygroup(connection, Name=None):
     validate_string(Name=Name)
     gatewaygroup_exists = connection.get_gatewaygroup(Name=Name)
     if gatewaygroup_exists:
-      connection._mx_api('DELETE', '/conf/gatewayGroups/%s' % Name)
-      connection._instances.remove(gatewaygroup_exists)
-      del gatewaygroup_exists
+      try:
+        connection._mx_api('DELETE', '/conf/gatewayGroups/%s' % Name)
+        connection._instances.remove(gatewaygroup_exists)
+        del gatewaygroup_exists
+      except:
+        raise MxException("Failed deleting gateway group. Please, check and delete any related objects, such as attached gateways, RP rules, etc.")
     else:
       raise MxException("Gateway group '%s' does not exist" % Name)
     return True
