@@ -93,11 +93,22 @@ class Site(MxObject):
     validate_string(Name=Name)
     site_exists = connection.get_site(Name=Name)
     if site_exists:
+      sgs = connection.get_all_server_groups(Site=site_exists.Name)
+      if len(sgs) != 0:
+        for sg in sgs:
+          connection.delete_server_group(Name=sg.Name,Site=site_exists.Name)
       connection._mx_api('DELETE', '/conf/sites/%s' % Name)
       connection._instances.remove(site_exists)
       del site_exists
     else:
       raise MxException("Site '%s' does not exist" % Name)
+    return True
+  @staticmethod
+  def _delete_all_sites(connection, Name=None):
+    # except the default one which cannot be deleted
+    for site in connection.get_all_sites():
+      if site.Name != 'Default Site':
+        connection.delete_site(Name=site.Name)
     return True
   @staticmethod
   def _update_site(connection, Name=None, Parameter=None, Value=None):

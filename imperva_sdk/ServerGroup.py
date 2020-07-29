@@ -5,7 +5,7 @@ from imperva_sdk.core import *
 
 class ServerGroup(MxObject):
   ''' 
-  MX Server Group Class 
+  MX Server Group Class Updated
 
   >>> sg = site.create_server_group("my server group")
   >>> sg.OperationMode = 'active'
@@ -157,6 +157,15 @@ class ServerGroup(MxObject):
   def _delete_server_group(connection, Name=None, Site=None):
     validate_string(Name=Name, Site=Site)
     sg = connection.get_server_group(Name=Name, Site=Site)
+    if sg:
+      webServices = sg.get_all_web_services()
+      if len(webServices) != 0:
+        for webService in webServices:
+          connection.delete_web_service(Name=webService.Name, ServerGroup=sg.Name, Site=Site)
+      dabServices = sg.get_all_db_services()
+      if len(dabServices) != 0:
+        for dabService in dabServices:
+          connection.delete_db_service(Name=dabService.Name, ServerGroup=sg.Name, Site=Site)         
     if sg:
       connection._mx_api('DELETE', '/conf/serverGroups/%s/%s' % (Site, Name))
       connection._instances.remove(sg)

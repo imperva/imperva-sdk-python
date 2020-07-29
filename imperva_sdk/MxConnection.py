@@ -8,6 +8,7 @@ import time
 from imperva_sdk.core                           import *
 from imperva_sdk.Site                           import *
 from imperva_sdk.ServerGroup                    import *
+from imperva_sdk.GatewayGroup                   import *
 from imperva_sdk.WebService                     import *
 from imperva_sdk.WebApplication                 import *
 from imperva_sdk.DbService                      import *
@@ -114,6 +115,9 @@ class MxConnection(object):
     self.__Port = Port
     self.__Debug = Debug
     self.__IsAuthenticated = False
+    # dummy key/cert -> replace w/ your own
+    self.DummyKey = '-----BEGIN RSA PRIVATE KEY-----\nMIIEogIBAAKCAQEAwzK+CexdGYo2vGyYZ7D77TUao3bGkrAhc3EAkL8Kb652GfKN\nVvmGf+P6jGyAKOtFNmkoyTbfrVjiLzIXwtmY/dvwsQd9ILQSVBALdbNXuKOBPCjX\n2UhHRoUP+dfLxsj6XJAXZT41Zo95kOW5o/JOMTLExvMBl2riKf5XFNYWBMNezoQO\nIxny1FkHn35RtxjF2ZEZaLTU8l8+PPl0Ih6eMCDhB78ipidKsTIuM+yR8aDptjHU\nOj195WwAvhZNktFiU5mEs88y+m3Zr3z/u9b8Od8NqZvATbJd+22xutRodXoWZNXf\nY1IkqpdmJXfP5zWv+07tVdfrrWP8W/DbtUAL4wIDAQABAoIBADzipPg/a8K9o9ke\nHmOphss0lzyJneK/YY+6nayIil7PkjMBvyhz6IoXuFz4svkQeaRBJOGuZhKR+Osz\nusmiSeBVLDxr05HR2S2zW3+5ExGanoL/UmSJ8QGEG7mYoA0/PyiEIWgJAWseMZMK\ntN74g39BELPltIdgZW8n0E3FgVS2d2WYGXjXsfdybFI1qYzqaKLKBz0I1R47bTYI\npB+kzti/61CAMkIagmm2UUk0Pr3MGmikGI+YMAsqPUjCcPk8OGpU5xhY6Tt++W1j\n6V8C5gyzxyD7bm3nBctpstxUpmAdEF9zY1+uvk+xt6QhKLFEQAww5RmMbx5MZLA4\nmAtxIRECgYEA/OZkArPrTlnL70MyAEAiNa+RipOJAsaJ7+jzXWTMU+rwt8WJpQwN\nLK3gPkKDcz6Y2Q655QORD7clcQ98gv6ismLGsUBw1NxhH6ybKjN+vPQAyQYzcOJK\naT6w33j16DyFvCMBing69TAmhqu2wkT+7PDe8e7ntD9Y49UQYM7IUm8CgYEAxZdI\nDjpLYr4SUfwLc2ukhDoYR0liy8vMWKd0l4ZiA16Gi6+eObjmSiRfTLIy/sO6F8IP\nwEfFWy24l5v4OElUHG9kU/+g+LL5NC7yewDKMgDXogbvZKrUou4V4hYYEuj89mPy\nGgVJp3hv1E6J9zydFdbBN3U+53jrbLm0hSs7B80CgYBTPnLFAPv/OkeKZg/bTUD1\ncujxOEbtBvT4ZzFUGI25QagilX8NOL5Nap5ZYANst7oQGGzQGTByf9JvOK2/YJml\nJiZIyfFZ34CIsIQSjAi3oYlwof3ktlfP9La7mFE5NFLA7rTfI1wkwMito2/w2k0f\nKNn5wK28Au37cHKHqwj9OQKBgAEwGaTMQOvFDMMlasQ033ZUCxVSoZ9sCDx4NUE7\n85blmJV6Zs8eB3Rmp5QEdj4F2zaNWh7jz5Huwm9W5rUf67uIB+hhXwxftxPTPG30\n4UJPsvwsYoAObtzT5ZnIXDiw4eRxUWFKqtiw5qs2FapA2Qjqk5rLv6cQmQm8TBOI\n4P/5AoGAOeRnlQIYRrzJqmexmLE+79DMvwTpYeH2AjHBik3zcM0oAncYyIudvGNX\nUDDpvKWc/HnThs7NIX64+xKVzMiiG22RCE3PtnUlwQP8H+2UwESui5k9bybwAp0f\nzdr+PU31Oqe0mIK1ru05o+39BLMANbl0Mq3JtW2e5lObv9a9do4=\n-----END RSA PRIVATE KEY-----\n'
+    self.DummyPem = '-----BEGIN CERTIFICATE-----\nMIIDMzCCAhugAwIBAgIJALcqMWys6AJWMA0GCSqGSIb3DQEBBQUAMDAxLjAsBgNV\nBAMMJWRpcmVjdC1jb25uZWN0LXByb21ldGhldXMuZXhhbXBsZS5jb20wHhcNMTkx\nMDAxMDgzMTIyWhcNMjkwOTI4MDgzMTIyWjAwMS4wLAYDVQQDDCVkaXJlY3QtY29u\nbmVjdC1wcm9tZXRoZXVzLmV4YW1wbGUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC\nAQ8AMIIBCgKCAQEAwzK+CexdGYo2vGyYZ7D77TUao3bGkrAhc3EAkL8Kb652GfKN\nVvmGf+P6jGyAKOtFNmkoyTbfrVjiLzIXwtmY/dvwsQd9ILQSVBALdbNXuKOBPCjX\n2UhHRoUP+dfLxsj6XJAXZT41Zo95kOW5o/JOMTLExvMBl2riKf5XFNYWBMNezoQO\nIxny1FkHn35RtxjF2ZEZaLTU8l8+PPl0Ih6eMCDhB78ipidKsTIuM+yR8aDptjHU\nOj195WwAvhZNktFiU5mEs88y+m3Zr3z/u9b8Od8NqZvATbJd+22xutRodXoWZNXf\nY1IkqpdmJXfP5zWv+07tVdfrrWP8W/DbtUAL4wIDAQABo1AwTjAdBgNVHQ4EFgQU\nMeDvozVnvcr5SuvK4u05Uli1yegwHwYDVR0jBBgwFoAUMeDvozVnvcr5SuvK4u05\nUli1yegwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAtlPPZlPwlnb0\nofYpEY0VQn8RIwtw64TVB1Vz78IVPJuNjhFcmaDxghXrsCLLBcvrMGjNyGBozhKY\nW9x66Mw7qVO5/ICtz4JLk4pTYDm2Fyoew8cI5GvPdpQu7LEnisu1Fh2ngrY4XL8S\nqSxxo8RWasxZSRy1HXKRwR6ppE8FU2tzQim5M+ZYgcefEPn55J18SbB62+ZvdY3m\nAl9IHgiaTmseHYl2wmyLJU/viySGRd7Z4NOWmPapktW2ERQs+Tb1pq8zMI4GtzRk\nWT7qNGJVKXZsXABlLzBK2SjaTTkaxvEEhtiAXrS3k/4SoTgzdI9OEHgL36OB0qao\n1ZZntXikxg==\n-----END CERTIFICATE-----\n'    
     auth_string = '%s:%s' % (Username, Password)
     self.__Headers = {
       "Authorization": 'Basic %s' % base64.b64encode(auth_string.encode('utf-8')).decode('utf-8'),
@@ -292,6 +296,13 @@ class MxConnection(object):
     '''
     return Site._delete_site(connection=self, Name=Name)
 
+  def delete_all_sites(self):
+    '''
+    Deletes all the sites, excluding default one which cannot be deleted.
+    If no (custom) site exists, nothing happens.
+    '''
+    return Site._delete_all_sites(connection=self)
+  
   def get_all_server_groups(self, Site=None):
     '''
     :type Site: string
@@ -339,6 +350,30 @@ class MxConnection(object):
     :param Site: Site name
     '''
     return ServerGroup._delete_server_group(connection=self, Name=Name, Site=Site)
+
+  def create_gatewaygroup(self,Name=None, gatewayPlatform=None, gatewayMode=None, failMode=None, overloadPolicy=None, Overwrite=None):
+    '''
+    Set GatewayGroup
+    '''
+    return GatewayGroup._create_gatewaygroup(connection=self,Name=Name, gatewayPlatform=gatewayPlatform, gatewayMode=gatewayMode, failMode=failMode, overloadPolicy=overloadPolicy, Overwrite=Overwrite)
+
+  def get_gatewaygroup(self,Name=None):
+    '''
+    Get GatewayGroup
+    '''
+    return GatewayGroup._get_gatewaygroup(connection=self,Name=Name)
+
+  def get_all_gateways(self,gatewayGroup=None):
+    '''
+    Get All Gateways in a GatewayGroup
+    '''
+    return GatewayGroup._get_all_gateways(connection=self,gatewayGroup=gatewayGroup)
+
+  def get_all_gatewaygroups(self,IsCloud=None):
+    '''
+    Get All GatewayGroups
+    '''
+    return GatewayGroup._get_all_gatewaygroups(connection=self,IsCloud=IsCloud)
 
   def get_all_web_services(self, ServerGroup=None, Site=None):
     '''
@@ -645,6 +680,41 @@ class MxConnection(object):
     '''
     return KrpRule._create_krp_rule(connection=self, ServerGroup=ServerGroup, Site=Site, WebService=WebService, GatewayGroup=GatewayGroup, Alias=Alias, GatewayPorts=GatewayPorts, ServerCertificate=ServerCertificate, ClientAuthenticationAuthorities=ClientAuthenticationAuthorities, OutboundRules=OutboundRules, Name=None, update=update)
 
+  def create_aws_krp_rule(self, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, GatewayPorts=None, Alias=None, Priority=None, InternalIpHost=None, ExternalHost=None,UrlPrefix=None,ServerPort=None, Refresh=True,ServerCertificate=None,ClientAuthenticationAuthorities=None,Name=None,Update=False, SslKeyName=None, CertKey=None, CertPem=None):
+    '''
+    Please, see FR Case 00485106: Decouple Gateway Group Alias from the presence of a Gateway in a Gateway Group
+    For this reason, we first need to monitor for existence of a specific Gateway Group (containing at least a Gateway)
+    Once that exists, we can create the KRP rule (which is using the GW associated Label)
+    '''
+    OutboundRules=[{'priority': Priority, 'internalIpHost': InternalIpHost, 'serverPort': ServerPort, 'externalHost': ExternalHost, 'urlPrefix': UrlPrefix}]
+    #OutboundRules=[{'priority': Priority, 'internalIpHost': InternalIpHost, 'serverPort': ServerPort}]
+    if Refresh:
+      self.delete_all_sites() # this should delete sites, their SGs, their Services, their KrpRules
+      time.sleep(1)
+      site = self.create_site(Name = Site, update = False)
+      server_group = site.create_server_group(ServerGroup, update=False, OperationMode='active')    
+      time.sleep(1)
+      # upload dummy cert        
+      ttooSrv = server_group.create_web_service(ForwardedClientIp={"forwardHeaderName": "X-Forwarded-For", "forwardClientIP": True}, Name=WebService, update=False) 
+      if SslKeyName is None:
+        ttooSrv.upload_ssl_certificate(SslKeyName='prometheus',Private=self.DummyKey,Certificate=self.DummyPem)
+      else: # SslKeyName is not None, so we also need Key and Pem
+        if CertKey is None or CertPem is None:
+          # error this should not happen
+          print('In mx.create_aws_krp_rule - since SslKeyName is not None, CertKey and CertPem cannot be None either!')
+        else:
+          ttooSrv.upload_ssl_certificate(SslKeyName=CertKey,Private=CertKey,Certificate=CertPem)
+    k = 0
+    while(True):
+        if(self.get_gatewaygroup(GatewayGroup) != None):
+            KrpRule._create_krp_rule(connection=self,WebService=WebService,ServerGroup=ServerGroup,Site=Site,GatewayGroup=GatewayGroup,Alias=Alias,GatewayPorts=GatewayPorts,ServerCertificate=None,ClientAuthenticationAuthorities=None,OutboundRules=OutboundRules,Name=Name,update=Update)
+            break
+        else:
+            time.sleep(10)  
+            k = k + 10
+            if k >= 600: # break after 100 minutes
+              break 
+
   def delete_krp_rule(self, WebService=None, ServerGroup=None, Site=None, GatewayGroup=None, Alias=None, GatewayPorts=[]):
     '''
     Deletes KRP rule.
@@ -929,7 +999,152 @@ class MxConnection(object):
     :param Name: Policy name.
     '''
     return WebServiceCustomPolicy._delete_web_service_custom_policy(connection=self, Name=Name)
+  
+  def delete_all_web_service_custom_policies(self, SkipList=None):
+    '''
+    Delete all custom web service policies
+    '''
+    return WebServiceCustomPolicy._delete_all_web_service_custom_policies(connection=self, SkipList=SkipList)
+
+  def clone_web_service_custom_policy(self, Name=None,NamePrefix=None,Overwrite=False,Enabled=None,Action=None,FollowedAction=None,ApplyTo=None,Verbose=False):
+    '''
+    Clone policy. If defined, overwrite Enabled, FollowedAction, ApplyTo, etc.
+    '''
+    return WebServiceCustomPolicy._clone_web_service_custom_policy(connection=self,Name=Name,NamePrefix=NamePrefix, Overwrite=Overwrite, Enabled=Enabled, Action=Action, FollowedAction=FollowedAction, ApplyTo=ApplyTo, Verbose=Verbose)
+
+  def clone_all_web_service_custom_policies(self,NamePrefix=None,Overwrite=False,Enabled=None,Action=None,FollowedAction=None,ApplyTo=None,DefaultOnly=True,Skip=None):
+    '''
+    Clone all policies. If defined, overwrite Enabled, FollowedAction, ApplyTo, etc.
+    '''
+    return WebServiceCustomPolicy._clone_all_web_service_custom_policies(connection=self,NamePrefix=NamePrefix, Overwrite=Overwrite, Enabled=Enabled, Action=Action, FollowedAction=FollowedAction, ApplyTo=ApplyTo,DefaultOnly=DefaultOnly)
+
+  # Utility Functions
+
+  def clone_mx_sites(self, fromMX):
+    ttooMX = self
+    # clone action sets
+    self.clone_action_sets(fromMX)
+    # duplicate sites
+    for site in fromMX.get_all_sites():
+      gwGroups = ttooMX.get_all_gatewaygroups(IsCloud=True)
+      if site.Name != 'Default Site':
+          if ttooMX.get_site(Name=site.Name) != None:
+              ttooMX.delete_site(Name=site.Name)
+          toSite = ttooMX.create_site(Name=site.Name)
+      else:
+          toSite = ttooMX.get_site(Name='Default Site')
+      # now, we should have the site; default should always be there
+      self.clone_site_config(site,toSite, gwGroups[0].Name)
+    # clone other types of policies
+    self.clone_external_web_service_custom_policies(fromMX)
+    self.clone_external_http_protocol_signatures_policies(fromMX)
+    self.clone_http1x_protocol_validation(fromMX)
+    self.clone_http2_protocol_validation(fromMX)
+
+  def clone_external_web_service_custom_policies(self, fromMX):
+    ttooMX = self
+    toAllServices = ttooMX.get_all_services()
+    for fromPol in fromMX.get_all_web_service_custom_policies():
+        toPol = ttooMX.get_web_service_custom_policy(Name=fromPol.Name)
+        try:
+            if toPol == None:
+                # a new policy needs to be created
+                ttooMX.create_web_service_custom_policy(\
+                            Name=fromPol.Name,Enabled=fromPol.Enabled,Severity=fromPol.Severity,Action=fromPol.Action,FollowedAction=fromPol.FollowedAction,ApplyTo=toAllServices,OneAlertPerSession=fromPol.OneAlertPerSession,MatchCriteria=fromPol.MatchCriteria)
+            else:
+                # the below 4 are for ADC policies
+                toPol.Enabled = fromPol.Enabled
+                toPol.FollowedAction = fromPol.FollowedAction
+                toPol.ApplyTo = toAllServices
+                toPol.Severity = fromPol.Severity
+                toPol.OneAlertPerSession = fromPol.OneAlertPerSession
+                if not toPol.SendToCd:
+                    # the below is for non ADC policies:
+                    toPol.MatchCriteria = fromPol.MatchCriteria              
+        except Exception as e:
+            print("Error applying " + fromPol.Name + " - ", e)
+            print("Try applying a custom policy with the same defintions ... ")
+            try: 
+                ttooMX.create_web_service_custom_policy(\
+                            Name=fromPol.Name + " Custom",Enabled=fromPol.Enabled,Severity=fromPol.Severity,Action=fromPol.Action,FollowedAction=fromPol.FollowedAction,ApplyTo=toAllServices,OneAlertPerSession=fromPol.OneAlertPerSession,MatchCriteria=fromPol.MatchCriteria,update=True)
+            except Exception as e:
+                print("This failed too ... manual oversight required. Moving on to next one ... ", e)
+  
+  def clone_external_http_protocol_signatures_policies(self,fromMX,skipPolicies=['legacy','emergency']):
+    ttooMX = self
+    toAllServices = ttooMX.get_all_services()      
+    for fromPol in fromMX.get_all_http_protocol_signatures_policies():
+      if skipPolicies is not None and fromPol.Name.lower() in skipPolicies:
+        continue
+      toPol = ttooMX.get_web_service_custom_policy(Name=fromPol.Name)
+      try:
+          if toPol == None:
+              ttooMX.create_http_protocol_signatures_policy(Name=fromPol.Name,ApplyTo=toAllServices,Rules=fromPol.Rules,update=True)
+      except Exception as e:
+          print("Error applying " + fromPol.Name + " - ", e)      
+
+  def clone_http1x_protocol_validation(self,fromMX):
+    ttooMX = self
+    urlBase= '/conf/policies/security/httpProtocolPolicies'
+    polName= 'HTTP/1.x Protocol Policy'
+    fromPol = GetPolicy(fromMX,urlBase,polName)
+    if not PostPutPolicy(ttooMX,CurateApplyTo(ttooMX,fromPol),urlBase,polName):
+      PostPutPolicy(ttooMX,fromPol,urlBase,polName + ' Custom')
+
+  def clone_http2_protocol_validation(self,fromMX):
+    ttooMX = self    
+    urlBase= '/conf/policies/security/http2ProtocolPolicies'
+    polName= 'HTTP/2 Protocol Policy'
+    fromPol = GetPolicy(fromMX,urlBase,polName) 
+    if not PostPutPolicy(ttooMX,CurateApplyTo(ttooMX,fromPol),urlBase,polName):
+      PostPutPolicy(ttooMX,fromPol,urlBase,polName + ' Custom')      
+
+  def clone_action_sets(self, fromMX):
+    ttooMX = self
+    # Copy non-existent (or update) Followed Actions across, including w/ actions and interfaces   
+    fromMXAllActionSets = fromMX.get_all_action_sets()
+    fromActionSetNames = [actionSet.Name for actionSet in fromMXAllActionSets]
+    for fromActionSetName in fromActionSetNames:
+        fromActionSet = [actionSet for actionSet in fromMXAllActionSets if actionSet.Name == fromActionSetName][0]
+        toActionSet = ttooMX.create_action_set(Name=fromActionSetName,AsType=fromActionSet.AsType,update=True)
+        for action in fromActionSet.get_all_actions():
+            toActionSet.create_action(Name=action.Name,ActionType=action.ActionType,Protocol=action.Protocol,SyslogFacility=action.SyslogFacility,Host=action.Host,SyslogLogLevel=action.SyslogLogLevel,ActionInterface=action.ActionInterface,Message=action.Message,Port=action.Port,update=True)
+
     
+  def clone_site_config(self,fromSite,ttooSite, gwGroup):
+    for sg in fromSite.get_all_server_groups():
+        # the SG is not present, as we're on a brand new site. Create the SG
+        if ttooSite.get_server_group(Name=sg.Name):
+            ttooSite.delete_server_group(Name=sg.Name)
+        ttooSg = ttooSite.create_server_group(Name=sg.Name,OperationMode='active')
+        # we have the new sg ... clone setup:
+        self.clone_server_group(sg, ttooSg, gwGroup)
+
+  def clone_server_group(self,fromSg, ttooSg, gwGroup):
+    for fromSrv in fromSg.get_all_web_services():
+      ttooSrv = ttooSg.create_web_service(Name=fromSrv.Name)
+      ttooSrv.upload_ssl_certificate(SslKeyName='prometheus',Private=self.DummyKey,Certificate=self.DummyPem)
+      for krpRule in fromSrv.get_all_krp_rules():
+          ttooSrv.create_krp_rule(\
+                          GatewayGroup=gwGroup,\
+                          Alias=krpRule.Alias,\
+                          GatewayPorts=krpRule.GatewayPorts,\
+                          ServerCertificate=krpRule.ServerCertificate,\
+                          OutboundRules=krpRule.OutboundRules,\
+                          Name=krpRule.Name,\
+                          ClientAuthenticationAuthorities=krpRule.ClientAuthenticationAuthorities,\
+                          update=True)
+
+  def get_all_services(self,Site=None):
+    '''
+    Get the MatchAll list of services to push against ApplyTo='all' or ApplyTo=Site if specified
+    '''
+    ApplyToServices = []
+    for site in self.get_all_sites():
+        for sg in site.get_all_server_groups():
+            ApplyToServices = ApplyToServices + sg.get_all_web_services()
+    return MxList(ApplyToServices)
+
   def _update_web_service_custom_policy(self, Name=None, Parameter=None, Value=None):
     return WebServiceCustomPolicy._update_web_service_custom_policy(connection=self, Name=Name, Parameter=Parameter, Value=Value)
     
@@ -2398,6 +2613,19 @@ class MxConnection(object):
     self._mx_api('PUT', '/conf/systemDefinitions/httpProxy', data=json.dumps(body))
 
     return True
+
+  def reset_password(self,Username=None,Password=None, Enabled=True, Locked=False, ReadOnly=False):
+    Authenticator = 'SecureSphere'
+    enabled  = 'true' if Enabled else 'false'
+    locked   = 'false' if not Locked else 'true'
+    readonly = 'false' if not ReadOnly else 'true'
+    validate_string(Username=Username)
+    body = {
+      'authenticator': Authenticator,
+      'password': Password
+    }
+    ret = self._mx_api('PUT','/conf/users/%s' %Username, data=json.dumps(body))
+    return ret
 
   def _set_hybrid_waf(self, Enabled=True):
     '''

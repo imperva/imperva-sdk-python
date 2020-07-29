@@ -249,7 +249,8 @@ class WebServiceCustomPolicy(MxObject):
       return obj_exists
     try:
       res = connection._mx_api('GET', '/conf/webServiceCustomPolicies/%s' % Name)
-    except:
+    except Exception as e:
+      #print('Exception occured for policy Name %s: %s' %(Name,e))
       return None
     if 'followedAction' not in res: res['followedAction'] = ''
     if 'oneAlertPerSession' not in res: res['oneAlertPerSession'] = None
@@ -321,7 +322,21 @@ class WebServiceCustomPolicy(MxObject):
       del pol
     else:
       raise MxException("Policy does not exist")
-    return True    
+    return True  
+  @staticmethod  
+  def _delete_all_web_service_custom_policies(connection, SkipList=None):
+    policies = connection.get_all_web_service_custom_policies()
+    for policy in policies:
+      skipPolicy = False
+      if SkipList != None:
+        for skipItem in SkipList:
+          if skipItem in policy.Name:
+            skipPolicy=True
+            break
+      if skipPolicy: 
+        continue # we skip this policy (useful in some cases such as ThreatRadar policies)
+      if policy.SendToCd == None: # we conclude is a custom policy 
+        connection.delete_web_service_custom_policy(policy.Name)
   @staticmethod
   def _update_web_service_custom_policy(connection, Name=None, Parameter=None, Value=None):
     if Parameter in ['enabled', 'sendToCD', 'displayResponsePage', 'oneAlertPerSession']:
@@ -336,4 +351,59 @@ class WebServiceCustomPolicy(MxObject):
     body = { Parameter: Value }
     connection._mx_api('PUT', '/conf/webServiceCustomPolicies/%s' % Name, data=json.dumps(body))
     return True
+  @staticmethod
+  def _clone_web_service_custom_policy(connection, Name=None, NamePrefix=None, Overwrite=False, Enabled=None, Action=None, FollowedAction=None, ApplyTo=None, Verbose=False):
+    validate_string(Name=Name)
+    validate_string(Name=NamePrefix)
+    if Name == None or NamePrefix == None:
+      print('Error: either Name or NamePrefix are NoneType')
+    newName = NamePrefix + ' ' + Name
+    pol = WebServiceCustomPolicy._exists(connection=connection, Name=Name)
+    if not pol:
+      pol = connection.get_web_service_custom_policy(Name=Name)
+    pol_dict = dict(pol)
+    pol_dict['Name'] = newName
+    if Overwrite:
+      newPol = connection.get_web_service_custom_policy(newName)
+      if newPol:
+        connection._mx_api('DELETE', '/conf/webServiceCustomPolicies/%s' % newName)
+        connection._instances.remove(newPol)
+        del newPol
+    if Enabled != None:
+      pol_dict['Enabled'] = Enabled
+    if Action != None:
+      pol_dict['Action'] = Action # 'block' or 'none'
+    if FollowedAction != None:
+      pol_dict['FollowedAction'] = FollowedAction
+    if ApplyTo != None:
+      pol_dict['ApplyTo'] = ApplyTo
+    p = connection.create_web_service_custom_policy(**pol_dict)
+    if Verbose:
+      print('cloning policy: %s' %Name + ' to policy: %s' %newName)
+    del pol_dict
+    return p
+  @staticmethod
+  def _clone_all_web_service_custom_policies(connection, NamePrefix=None, Overwrite=False, Enabled=None, Action=None, FollowedAction=None, ApplyTo=None, DefaultOnly=True,SkipList=None):
+    policies = connection.get_all_web_service_custom_policies()
+    if ApplyTo != None:
+      if type(ApplyTo) == str and ApplyTo == 'all':
+        ApplyTo = connection.get_all_services()    
+    for policy in policies:
+      skipPolicy = False
+      if SkipList != None:
+        for skipItem in SkipList:
+          if skipItem in policy.Name:
+            skipPolicy=True
+            break
+      if skipPolicy: 
+        continue # we skip this policy (useful in some cases such as ThreatRadar policies)
+      clone = False
+      if DefaultOnly:
+        if policy.SendToCd != None: # is it a default policy? 
+          clone = True
+      else:
+        clone = True
+      if clone:
+        connection.clone_web_service_custom_policy(Name=policy.Name,NamePrefix=NamePrefix,Overwrite=Overwrite,Enabled=Enabled,Action=Action,FollowedAction=FollowedAction,ApplyTo=ApplyTo)
 
+      
