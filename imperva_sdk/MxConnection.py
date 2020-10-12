@@ -116,8 +116,8 @@ class MxConnection(object):
     self.__Debug = Debug
     self.__IsAuthenticated = False
     # dummy key/cert -> replace w/ your own
-    self.DummyKey = '-----BEGIN RSA PRIVATE KEY-----\n-----END RSA PRIVATE KEY-----\n'
-    self.DummyPem = '-----BEGIN CERTIFICATE-----\n-----END CERTIFICATE-----\n'
+    self.DummyKey = ''
+    self.DummyPem = ''
     auth_string = '%s:%s' % (Username, Password)
     self.__Headers = {
       "Authorization": 'Basic %s' % base64.b64encode(auth_string.encode('utf-8')).decode('utf-8'),
