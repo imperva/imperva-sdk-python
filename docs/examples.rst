@@ -268,6 +268,8 @@ Example 5 - Swagger to Profile
 
 In v12.3 SecureSphere added APIs to manage the application profile. `imperva_sdk` added support for these APIs in the WebApplication object. In addition, `imperva_sdk` provides the ability to apply a Swagger JSON as a SecureSphere profile. Many API applications can automatically generate their schema in Swagger format (URL paths, allowed methods, parameters...) - this `imperva_sdk` function enables you to automatically update your profile with a Swagger representation.
 
+.. note:: If Your Swagger file defines path parameters (Most REST applications do), then you need to first execute the Swagger to Plugins as described in Example 6. The defined plugins will convert path parameters into query parameters or the sake of profile validation only. The actual traffic, which is sent to the application is of course not affected.
+
 ::
 
   import imperva_sdk
@@ -312,7 +314,7 @@ In v13.2 SecureSphere added APIs to manage plugin definitions. `imperva_sdk` add
   srv = mx.get_web_service(Name="ws", Site="site", ServerGroup="sg")
 
   # Generate plugins and associate to Web service
-  srv.update_all_plugins(swagger_json_list=[app1_swagger_json, app2_swagger_json])
+  srv.update_all_plugins(SwaggerJsonList=[app1_swagger_json, app2_swagger_json])
 
   # Log out
   mx.logout()
