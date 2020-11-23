@@ -37,7 +37,7 @@ imperva-sdk downloads:
 =======  ===============================  ==============================================================
 Version  Development Status               Download
 =======  ===============================  ==============================================================
-0.2.1    Latest (July 2020)               :download:`imperva-sdk-latest-wip.tar.gz <../../imperva.github.io/versions/imperva-sdk-latest-wip.tar.gz>`
+0.2.1    Latest (November 2020)               :download:`imperva-sdk-latest-wip.tar.gz <../../imperva.github.io/versions/imperva-sdk-latest-wip.tar.gz>`
 0.2.0    Latest stable (July 2019)        :download:`imperva-sdk-latest.tar.gz <../../imperva.github.io/versions/imperva-sdk-latest.tar.gz>`
 0.2.0    Generally Available              :download:`imperva-sdk-0.2.0.tar.gz <../../imperva.github.io/versions/imperva-sdk-0.2.0.tar.gz>`
 0.1.9    Beta                             :download:`imperva-sdk-0.1.9.tar.gz <../../imperva.github.io/versions/imperva-sdk-0.1.9.tar.gz>`
