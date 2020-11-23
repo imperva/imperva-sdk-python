@@ -14,7 +14,7 @@ class SwaggerJsonFile(object):
     curly_vars_pattern = re.compile(r'[^{]*?{([^}]+?)}')
 
     def __init__(self, file_path=None):
-        if  not file_path or type(file_path) is not str:
+        if not file_path or type(file_path) is not str:
             raise RuntimeError("A string FilePath argument must be passed")
         self.file_path = file_path
         with open(file_path, 'r') as fd:
@@ -31,7 +31,7 @@ class SwaggerJsonFile(object):
             raise RuntimeError("Unsupported swagger version: {}. Currently, support 2.0 and 3.0.x only.".format(self.swagger_version))
         self.open_api = self.swagger_version != "2.0"
         SwaggerJsonFile.parsed_json_files[file_path] = self.swagger_dict
-        SwaggerJsonFile.__recursive_traverse(self.swagger_dict, 0, file_path)
+        SwaggerJsonFile.__recursive_traverse(self.swagger_dict, file_path, {})
 
     def __get_base_path(self):
         if "basePath" in self.swagger_dict:
@@ -119,21 +119,22 @@ class SwaggerJsonFile(object):
         return None
 
     @staticmethod
-    def __recursive_traverse(json_element, depth, json_file_name):
+    def __recursive_traverse(json_element, json_file_name, refs):
+        cloned_refs = refs.copy()
         if type(json_element) is dict:
-            curr_depth = depth
             curr_file_name = json_file_name
             json_ref = json_element.pop("$ref", None)
             if json_ref:
-                curr_depth += 1
-                if curr_depth > 4:
+                cloned_refs[json_ref] = True
+                if refs.get(json_ref, False):
+                    print("Cyclic refs", refs)
                     return
                 curr_file_name = SwaggerJsonFile.__resolve_reference(json_element, json_ref, json_file_name)
             for json_key in json_element:
-                SwaggerJsonFile.__recursive_traverse(json_element[json_key], curr_depth, curr_file_name)
+                SwaggerJsonFile.__recursive_traverse(json_element[json_key], curr_file_name, cloned_refs)
         elif type(json_element) is list:
             for json_key in json_element:
-                SwaggerJsonFile.__recursive_traverse(json_key, depth, json_file_name)
+                SwaggerJsonFile.__recursive_traverse(json_key, json_file_name, cloned_refs)
 
     @staticmethod
     def __resolve_reference(json_element, ref_string, json_file_name):
