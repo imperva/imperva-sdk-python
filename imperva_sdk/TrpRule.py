@@ -1,6 +1,5 @@
 # Copyright 2018 Imperva. All rights reserved.
 
-import json
 from imperva_sdk.core import *
     
 class TrpRule(MxObject):
@@ -98,7 +97,7 @@ class TrpRule(MxObject):
     if obj_exists:
       return obj_exists
     try:
-      rule = connection._mx_api('GET', '/conf/webServices/%s/%s/%s/trpRules/%s/%d' % (Site, ServerGroup, WebService, ServerIp, ListenerPorts[0]))
+      rule = connection._mx_api('GET', '/conf/webServices/%s/%s/%s/trpRules/%s/%s' % (Site, ServerGroup, WebService, ServerIp, ','.join(map(str, ListenerPorts))))
     except: 
       return None
     Certificate = None if 'certificate' not in rule else rule['certificate']
