@@ -204,4 +204,7 @@ class ServerGroup(MxObject):
   def get_db_service(self, Name=None):
     return self._connection.get_db_service(Name=Name, Site=self._Site, ServerGroup=self.Name)
   def get_all_db_services(self):
-    return self._connection.get_all_db_services(Site=self._Site, ServerGroup=self.Name)
+    try:
+      return self._connection.get_all_db_services(Site=self._Site, ServerGroup=self.Name)
+    except:
+      return []
