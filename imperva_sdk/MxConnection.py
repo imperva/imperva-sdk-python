@@ -3,6 +3,8 @@
 import json
 import base64
 import requests
+from urllib3 import poolmanager
+import ssl
 import time
 
 from imperva_sdk.core                           import *
@@ -73,6 +75,18 @@ try:
   urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 except:
   pass
+
+
+class TLSAdapter(requests.adapters.HTTPAdapter):
+
+  def init_poolmanager(self, *args, **kwargs):
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_REQUIRED
+    ctx.minimum_version = ssl.TLSVersion.TLSv1_2
+    ctx.set_ciphers('DEFAULT@SECLEVEL=2')
+    kwargs['ssl_context'] = ctx
+    return super(TLSAdapter, self).init_poolmanager(*args, **kwargs)
 
 
 class MxConnection(object):
@@ -222,24 +236,27 @@ class MxConnection(object):
       if "data" in kwargs:
         print ("  body - %s" % kwargs["data"])
 
+    session = requests.session()
+    session.mount('https://', TLSAdapter())
+
     if method == 'POST':
       try:
-        response = requests.post(url, **kwargs)
+        response = session.post(url, **kwargs)
       except Exception as e:
         raise MxException("MX Connection Error - %s" % str(e))
     elif method == 'GET':
       try:
-        response = requests.get(url, **kwargs)
+        response = session.get(url, **kwargs)
       except:
         raise MxException("MX Connection Error")
     elif method == 'DELETE':
       try:
-        response = requests.delete(url, **kwargs)
+        response = session.delete(url, **kwargs)
       except:
         raise MxException("MX Connection Error")
     elif method == 'PUT':
       try:
-        response = requests.put(url, **kwargs)
+        response = session.put(url, **kwargs)
       except:
         raise MxException("MX Connection Error")
     else:
