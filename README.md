@@ -22,8 +22,8 @@ To pack and publish as product owner:
 2. ``git clone https://github.com/imperva/imperva-sdk-python.git``
 3. ``cd imperva-sdk-python``
 4. ``pip install setuptools wheel sphinx_glpi_theme``
-5. To pack: ``python setup.py sdist bdist_wheel`` Packed output is saved under dist/imperva-sdk-0.2.1.tar.gz
-6. ``cp dist/imperva-sdk-0.2.1.tar.gz ../imperva.github.io/versions/imperva-sdk-latest-wip.tar.gz``
+5. To pack: ``python setup.py sdist bdist_wheel`` Packed output is saved under dist/imperva-sdk-0.2.2.tar.gz
+6. ``cp dist/imperva-sdk-0.2.2.tar.gz ../imperva.github.io/versions/imperva-sdk-latest-wip.tar.gz``
 7. ``rm -Rf ../imperva.github.io.git/imperva-sdk-python``
 8. To generate documentation site: ``sphinx-build -b html -c . docs ../imperva.github.io/imperva-sdk-python``
 9. ``cd ../imperva.github.io``

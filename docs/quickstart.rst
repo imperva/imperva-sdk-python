@@ -4,7 +4,8 @@ Using imperva-sdk is as easy as using the MX UI.
 
 Installation
 ============
-You can install imperva-sdk on pretty much any machine with Python version 2.6+ (tested with 2.6, 2.7, 3.3 and 3.6)
+You can install imperva-sdk on pretty much any machine with Python version 2.6+ (tested with 2.6, 2.7, 3.3 and 3.6 to 3.11).
+If you use Python 3.10 or above, please download Imperva SDK version 0.2.2 or above.
 The only requirement is the Python `requests <http://docs.python-requests.org/en/master/>`_ library.
 
 1. Download
@@ -37,12 +38,9 @@ imperva-sdk downloads:
 =======  ===============================  ==============================================================
 Version  Development Status               Download
 =======  ===============================  ==============================================================
-0.2.1    Latest (July 2020)               :download:`imperva-sdk-latest-wip.tar.gz <../../imperva.github.io/versions/imperva-sdk-latest-wip.tar.gz>`
-0.2.0    Latest stable (July 2019)        :download:`imperva-sdk-latest.tar.gz <../../imperva.github.io/versions/imperva-sdk-latest.tar.gz>`
-0.2.0    Generally Available              :download:`imperva-sdk-0.2.0.tar.gz <../../imperva.github.io/versions/imperva-sdk-0.2.0.tar.gz>`
-0.1.9    Beta                             :download:`imperva-sdk-0.1.9.tar.gz <../../imperva.github.io/versions/imperva-sdk-0.1.9.tar.gz>`
-0.1.8    Beta                             :download:`imperva-sdk-0.1.8.tar.gz <../../imperva.github.io/versions/imperva-sdk-0.1.8.tar.gz>`
-0.1.7    Beta                             :download:`imperva-sdk-0.1.7.tar.gz <../../imperva.github.io/versions/imperva-sdk-0.1.7.tar.gz>`
+0.2.2    Latest (September 2023)          :download:`imperva-sdk-latest-wip.tar.gz <../../imperva.github.io/versions/imperva-sdk-latest-wip.tar.gz>`
+0.2.1    Latest stable (November 2020)    :download:`imperva-sdk-latest.tar.gz <../../imperva.github.io/versions/imperva-sdk-latest.tar.gz>`
+0.2.0    Generally Available (July 2019)  :download:`imperva-sdk-0.2.0.tar.gz <../../imperva.github.io/versions/imperva-sdk-0.2.0.tar.gz>`
 =======  ===============================  ==============================================================
 
 Using imperva-sdk
